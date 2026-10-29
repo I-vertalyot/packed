@@ -55,10 +55,24 @@ button{cursor:pointer}
 .status.ok b{background:#3DC48B}.status.saving b{background:var(--sign)}.status.err b{background:#F07560}
 .savebtn{background:var(--sign);color:var(--sign-ink);border:0;border-radius:6px;padding:7px 14px;font-weight:700;font-size:14px}
 .savebtn:disabled{opacity:.6;cursor:default}
+.infobtn{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--bar-line);background:none;color:var(--bar-fg);font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:700;font-size:16px;line-height:1;display:inline-grid;place-items:center;padding:0}
+.infobtn:hover{border-color:var(--bar-fg)}
+.sheet{position:fixed;inset:0;z-index:20;display:flex;align-items:flex-end;justify-content:center;padding:16px max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+@media (min-width:600px){.sheet{align-items:center}}
+.sheet-bg{position:absolute;inset:0;background:rgba(10,14,19,.55)}
+.sheet-card{position:relative;background:var(--surface);color:var(--ink);border-radius:12px;width:100%;max-width:520px;max-height:calc(100% - env(safe-area-inset-top,0px) - 16px);overflow:auto;padding:20px;display:flex;flex-direction:column;gap:16px;box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.help-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;counter-reset:s}
+.help-steps li{display:grid;grid-template-columns:28px 1fr;gap:12px;counter-increment:s}
+.help-steps li::before{content:counter(s);width:28px;height:28px;border-radius:5px;background:var(--sign);color:var(--sign-ink);font-family:var(--f-display);font-weight:800;display:grid;place-items:center}
+.help-steps b{display:block;font-weight:700;margin-bottom:2px}
+.help-steps span{color:var(--muted);font-size:14px}
+@media (prefers-reduced-motion:no-preference){.sheet:not([hidden]) .sheet-card{animation:up .18s ease-out}@keyframes up{from{transform:translateY(12px);opacity:.6}to{transform:none;opacity:1}}}
 .lang{display:inline-flex;border:1px solid var(--bar-line);border-radius:6px;overflow:hidden}
 .lang button{background:none;border:0;color:var(--bar-muted);padding:6px 9px;font-family:var(--f-mono);font-size:12px;font-weight:700}
 .lang button[aria-pressed="true"]{background:var(--bar-fg);color:var(--bar)}
-.tabs{width:100%;display:flex;gap:4px;margin-top:6px}
+.tabs{flex:1 1 auto;display:flex;gap:4px;margin-top:6px;min-width:0}
+.bar-in .infobtn{margin-top:6px;align-self:center}
+.bar-in>.status{order:1}.bar-in>.lang{order:2}.bar-in>.savebtn{order:3}.bar-in>.tabs{order:4;flex-basis:calc(100% - 48px)}.bar-in>.infobtn{order:5}
 .tabs button{background:none;border:0;color:var(--bar-muted);padding:10px 12px 12px;font-family:var(--f-display);font-weight:700;font-stretch:87%;font-size:15px;text-transform:uppercase;letter-spacing:.05em;border-bottom:3px solid transparent}
 .tabs button[aria-selected="true"]{color:var(--bar-fg);border-bottom-color:var(--sign)}
 @media (max-width:440px){.status span{display:none}}
@@ -181,9 +195,11 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
       <button role="tab" id="tab-trips" data-act="tab" data-v="trips" aria-selected="true"></button>
       <button role="tab" id="tab-inv" data-act="tab" data-v="inv" aria-selected="false"></button>
     </nav>
+    <button class="infobtn" id="infoBtn" data-act="info" aria-haspopup="dialog">i</button>
   </div>
 </header>
 <main id="main"></main>
+<div class="sheet" id="help" hidden role="dialog" aria-modal="true" aria-labelledby="helpTitle"><div class="sheet-bg" data-act="help-close"></div><div class="sheet-card" id="helpCard"></div></div>
 
 <datalist id="catlist"></datalist>
 
@@ -230,6 +246,13 @@ const L={
   importQ:(i,t)=>`Nahrát zálohu (${i} věcí, ${t} cest)? Současná data se přepíšou.`,upload:'Nahrát',
   imported:'Záloha nahrána.',noDl:'Stahování souborů tady není dostupné.',dlDone:'Záloha stažena.',dlFail:'Zálohu se nepodařilo stáhnout.',
   badFile:'Tenhle soubor není záloha ze Sbaleno.',fileName:'sbaleno-zaloha-',appName:'Sbaleno',
+  info:'Nápověda',helpTitle:'Jak používat Sbaleno',close:'Rozumím',
+  help:[['Inventář','Na kartě Inventář si sepiš věci, které běžně bereš. Barevným kolečkem u kategorie změníš její barvu.'],
+    ['Nová cesta','Na kartě Cesty klikni na „+ Nová cesta“ a zadej, kam a kdy jedeš.'],
+    ['Věci po dnech','Nahoře vyber den a ťukáním přidej věci z inventáře. Věci na celou dobu dej do „Celá cesta“. Tlačítky − a + nastavíš počet kusů.'],
+    ['Balení','Přepni na „Balení“. Všechno je v jednom seznamu se sečtenými kusy, takže jen odškrtáváš, co už máš v kufru.'],
+    ['Jiné zařízení','Inventář → Export a záloha → „Exportovat inventář“. Na druhém zařízení soubor nahraješ přes „Nahrát soubor…“.']],
+  helpTip:'Všechno se ukládá samo. Jazyk přepneš tlačítky CS / EN.',
   invExp:'Exportovat inventář',invXNote:'Inventář si vyexportuj do souboru a na jiném zařízení ho nahraj přes „Nahrát soubor…“. Věci se přidají k těm, které tam už máš.',invFileName:'sbaleno-inventar-',
   invDone:'Inventář stažen. Soubor si pošli do druhého zařízení (e-mailem, přes cloud…) a nahraj ho tam.',
   invQ:(n,k)=>`Přidat ${n} ${csPl(n,'novou věc','nové věci','nových věcí')} do inventáře?${k?` ${k} už máš, ty se přeskočí.`:''} Cesty zůstanou beze změny.`,
@@ -267,6 +290,13 @@ const L={
   importQ:(i,t)=>`Upload backup (${i} items, ${t} trips)? Your current data will be replaced.`,upload:'Upload',
   imported:'Backup uploaded.',noDl:'File downloads aren’t available here.',dlDone:'Backup downloaded.',dlFail:'Couldn’t download the backup.',
   badFile:'This file isn’t a Packed backup.',fileName:'packed-backup-',appName:'Packed',
+  info:'Help',helpTitle:'How to use Packed',close:'Got it',
+  help:[['Inventory','On the Inventory tab, list the things you usually take. Tap the coloured dot next to a category to change its colour.'],
+    ['New trip','On the Trips tab, tap “+ New trip” and enter where and when you’re going.'],
+    ['Items by day','Pick a day at the top and tap items from your inventory to add them. Things you need the whole time go under “Whole trip”. Use − and + to set how many.'],
+    ['Packing','Switch to “Packing”. Everything is in one list with the totals added up, so you just tick off what’s in your bag.'],
+    ['Another device','Inventory → Export & backup → “Export inventory”. On the other device, load the file with “Upload file…”.']],
+  helpTip:'Everything saves automatically. Switch language with CS / EN.',
   invExp:'Export inventory',invXNote:'Export your inventory to a file, then load it on another device with “Upload file…”. The items are added to whatever is already there.',invFileName:'packed-inventory-',
   invDone:'Inventory downloaded. Send the file to your other device (email, cloud…) and upload it there.',
   invQ:(n,k)=>`Add ${n} new ${enPl(n,'item','items')} to your inventory?${k?` ${k} you already have will be skipped.`:''} Your trips stay the same.`,
@@ -406,6 +436,12 @@ function render(){
   if(ui.tripId&&!trip())ui.tripId=null;
   refreshCatList();
   main.innerHTML=ui.tab==='inv'?viewInv():(ui.tripId?viewTrip():viewTrips());
+  const ib=document.getElementById('infoBtn');ib.setAttribute('aria-label',T.info);ib.title=T.info;
+  const hp=document.getElementById('help');hp.hidden=!ui.help;
+  if(ui.help)document.getElementById('helpCard').innerHTML=`<h1 id="helpTitle" style="font-size:24px">${esc(T.helpTitle)}</h1>
+    <ol class="help-steps">${T.help.map(([h,t])=>`<li><div><b>${esc(h)}</b><span>${esc(t)}</span></div></li>`).join('')}</ol>
+    <p class="note">${esc(T.helpTip)}</p>
+    <button class="btn primary" data-act="help-close" id="helpClose" style="justify-content:center">${esc(T.close)}</button>`;
 }
 
 function viewTrips(){
@@ -606,6 +642,8 @@ document.addEventListener('click',e=>{
     case 'to-all-days':{const src={...(t.picks[ui.day]||{})};tripDays(t).forEach(d=>{t.picks[d]={...src}});save();break}
     case 'reset-pack':t.packed={};save();break;
     case 'save-now':saveNow();return;
+    case 'info':ui.help=true;render();{const c=document.getElementById('helpClose');if(c)c.focus()}return;
+    case 'help-close':ui.help=false;render();document.getElementById('infoBtn').focus();return;
     case 'export':exportBackup(false);return;
     case 'export-inv':exportBackup(true);return;
     case 'inv-yes':if(pendingInv){mergeInv(pendingInv);pendingInv=null;ui.importMsg='invImported';save()}break;
@@ -656,6 +694,8 @@ document.addEventListener('change',e=>{
   if(el.classList.contains('rename')){const it=item(el.dataset.id);const v=el.value.trim();if(it&&v&&v!==it.name){it.name=v;save()}else if(it)el.value=it.name;return}
   if(el.classList.contains('recat')){const it=item(el.dataset.id);const v=el.value.trim()||OTHER();if(it&&v!==it.cat){it.cat=v;addCat(v);save();const y=window.scrollY;render();window.scrollTo(0,y)}return}
 });
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ui.help){ui.help=false;render();document.getElementById('infoBtn').focus()}});
 
 document.addEventListener('input',e=>{
   if(e.target.id!=='search')return;
