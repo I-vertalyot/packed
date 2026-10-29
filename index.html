@@ -225,11 +225,15 @@ const L={
   invNote:'Kategorii vyber ze seznamu, nebo napiš novou. Názvy a kategorie můžeš níž rovnou přepsat. Barvu kategorie změníš kliknutím na barevné kolečko.',
   invEmpty:'Inventář je prázdný. Přidej první věc výše.',name:'Název',
   delItemQ:(n,u)=>`Smazat „${n}“${u?` (je ve ${u} ${csPl(u,'cestě','cestách','cestách')})`:''}?`,
-  backup:'Záloha',backupNote:'Všechno se ukládá automaticky v tomto zařízení. Zálohou do souboru si data pojistíš nebo je přeneseš do jiného telefonu či počítače.',
-  dlBackup:'Stáhnout zálohu',ulBackup:'Nahrát zálohu…',
+  backup:'Export a záloha',backupNote:'Všechno se ukládá automaticky v tomto zařízení. Zálohou do souboru si data pojistíš nebo je přeneseš do jiného telefonu či počítače.',
+  dlBackup:'Stáhnout celou zálohu',ulBackup:'Nahrát soubor…',
   importQ:(i,t)=>`Nahrát zálohu (${i} věcí, ${t} cest)? Současná data se přepíšou.`,upload:'Nahrát',
   imported:'Záloha nahrána.',noDl:'Stahování souborů tady není dostupné.',dlDone:'Záloha stažena.',dlFail:'Zálohu se nepodařilo stáhnout.',
   badFile:'Tenhle soubor není záloha ze Sbaleno.',fileName:'sbaleno-zaloha-',appName:'Sbaleno',
+  invExp:'Exportovat inventář',invXNote:'Inventář si vyexportuj do souboru a na jiném zařízení ho nahraj přes „Nahrát soubor…“. Věci se přidají k těm, které tam už máš.',invFileName:'sbaleno-inventar-',
+  invDone:'Inventář stažen. Soubor si pošli do druhého zařízení (e-mailem, přes cloud…) a nahraj ho tam.',
+  invQ:(n,k)=>`Přidat ${n} ${csPl(n,'novou věc','nové věci','nových věcí')} do inventáře?${k?` ${k} už máš, ty se přeskočí.`:''} Cesty zůstanou beze změny.`,
+  invImported:'Věci přidány do inventáře.',invNothing:'Všechny věci z tohoto souboru už v inventáři máš.',
   color:'Barva',cn:{blue:'modrá',green:'zelená',orange:'oranžová',purple:'fialová',red:'červená',teal:'tyrkysová',pink:'růžová',yellow:'žlutá',gray:'šedá'}
  },
  en:{
@@ -258,11 +262,15 @@ const L={
   invNote:'Pick a category from the list or type a new one. You can rename items and categories below. Click a category’s colour dot to change its colour.',
   invEmpty:'Your inventory is empty. Add the first item above.',name:'Name',
   delItemQ:(n,u)=>`Delete “${n}”${u?` (used in ${u} ${enPl(u,'trip','trips')})`:''}?`,
-  backup:'Backup',backupNote:'Everything saves automatically on this device. Download a backup file to keep your data safe or move it to another phone or computer.',
-  dlBackup:'Download backup',ulBackup:'Upload backup…',
+  backup:'Export & backup',backupNote:'Everything saves automatically on this device. Download a backup file to keep your data safe or move it to another phone or computer.',
+  dlBackup:'Download full backup',ulBackup:'Upload file…',
   importQ:(i,t)=>`Upload backup (${i} items, ${t} trips)? Your current data will be replaced.`,upload:'Upload',
   imported:'Backup uploaded.',noDl:'File downloads aren’t available here.',dlDone:'Backup downloaded.',dlFail:'Couldn’t download the backup.',
   badFile:'This file isn’t a Packed backup.',fileName:'packed-backup-',appName:'Packed',
+  invExp:'Export inventory',invXNote:'Export your inventory to a file, then load it on another device with “Upload file…”. The items are added to whatever is already there.',invFileName:'packed-inventory-',
+  invDone:'Inventory downloaded. Send the file to your other device (email, cloud…) and upload it there.',
+  invQ:(n,k)=>`Add ${n} new ${enPl(n,'item','items')} to your inventory?${k?` ${k} you already have will be skipped.`:''} Your trips stay the same.`,
+  invImported:'Items added to your inventory.',invNothing:'You already have every item from this file.',
   color:'Colour',cn:{blue:'blue',green:'green',orange:'orange',purple:'purple',red:'red',teal:'teal',pink:'pink',yellow:'yellow',gray:'grey'}
  }
 };
@@ -525,16 +533,28 @@ function viewInv(){
     <section class="panel">${groups||`<div class="empty">${esc(T.invEmpty)}</div>`}</section>
     <section class="panel">
       <h2>${T.backup}</h2>
-      <p class="note">${esc(T.backupNote)}</p>
-      <div class="row"><button class="btn" data-act="export">${T.dlBackup}</button><button class="btn" data-act="import-pick">${T.ulBackup}</button>
+      <p class="note">${esc(T.invXNote)}</p>
+      <div class="row"><button class="btn primary" data-act="export-inv">${T.invExp}</button><button class="btn" data-act="import-pick">${T.ulBackup}</button>
         <input type="file" id="importFile" accept=".json,application/json" hidden></div>
+      ${pendingInv?(()=>{const n=invNew(pendingInv).length,k=pendingInv.items.length-n;return `<div class="confirm">${esc(T.invQ(n,k))} <span class="spacer"></span><button class="btn" data-act="inv-no">${T.cancel}</button><button class="btn primary" data-act="inv-yes">${T.add}</button></div>`})():''}
+      <p class="note">${esc(T.backupNote)}</p>
+      <div class="row"><button class="btn" data-act="export">${T.dlBackup}</button></div>
       ${pendingImport?`<div class="confirm">${esc(T.importQ(pendingImport.items.length,pendingImport.trips.length))} <span class="spacer"></span><button class="btn" data-act="import-no">${T.cancel}</button><button class="btn danger" data-act="import-yes">${T.upload}</button></div>`:''}
       ${ui.importMsg?`<p class="note">${esc(T[ui.importMsg])}</p>`:''}
     </section>`;
 }
 
 /* ---------- save & backup ---------- */
-let pendingImport=null;
+let pendingImport=null,pendingInv=null;
+const invKey=i=>(String(i.name).trim()+'|'+(i.cat||'')).toLowerCase();
+function invPayload(){return {type:'sbaleno-inventory',v:1,cats:state.cats,catColors:state.catColors||{},items:state.items.map(i=>({name:i.name,cat:i.cat}))}}
+function invNew(d){const have=new Set(state.items.map(invKey));const out=[];d.items.forEach(i=>{if(!i||typeof i.name!=='string'||!i.name.trim())return;const k=invKey(i);if(have.has(k))return;have.add(k);out.push(i)});return out}
+function mergeInv(d){
+  invNew(d).forEach(i=>{const cat=String(i.cat||OTHER()).trim()||OTHER();state.items.push({id:uid(),name:i.name.trim(),cat});addCat(cat)});
+  (Array.isArray(d.cats)?d.cats:[]).forEach(c=>{if(typeof c==='string')addCat(c)});
+  state.catColors=state.catColors||{};
+  Object.entries(d.catColors&&typeof d.catColors==='object'?d.catColors:{}).forEach(([k,v])=>{if(!state.catColors[k]&&COLORS.includes(v))state.catColors[k]=v});
+}
 async function saveNow(){
   const btn=document.getElementById('saveBtn');btn.disabled=true;btn.textContent=T.saving;
   try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}
@@ -543,21 +563,24 @@ async function saveNow(){
   btn.textContent=statusKey==='err'?T.retry:T.saved;btn.disabled=false;
   setTimeout(()=>{btn.textContent=T.save},1800);
 }
-async function exportBackup(){
+async function exportBackup(inv){
+  const fname=(inv?T.invFileName:T.fileName)+iso(new Date())+'.json',data=JSON.stringify(inv?invPayload():state,null,2),okMsg=inv?'invDone':'dlDone';
   const dl=window.claude&&window.claude.use?await window.claude.use('downloads'):null;
   if(!dl){
-    try{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const u=URL.createObjectURL(blob);
-      const a=document.createElement('a');a.href=u;a.download=T.fileName+iso(new Date())+'.json';document.body.appendChild(a);a.click();a.remove();
-      setTimeout(()=>URL.revokeObjectURL(u),2000);ui.importMsg='dlDone'}catch(e){ui.importMsg='dlFail'}
+    try{const blob=new Blob([data],{type:'application/json'});const u=URL.createObjectURL(blob);
+      const a=document.createElement('a');a.href=u;a.download=fname;document.body.appendChild(a);a.click();a.remove();
+      setTimeout(()=>URL.revokeObjectURL(u),2000);ui.importMsg=okMsg}catch(e){ui.importMsg='dlFail'}
     render();return}
-  try{await dl.save({filename:T.fileName+iso(new Date())+'.json',data:JSON.stringify(state,null,2)});ui.importMsg='dlDone'}
+  try{await dl.save({filename:fname,data});ui.importMsg=okMsg}
   catch(e){ui.importMsg=e&&e.code==='declined'?'':'dlFail'}
   render();
 }
 function readImport(file){
   const r=new FileReader();
-  r.onload=()=>{try{const d=JSON.parse(r.result);if(!d||!Array.isArray(d.items)||!Array.isArray(d.trips))throw 0;pendingImport=sanitize(d);ui.importMsg=''}
-    catch(e){pendingImport=null;ui.importMsg='badFile'}render()};
+  r.onload=()=>{try{const d=JSON.parse(r.result);
+      if(d&&d.type==='sbaleno-inventory'&&Array.isArray(d.items)){pendingImport=null;if(invNew(d).length){pendingInv=d;ui.importMsg=''}else{pendingInv=null;ui.importMsg='invNothing'}}
+      else{if(!d||!Array.isArray(d.items)||!Array.isArray(d.trips))throw 0;pendingImport=sanitize(d);pendingInv=null;ui.importMsg=''}}
+    catch(e){pendingImport=null;pendingInv=null;ui.importMsg='badFile'}render()};
   r.readAsText(file);
 }
 
@@ -583,7 +606,10 @@ document.addEventListener('click',e=>{
     case 'to-all-days':{const src={...(t.picks[ui.day]||{})};tripDays(t).forEach(d=>{t.picks[d]={...src}});save();break}
     case 'reset-pack':t.packed={};save();break;
     case 'save-now':saveNow();return;
-    case 'export':exportBackup();return;
+    case 'export':exportBackup(false);return;
+    case 'export-inv':exportBackup(true);return;
+    case 'inv-yes':if(pendingInv){mergeInv(pendingInv);pendingInv=null;ui.importMsg='invImported';save()}break;
+    case 'inv-no':pendingInv=null;ui.importMsg='';break;
     case 'import-pick':document.getElementById('importFile').click();return;
     case 'import-yes':if(pendingImport){state=pendingImport;pendingImport=null;ui.tripId=null;ui.importMsg='imported';save()}break;
     case 'import-no':pendingImport=null;ui.importMsg='';break;
