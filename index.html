@@ -58,6 +58,8 @@ button{cursor:pointer}
 .credit{max-width:720px;margin:-40px auto 0;padding-block:0 32px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));text-align:center;font-size:12px;color:var(--muted)}
 .credit a,.help-credit a{color:var(--ink);font-weight:600;text-decoration:none;border-bottom:1px solid var(--line)}
 .credit a:hover,.help-credit a:hover{border-bottom-color:var(--ink)}
+.credit .sep,.help-credit .sep{margin:0 8px;opacity:.6}
+.credit a.coffee,.help-credit a.coffee{border-bottom-color:var(--sign)}
 .help-credit{margin:0;text-align:center;font-size:12px;color:var(--muted)}
 .infobtn{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--bar-line);background:none;color:var(--bar-fg);font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:700;font-size:16px;line-height:1;display:inline-grid;place-items:center;padding:0}
 .infobtn:hover{border-color:var(--bar-fg)}
@@ -250,7 +252,7 @@ const L={
   dlBackup:'Stáhnout celou zálohu',ulBackup:'Nahrát soubor…',
   importQ:(i,t)=>`Nahrát zálohu (${i} věcí, ${t} cest)? Současná data se přepíšou.`,upload:'Nahrát',
   imported:'Záloha nahrána.',noDl:'Stahování souborů tady není dostupné.',dlDone:'Záloha stažena.',dlFail:'Zálohu se nepodařilo stáhnout.',
-  badFile:'Tenhle soubor není záloha ze Sbaleno.',fileName:'sbaleno-zaloha-',appName:'Sbaleno',madeBy:'Autor:',
+  badFile:'Tenhle soubor není záloha ze Sbaleno.',fileName:'sbaleno-zaloha-',appName:'Sbaleno',madeBy:'Autor:',coffee:'Kup mi kafe',
   info:'Nápověda',helpTitle:'Jak používat Sbaleno',close:'Rozumím',
   help:[['Inventář','Na kartě Inventář si sepiš věci, které běžně bereš. Barevným kolečkem u kategorie změníš její barvu.'],
     ['Nová cesta','Na kartě Cesty klikni na „+ Nová cesta“ a zadej, kam a kdy jedeš.'],
@@ -294,7 +296,7 @@ const L={
   dlBackup:'Download full backup',ulBackup:'Upload file…',
   importQ:(i,t)=>`Upload backup (${i} items, ${t} trips)? Your current data will be replaced.`,upload:'Upload',
   imported:'Backup uploaded.',noDl:'File downloads aren’t available here.',dlDone:'Backup downloaded.',dlFail:'Couldn’t download the backup.',
-  badFile:'This file isn’t a Packed backup.',fileName:'packed-backup-',appName:'Packed',madeBy:'Made by',
+  badFile:'This file isn’t a Packed backup.',fileName:'packed-backup-',appName:'Packed',madeBy:'Made by',coffee:'Buy me a coffee',
   info:'Help',helpTitle:'How to use Packed',close:'Got it',
   help:[['Inventory','On the Inventory tab, list the things you usually take. Tap the coloured dot next to a category to change its colour.'],
     ['New trip','On the Trips tab, tap “+ New trip” and enter where and when you’re going.'],
@@ -427,8 +429,8 @@ function refreshCatList(){const all=[...new Set(catOrder().concat(state.cats))];
 
 /* ---------- views ---------- */
 const main=document.getElementById('main');
-const IG='https://www.instagram.com/i.vertalyot/';
-const credit=()=>`${esc(T.madeBy)} <a href="${IG}" target="_blank" rel="noopener noreferrer" title="Instagram @i.vertalyot">i.vertalyot</a>`;
+const IG='https://www.instagram.com/i.vertalyot/',BMC='https://buymeacoffee.com/i.vertalyot';
+const credit=()=>`${esc(T.madeBy)} <a href="${IG}" target="_blank" rel="noopener noreferrer" title="Instagram @i.vertalyot">i.vertalyot</a><span class="sep" aria-hidden="true">·</span><a class="coffee" href="${BMC}" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">☕</span> ${esc(T.coffee)}</a>`;
 function render(){
   T=L[lang()];
   document.documentElement.lang=lang();
