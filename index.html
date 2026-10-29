@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Sbaleno</title>
+<meta name="description" content="Travel packing list: an inventory of your things and a day-by-day plan for every trip.">
+<meta name="theme-color" content="#16202B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sbaleno">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: airport-wayfinding app — dark sign bar on top, yellow "gate" chips for days, single column max 720px */
+:root{
+  --bg:#F2F4F6; --surface:#FFFFFF; --ink:#16202B; --muted:#5B6878; --line:#D8DEE5; --chip:#E7EBF0;
+  --bar:#16202B; --bar-fg:#F4F6F8; --bar-muted:#9AA7B5; --bar-line:#33404D;
+  --sign:#FFC62B; --sign-ink:#16202B; --ok:#1C8556; --danger:#C2412D;
+  --c-blue:#2F6FD6; --c-green:#2E9550; --c-orange:#E07B1F; --c-purple:#8356D1; --c-red:#D4483A; --c-teal:#179C9C; --c-pink:#D2508E; --c-yellow:#D9A400; --c-gray:#7D8896;
+  --f-display:"Archivo","Arial Narrow",Arial,sans-serif;
+  --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1217; --surface:#171D24; --ink:#E8EDF2; --muted:#95A2B1; --line:#29323C; --chip:#212932;
+  --bar:#1C242D; --bar-fg:#F4F6F8; --bar-muted:#8D9AA8; --bar-line:#36414D; --ok:#3DC48B; --danger:#F07560;
+  --c-blue:#5B97F5; --c-green:#4CC077; --c-orange:#F59A45; --c-purple:#A783F0; --c-red:#F06F62; --c-teal:#3CC4C4; --c-pink:#EE7AB0; --c-yellow:#F2C230; --c-gray:#9AA5B2; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1217; --surface:#171D24; --ink:#E8EDF2; --muted:#95A2B1; --line:#29323C; --chip:#212932;
+  --bar:#1C242D; --bar-fg:#F4F6F8; --bar-muted:#8D9AA8; --bar-line:#36414D; --ok:#3DC48B; --danger:#F07560;
+  --c-blue:#5B97F5; --c-green:#4CC077; --c-orange:#F59A45; --c-purple:#A783F0; --c-red:#F06F62; --c-teal:#3CC4C4; --c-pink:#EE7AB0; --c-yellow:#F2C230; --c-gray:#9AA5B2; color-scheme:dark}
+
+*{box-sizing:border-box}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{-webkit-text-size-adjust:100%}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bar)}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--sign);outline-offset:2px}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bar);color:var(--bar-fg);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.bar-in{max-width:720px;margin:0 auto;display:flex;align-items:center;gap:10px;padding-block:12px 0;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:800;font-stretch:75%;font-size:26px;letter-spacing:.01em;text-transform:uppercase;line-height:1}
+.brand i{display:inline-grid;place-items:center;width:30px;height:30px;background:var(--sign);color:var(--sign-ink);border-radius:4px;font-style:normal;font-size:18px}
+.status{margin-left:auto;font-size:12px;color:var(--bar-muted);display:flex;align-items:center;gap:6px}
+.status b{width:7px;height:7px;border-radius:50%;background:var(--bar-muted);display:inline-block}
+.status.ok b{background:#3DC48B}.status.saving b{background:var(--sign)}.status.err b{background:#F07560}
+.savebtn{background:var(--sign);color:var(--sign-ink);border:0;border-radius:6px;padding:7px 14px;font-weight:700;font-size:14px}
+.savebtn:disabled{opacity:.6;cursor:default}
+.lang{display:inline-flex;border:1px solid var(--bar-line);border-radius:6px;overflow:hidden}
+.lang button{background:none;border:0;color:var(--bar-muted);padding:6px 9px;font-family:var(--f-mono);font-size:12px;font-weight:700}
+.lang button[aria-pressed="true"]{background:var(--bar-fg);color:var(--bar)}
+.tabs{width:100%;display:flex;gap:4px;margin-top:6px}
+.tabs button{background:none;border:0;color:var(--bar-muted);padding:10px 12px 12px;font-family:var(--f-display);font-weight:700;font-stretch:87%;font-size:15px;text-transform:uppercase;letter-spacing:.05em;border-bottom:3px solid transparent}
+.tabs button[aria-selected="true"]{color:var(--bar-fg);border-bottom-color:var(--sign)}
+@media (max-width:440px){.status span{display:none}}
+
+main{max-width:720px;margin:0 auto;padding-block:20px 64px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:20px}
+h1,h2{font-family:var(--f-display);font-stretch:80%;text-transform:uppercase;letter-spacing:.01em;margin:0;line-height:1.05;text-wrap:balance}
+h1{font-size:30px;font-weight:800}
+h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.spacer{flex:1}
+
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:8px 12px;font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--sign);color:var(--sign-ink);border-color:var(--sign)}
+.btn.primary:hover{filter:brightness(.96)}
+.btn.ghost{background:none;border-color:transparent;color:var(--muted);padding-inline:6px}
+.btn.ghost:hover{color:var(--ink)}
+.btn.danger{color:var(--danger)}
+.btn:disabled{opacity:.45;cursor:default}
+
+.field{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
+.field label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.inp{width:100%;min-width:0;border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:9px 10px}
+.inp:focus{border-color:var(--ink);outline:none}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:14px}
+.formgrid{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:10px;align-items:end}
+@media (max-width:560px){.formgrid{grid-template-columns:1fr 1fr}.formgrid .wide{grid-column:1/-1}.formgrid .btn{grid-column:1/-1;justify-content:center}}
+.err{color:var(--danger);font-size:13px;margin:0}
+
+.trips{display:flex;flex-direction:column;gap:10px}
+.trip{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;text-align:left;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+.trip:hover{border-color:var(--muted)}
+.trip .when{display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--chip);border-radius:6px;padding:6px 10px;min-width:58px}
+.trip .when b{font-family:var(--f-display);font-stretch:75%;font-size:24px;line-height:1;font-weight:800}
+.trip .when span{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
+.trip .t-name{font-weight:700;font-size:16px;min-width:0;overflow-wrap:anywhere}
+.trip .t-meta{font-size:13px;color:var(--muted)}
+.meter{height:6px;background:var(--chip);border-radius:3px;overflow:hidden;margin-top:6px}
+.meter i{display:block;height:100%;background:var(--ok)}
+.trip .pct{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+
+.empty{border:1.5px dashed var(--line);border-radius:8px;padding:24px 16px;text-align:center;color:var(--muted)}
+
+.head{display:flex;flex-direction:column;gap:6px}
+.seg{display:inline-flex;background:var(--chip);border-radius:8px;padding:3px;gap:2px}
+.seg button{border:0;background:none;padding:7px 14px;border-radius:6px;font-weight:600;font-size:14px;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+
+.gates{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.gate{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:7px 11px;display:flex;flex-direction:column;align-items:flex-start;gap:1px;min-width:64px}
+.gate .g1{font-family:var(--f-display);font-stretch:80%;font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:.03em;line-height:1.1}
+.gate .g2{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.gate[aria-pressed="true"]{background:var(--sign);border-color:var(--sign);color:var(--sign-ink)}
+.gate[aria-pressed="true"] .g2{color:var(--sign-ink);opacity:.75}
+
+.picked{display:flex;flex-direction:column}
+.pick{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
+.pick:first-child{border-top:0}
+.pick .nm{min-width:0;overflow-wrap:anywhere;font-weight:500}
+.pick .ct{display:block;font-size:12px;color:var(--muted);font-weight:400}
+.step{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.step button{border:0;background:none;width:32px;height:32px;font-size:17px;line-height:1}
+.step button:hover{background:var(--chip)}
+.step span{min-width:26px;text-align:center;font-family:var(--f-mono);font-weight:700}
+.x{border:0;background:none;color:var(--muted);width:32px;height:32px;border-radius:6px;font-size:18px}
+.x:hover{background:var(--chip);color:var(--danger)}
+
+.cat{display:flex;flex-direction:column;gap:8px}
+.cat h3{margin:0;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);display:flex;align-items:center;gap:8px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--cc);flex:none;display:inline-block;vertical-align:middle}
+.ct .dot{width:8px;height:8px;margin-right:3px;vertical-align:1px}
+.chip .dot{width:8px;height:8px}
+.colorbtn{border:1px solid var(--line);background:var(--surface);border-radius:999px;width:26px;height:26px;display:inline-grid;place-items:center;padding:0}
+.colorbtn:hover,.colorbtn[aria-expanded="true"]{border-color:var(--ink)}
+.colorbtn .dot{width:13px;height:13px}
+.swatches{display:flex;gap:8px;flex-wrap:wrap;padding:4px 0 6px}
+.sw{width:28px;height:28px;border-radius:50%;background:var(--cc);border:0;padding:0}
+.sw[aria-pressed="true"]{outline:2px solid var(--ink);outline-offset:2px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:14px;display:inline-flex;align-items:center;gap:6px}
+.chip:hover{border-color:var(--muted)}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip.on::before{content:"✓";font-weight:700}
+
+.progress{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.progress .big{font-family:var(--f-display);font-stretch:75%;font-weight:800;font-size:40px;line-height:1}
+.pk{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line);cursor:pointer}
+.cat .pk:first-of-type{border-top:0}
+.pk input{width:22px;height:22px;accent-color:var(--ok);margin:0}
+.pk .nm{min-width:0;overflow-wrap:anywhere;font-weight:500}
+.pk .days{display:block;font-size:12px;color:var(--muted);font-weight:400}
+.pk .q{font-family:var(--f-mono);font-weight:700;font-size:15px}
+.pk.done .nm{text-decoration:line-through;color:var(--muted)}
+
+.inv{display:grid;grid-template-columns:1fr 150px auto;gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--line)}
+.cat .inv:first-of-type{border-top:0}
+.inv .inp{padding:7px 9px}
+@media (max-width:480px){.inv{grid-template-columns:1fr auto}.inv .recat{grid-column:1/2}}
+.note{font-size:13px;color:var(--muted);margin:0}
+.confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--chip);border-radius:6px;padding:10px 12px;font-size:14px}
+@media (prefers-reduced-motion:no-preference){.meter i{transition:width .3s ease}}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="bar-in">
+    <div class="brand"><i aria-hidden="true">✓</i><span id="brandName">Sbaleno</span></div>
+    <div class="status" id="status"><b></b><span></span></div>
+    <div class="lang" role="group" aria-label="Language">
+      <button id="lang-cs" data-act="lang" data-v="cs" aria-pressed="true">CS</button>
+      <button id="lang-en" data-act="lang" data-v="en" aria-pressed="false">EN</button>
+    </div>
+    <button class="savebtn" id="saveBtn" data-act="save-now"></button>
+    <nav class="tabs" role="tablist">
+      <button role="tab" id="tab-trips" data-act="tab" data-v="trips" aria-selected="true"></button>
+      <button role="tab" id="tab-inv" data-act="tab" data-v="inv" aria-selected="false"></button>
+    </nav>
+  </div>
+</header>
+<main id="main"></main>
+
+<datalist id="catlist"></datalist>
+
+<script>
+(function(){
+const KEY='sbaleno-v1';
+const uid=()=>Math.random().toString(36).slice(2,9);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const parseD=s=>{const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+
+/* ---------- language ---------- */
+const csPl=(n,a,b,c)=>n===1?a:(n>=2&&n<=4?b:c);
+const enPl=(n,a,b)=>n===1?a:b;
+const L={
+ cs:{
+  wd:['Ne','Po','Út','St','Čt','Pá','So'],wdl:['neděle','pondělí','úterý','středa','čtvrtek','pátek','sobota'],
+  locale:'cs-CZ',dm:d=>d.getDate()+'. '+(d.getMonth()+1)+'.',dayNum:d=>d.getDate()+'.',
+  days:n=>n+' '+csPl(n,'den','dny','dní'),things:n=>n+' '+csPl(n,'věc','věci','věcí'),
+  st:{ok:'Uloženo v účtu',saving:'Ukládám…',err:'Nepodařilo se uložit, zkusím znovu',local:'Uloženo v tomto zařízení',load:'Načítám…'},
+  save:'Uložit',saving:'Ukládám…',saved:'Uloženo ✓',retry:'Zkusit znovu',
+  tabTrips:'Cesty',tabInv:'Inventář',other:'Ostatní',
+  trips:'Cesty',newTrip:'+ Nová cesta',cancel:'Zrušit',where:'Kam jedeš',wherePh:'např. Chorvatsko 2027',depart:'Odjezd',ret:'Návrat',create:'Vytvořit cestu',
+  tripNote:'Každý den cesty dostane vlastní seznam. Věci na celou cestu (doklady, nabíječka) dáš do „Celá cesta“.',
+  noTrips:'Zatím žádná cesta. Klikni na „+ Nová cesta“, zadej kam a kdy, a pak si na každý den poskládej věci z inventáře.',
+  errOrder:'Návrat musí být stejný den nebo po odjezdu.',errLong:'Cesta může mít nejvýš 60 dní.',
+  back:'← Všechny cesty',delTrip:'Smazat cestu',delTripQ:n=>`Opravdu smazat „${n}“?`,no:'Ne',del:'Smazat',
+  byDay:'Po dnech',packing:'Balení',view:'Zobrazení',tripDays:'Dny cesty',
+  whole:'Celá cesta',wholeTitle:'Na celou cestu',
+  emptyWhole:'Sem patří věci, které potřebuješ po celou dobu: doklady, nabíječka, kartáček…',emptyDay:'Na tento den zatím nic. Vyber věci z inventáře níže.',
+  less:'Méně',more:'Více',remove:'Odebrat',
+  copyPrev:'Zkopírovat z předchozího dne',toAll:'Tento den do všech dnů',clear:'Vyčistit',
+  addFromInv:'Přidat z inventáře',search:'Hledat…',invEmptyPick:'Inventář je prázdný. Přidej věci níže nebo na kartě Inventář.',
+  newThing:'Nová věc',newThingPh:'např. Lyžařské brýle',category:'Kategorie',addBoth:'Přidat do inventáře i dne',
+  wholeTrip:'celá cesta',everyDay:'každý den',
+  noPicks:'Zatím nemáš vybrané žádné věci. Přepni na „Po dnech“ a poskládej si, co bereš.',
+  allPacked:'Všechno sbaleno. Šťastnou cestu!',packedOf:'věcí sbaleno',resetPack:'Zrušit odškrtnutí',
+  inv:'Inventář',thing:'Věc',thingPh:'např. Čelovka',add:'Přidat',
+  invNote:'Kategorii vyber ze seznamu, nebo napiš novou. Názvy a kategorie můžeš níž rovnou přepsat. Barvu kategorie změníš kliknutím na barevné kolečko.',
+  invEmpty:'Inventář je prázdný. Přidej první věc výše.',name:'Název',
+  delItemQ:(n,u)=>`Smazat „${n}“${u?` (je ve ${u} ${csPl(u,'cestě','cestách','cestách')})`:''}?`,
+  backup:'Záloha',backupNote:'Všechno se ukládá automaticky v tomto zařízení. Zálohou do souboru si data pojistíš nebo je přeneseš do jiného telefonu či počítače.',
+  dlBackup:'Stáhnout zálohu',ulBackup:'Nahrát zálohu…',
+  importQ:(i,t)=>`Nahrát zálohu (${i} věcí, ${t} cest)? Současná data se přepíšou.`,upload:'Nahrát',
+  imported:'Záloha nahrána.',noDl:'Stahování souborů tady není dostupné.',dlDone:'Záloha stažena.',dlFail:'Zálohu se nepodařilo stáhnout.',
+  badFile:'Tenhle soubor není záloha ze Sbaleno.',fileName:'sbaleno-zaloha-',appName:'Sbaleno',
+  color:'Barva',cn:{blue:'modrá',green:'zelená',orange:'oranžová',purple:'fialová',red:'červená',teal:'tyrkysová',pink:'růžová',yellow:'žlutá',gray:'šedá'}
+ },
+ en:{
+  wd:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],wdl:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+  locale:'en-GB',dm:d=>d.toLocaleDateString('en-GB',{day:'numeric',month:'short'}),dayNum:d=>String(d.getDate()),
+  days:n=>n+' '+enPl(n,'day','days'),things:n=>n+' '+enPl(n,'item','items'),
+  st:{ok:'Saved to your account',saving:'Saving…',err:'Couldn’t save, retrying',local:'Saved on this device',load:'Loading…'},
+  save:'Save',saving:'Saving…',saved:'Saved ✓',retry:'Try again',
+  tabTrips:'Trips',tabInv:'Inventory',other:'Other',
+  trips:'Trips',newTrip:'+ New trip',cancel:'Cancel',where:'Where to',wherePh:'e.g. Croatia 2027',depart:'Departure',ret:'Return',create:'Create trip',
+  tripNote:'Each day of the trip gets its own list. Things for the whole trip (documents, charger) go under “Whole trip”.',
+  noTrips:'No trips yet. Click “+ New trip”, enter where and when, then pick items from your inventory for each day.',
+  errOrder:'Return must be on or after the departure day.',errLong:'A trip can be at most 60 days.',
+  back:'← All trips',delTrip:'Delete trip',delTripQ:n=>`Delete “${n}”?`,no:'No',del:'Delete',
+  byDay:'By day',packing:'Packing',view:'View',tripDays:'Trip days',
+  whole:'Whole trip',wholeTitle:'For the whole trip',
+  emptyWhole:'Put things you need the whole time here: documents, charger, toothbrush…',emptyDay:'Nothing for this day yet. Pick items from the inventory below.',
+  less:'Less',more:'More',remove:'Remove',
+  copyPrev:'Copy from previous day',toAll:'Use this day for all days',clear:'Clear',
+  addFromInv:'Add from inventory',search:'Search…',invEmptyPick:'Your inventory is empty. Add items below or on the Inventory tab.',
+  newThing:'New item',newThingPh:'e.g. Ski goggles',category:'Category',addBoth:'Add to inventory and this day',
+  wholeTrip:'whole trip',everyDay:'every day',
+  noPicks:'You haven’t picked anything yet. Switch to “By day” and choose what you’re taking.',
+  allPacked:'All packed. Have a good trip!',packedOf:'items packed',resetPack:'Uncheck all',
+  inv:'Inventory',thing:'Item',thingPh:'e.g. Headlamp',add:'Add',
+  invNote:'Pick a category from the list or type a new one. You can rename items and categories below. Click a category’s colour dot to change its colour.',
+  invEmpty:'Your inventory is empty. Add the first item above.',name:'Name',
+  delItemQ:(n,u)=>`Delete “${n}”${u?` (used in ${u} ${enPl(u,'trip','trips')})`:''}?`,
+  backup:'Backup',backupNote:'Everything saves automatically on this device. Download a backup file to keep your data safe or move it to another phone or computer.',
+  dlBackup:'Download backup',ulBackup:'Upload backup…',
+  importQ:(i,t)=>`Upload backup (${i} items, ${t} trips)? Your current data will be replaced.`,upload:'Upload',
+  imported:'Backup uploaded.',noDl:'File downloads aren’t available here.',dlDone:'Backup downloaded.',dlFail:'Couldn’t download the backup.',
+  badFile:'This file isn’t a Packed backup.',fileName:'packed-backup-',appName:'Packed',
+  color:'Colour',cn:{blue:'blue',green:'green',orange:'orange',purple:'purple',red:'red',teal:'teal',pink:'pink',yellow:'yellow',gray:'grey'}
+ }
+};
+/* Starter items translate together with the language; anything the user typed stays as is. */
+const DICT=[['Doklady','Documents'],['Oblečení','Clothes'],['Hygiena','Toiletries'],['Elektronika','Electronics'],['Léky','Medicine'],['Ostatní','Other'],
+ ['Pas','Passport'],['Občanský průkaz','ID card'],['Peněženka','Wallet'],['Platební karta','Payment card'],['Jízdenky / letenky','Tickets'],['Cestovní pojištění','Travel insurance'],
+ ['Tričko','T-shirt'],['Spodní prádlo','Underwear'],['Ponožky','Socks'],['Kalhoty','Trousers'],['Mikina','Hoodie'],['Bunda','Jacket'],['Pyžamo','Pyjamas'],['Plavky','Swimsuit'],['Boty','Shoes'],
+ ['Kartáček na zuby','Toothbrush'],['Zubní pasta','Toothpaste'],['Deodorant','Deodorant'],['Šampon','Shampoo'],['Holicí strojek','Razor'],['Ručník','Towel'],
+ ['Telefon','Phone'],['Nabíječka','Charger'],['Powerbanka','Power bank'],['Sluchátka','Headphones'],['Cestovní adaptér','Travel adapter'],
+ ['Léky na bolest','Painkillers'],['Náplasti','Plasters'],['Pravidelné léky','Regular medication'],
+ ['Sluneční brýle','Sunglasses'],['Láhev na vodu','Water bottle'],['Deštník','Umbrella'],['Klíče','Keys'],
+ ['Ukázka: víkend ve Vídni','Example: weekend in Vienna']];
+function translateStarter(to){
+  const m=new Map(DICT.map(([c,e])=>to==='en'?[c,e]:[e,c]));
+  const tr=s=>m.has(s)?m.get(s):s;
+  state.items.forEach(i=>{i.name=tr(i.name);i.cat=tr(i.cat)});
+  state.cats=[...new Set(state.cats.map(tr))];
+  const cc={};Object.entries(state.catColors||{}).forEach(([k,v])=>{cc[tr(k)]=v});state.catColors=cc;
+  state.trips.forEach(t=>{t.name=tr(t.name)});
+}
+let T=L.cs;
+const lang=()=>state.lang==='en'?'en':'cs';
+const WD=d=>T.wd[parseD(d).getDay()],WDL=d=>T.wdl[parseD(d).getDay()];
+const dm=s=>T.dm(parseD(s));
+const OTHER=()=>T.other;
+const COLORS=['blue','green','orange','purple','red','teal','pink','yellow','gray'];
+const DEFC={'Doklady':'blue','Documents':'blue','Oblečení':'purple','Clothes':'purple','Hygiena':'teal','Toiletries':'teal','Elektronika':'orange','Electronics':'orange','Léky':'red','Medicine':'red','Ostatní':'gray','Other':'gray'};
+function catColor(c){const k=(state.catColors||{})[c]||DEFC[c];if(COLORS.includes(k))return k;let h=0;for(const ch of String(c))h=(h*31+ch.charCodeAt(0))>>>0;return COLORS[h%(COLORS.length-1)]}
+const dot=c=>`<i class="dot" style="--cc:var(--c-${catColor(c)})" aria-hidden="true"></i>`;
+const swatches=c=>`<div class="swatches" role="group" aria-label="${T.color}: ${esc(c)}">${COLORS.map(k=>`<button class="sw" style="--cc:var(--c-${k})" data-act="set-color" data-c="${esc(c)}" data-v="${k}" aria-pressed="${catColor(c)===k}" aria-label="${T.cn[k]}" title="${T.cn[k]}"></button>`).join('')}</div>`;
+
+function starter(lg){
+  const cats={
+    'Doklady':['Pas','Občanský průkaz','Peněženka','Platební karta','Jízdenky / letenky','Cestovní pojištění'],
+    'Oblečení':['Tričko','Spodní prádlo','Ponožky','Kalhoty','Mikina','Bunda','Pyžamo','Plavky','Boty'],
+    'Hygiena':['Kartáček na zuby','Zubní pasta','Deodorant','Šampon','Holicí strojek','Ručník'],
+    'Elektronika':['Telefon','Nabíječka','Powerbanka','Sluchátka','Cestovní adaptér'],
+    'Léky':['Léky na bolest','Náplasti','Pravidelné léky'],
+    'Ostatní':['Sluneční brýle','Láhev na vodu','Deštník','Klíče']
+  };
+  const items=[];const by={};
+  Object.entries(cats).forEach(([c,list])=>list.forEach(n=>{const id=uid();items.push({id,name:n,cat:c});by[n]=id}));
+  const all={};['Pas','Peněženka','Platební karta','Telefon','Nabíječka','Kartáček na zuby','Zubní pasta','Deodorant','Klíče'].forEach(n=>all[by[n]]=1);
+  const day=extra=>{const o={};o[by['Tričko']]=1;o[by['Spodní prádlo']]=1;o[by['Ponožky']]=1;(extra||[]).forEach(n=>o[by[n]]=1);return o};
+  return {v:1,lang:'cs',catColors:{},cats:Object.keys(cats),items,trips:[{
+    id:uid(),name:'Ukázka: víkend ve Vídni',start:'2026-10-30',end:'2026-11-01',
+    picks:{all,'2026-10-30':day(['Kalhoty','Mikina','Bunda']),'2026-10-31':day(['Deštník']),'2026-11-01':day()},
+    packed:{[by['Pas']]:true,[by['Telefon']]:true}
+  }]};
+}
+function sanitize(d){
+  if(!d||typeof d!=='object')return starter();
+  return {v:1,lang:d.lang==='en'?'en':'cs',catColors:(d.catColors&&typeof d.catColors==='object')?{...d.catColors}:{},cats:Array.isArray(d.cats)?d.cats.slice():[],items:Array.isArray(d.items)?d.items.map(x=>({...x})):[],
+    trips:Array.isArray(d.trips)?d.trips.map(t=>({...t,picks:JSON.parse(JSON.stringify(t.picks||{})),packed:{...(t.packed||{})}})):[]};
+}
+function loadLocal(){try{const s=localStorage.getItem(KEY);return s?sanitize(JSON.parse(s)):null}catch(e){return null}}
+
+let state=loadLocal()||starter();
+const ui={tab:'trips',tripId:null,mode:'days',day:'all',newTrip:false,tripErr:'',delTrip:false,delItem:null,importMsg:''};
+let statusKey='load';
+
+/* ---------- persistence ---------- */
+let docRef=null,lastSaved='',saving=false,queued=false,timer=null;
+const stEl=document.getElementById('status');
+function setStatus(k){statusKey=k;stEl.className='status '+k;stEl.querySelector('span').textContent=T.st[k]}
+function save(){
+  try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}
+  if(!docRef)return;
+  setStatus('saving');clearTimeout(timer);timer=setTimeout(()=>{timer=null;flush()},600);
+}
+async function flush(){
+  if(!docRef)return;
+  if(saving){queued=true;return}
+  const s=JSON.stringify(state);
+  if(s===lastSaved){setStatus('ok');return}
+  saving=true;
+  try{await docRef.set(JSON.parse(s));lastSaved=s;setStatus('ok')}
+  catch(e){setStatus('err');if(!queued)setTimeout(flush,4000)}
+  saving=false;
+  if(queued){queued=false;flush()}
+}
+async function connect(){
+  const c=window.claude;
+  if(!c||!c.use){setStatus('local');return}
+  try{
+    const [db,user]=await Promise.all([c.use('db'),c.use('user')]);
+    if(!db||!user){setStatus('local');return}
+    const id=await user.id();
+    if(!id){setStatus('local');return}
+    docRef=db.doc('data/users/'+id+'/sbaleno');
+    const snap=await docRef.get();
+    if(snap.exists){state=sanitize(snap.data());lastSaved=JSON.stringify(state);try{localStorage.setItem(KEY,lastSaved)}catch(e){}render();setStatus('ok')}
+    else{await flush()}
+    docRef.onSnapshot(s=>{
+      if(!s.exists||s.metadata.hasPendingWrites||saving||timer)return;
+      const incoming=sanitize(s.data());const str=JSON.stringify(incoming);
+      if(str===lastSaved)return;
+      const a=document.activeElement;if(a&&a.matches&&a.matches('input[type=text],input:not([type])'))return;
+      state=incoming;lastSaved=str;render();
+    },()=>{});
+  }catch(e){setStatus(docRef?'err':'local')}
+}
+
+/* ---------- helpers ---------- */
+const item=id=>state.items.find(i=>i.id===id);
+const trip=()=>state.trips.find(t=>t.id===ui.tripId);
+const cmp=(a,b)=>a.localeCompare(b,T.locale);
+function tripDays(t){const out=[];let d=parseD(t.start);const e=parseD(t.end);while(d<=e&&out.length<60){out.push(iso(d));d=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1)}return out}
+function catOrder(){const used=[...new Set(state.items.map(i=>i.cat||OTHER()))];const ord=state.cats.filter(c=>used.includes(c));used.forEach(c=>{if(!ord.includes(c))ord.push(c)});return ord}
+function byCat(list){const g={};list.forEach(x=>{const c=(x.it?x.it.cat:x.cat)||OTHER();(g[c]=g[c]||[]).push(x)});return catOrder().filter(c=>g[c]).map(c=>[c,g[c]])}
+function aggregate(t){
+  const days=tripDays(t);const m={};
+  ['all',...days].forEach(k=>{const p=t.picks[k]||{};Object.entries(p).forEach(([id,q])=>{const it=item(id);if(!it||!q)return;m[id]=m[id]||{it,qty:0,keys:[]};m[id].qty+=q;m[id].keys.push(k)})});
+  return Object.values(m).sort((a,b)=>cmp(a.it.name,b.it.name));
+}
+function progress(t){const a=aggregate(t);const done=a.filter(x=>t.packed[x.it.id]).length;return {done,total:a.length}}
+function addCat(c){if(c&&!state.cats.includes(c))state.cats.push(c)}
+function refreshCatList(){const all=[...new Set(catOrder().concat(state.cats))];document.getElementById('catlist').innerHTML=all.map(c=>`<option value="${esc(c)}">`).join('')}
+
+/* ---------- views ---------- */
+const main=document.getElementById('main');
+function render(){
+  T=L[lang()];
+  document.documentElement.lang=lang();
+  document.getElementById('brandName').textContent=T.appName;document.title=T.appName;
+  document.getElementById('lang-cs').setAttribute('aria-pressed',lang()==='cs');
+  document.getElementById('lang-en').setAttribute('aria-pressed',lang()==='en');
+  const sb=document.getElementById('saveBtn');if(!sb.disabled)sb.textContent=T.save;
+  const tt=document.getElementById('tab-trips'),ti=document.getElementById('tab-inv');
+  tt.textContent=T.tabTrips;ti.textContent=T.tabInv;
+  tt.setAttribute('aria-selected',ui.tab==='trips');ti.setAttribute('aria-selected',ui.tab==='inv');
+  setStatus(statusKey);
+  if(ui.tripId&&!trip())ui.tripId=null;
+  refreshCatList();
+  main.innerHTML=ui.tab==='inv'?viewInv():(ui.tripId?viewTrip():viewTrips());
+}
+
+function viewTrips(){
+  const today=iso(new Date());
+  const trips=state.trips.slice().sort((a,b)=>a.start.localeCompare(b.start));
+  const t0=new Date();const t1=new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+2);
+  const form=ui.newTrip?`<form class="panel" id="newTrip">
+      <div class="formgrid">
+        <div class="field wide"><label for="nt-name">${T.where}</label><input class="inp" id="nt-name" name="name" required placeholder="${esc(T.wherePh)}" autocomplete="off"></div>
+        <div class="field"><label for="nt-start">${T.depart}</label><input class="inp" type="date" id="nt-start" name="start" value="${iso(t0)}" required></div>
+        <div class="field"><label for="nt-end">${T.ret}</label><input class="inp" type="date" id="nt-end" name="end" value="${iso(t1)}" required></div>
+        <button class="btn primary" type="submit">${T.create}</button>
+      </div>
+      ${ui.tripErr?`<p class="err">${esc(T[ui.tripErr])}</p>`:''}
+      <p class="note">${esc(T.tripNote)}</p>
+    </form>`:'';
+  const cards=trips.map(t=>{
+    const n=tripDays(t).length;const p=progress(t);const pct=p.total?Math.round(p.done/p.total*100):0;
+    const d=parseD(t.start);const past=t.end<today;
+    return `<button class="trip" data-act="open-trip" data-id="${t.id}" style="${past?'opacity:.65':''}">
+      <span class="when"><b>${T.dayNum(d)}</b><span>${d.toLocaleDateString(T.locale,{month:'short'}).replace('.','')}</span></span>
+      <span style="min-width:0">
+        <span class="t-name">${esc(t.name)}</span>
+        <span class="t-meta mono" style="display:block">${dm(t.start)} – ${dm(t.end)} · ${T.days(n)}</span>
+        <span class="meter" aria-hidden="true" style="display:block"><i style="width:${pct}%"></i></span>
+      </span>
+      <span class="pct">${p.done}/${p.total}</span>
+    </button>`}).join('');
+  return `<div class="row"><h1>${T.trips}</h1><span class="spacer"></span>
+      <button class="btn ${ui.newTrip?'':'primary'}" data-act="new-trip">${ui.newTrip?T.cancel:T.newTrip}</button></div>
+    ${form}
+    ${trips.length?`<div class="trips">${cards}</div>`:`<div class="empty">${esc(T.noTrips)}</div>`}`;
+}
+
+function viewTrip(){
+  const t=trip();const days=tripDays(t);const n=days.length;const p=progress(t);
+  if(ui.day!=='all'&&!days.includes(ui.day))ui.day='all';
+  const head=`<div class="head">
+      <div class="row"><button class="btn ghost" data-act="back">${T.back}</button><span class="spacer"></span>
+        ${ui.delTrip?'':`<button class="btn ghost danger" data-act="del-trip">${T.delTrip}</button>`}</div>
+      ${ui.delTrip?`<div class="confirm">${esc(T.delTripQ(t.name))} <span class="spacer"></span><button class="btn" data-act="del-trip-no">${T.no}</button><button class="btn danger" data-act="del-trip-yes">${T.del}</button></div>`:''}
+      <h1>${esc(t.name)}</h1>
+      <div class="muted mono">${WDL(t.start)} ${dm(t.start)} – ${WDL(t.end)} ${dm(t.end)} · ${T.days(n)}</div>
+    </div>
+    <div class="row"><div class="seg" role="group" aria-label="${T.view}">
+      <button data-act="mode" data-v="days" aria-pressed="${ui.mode==='days'}">${T.byDay}</button>
+      <button data-act="mode" data-v="pack" aria-pressed="${ui.mode==='pack'}">${T.packing} · ${p.done}/${p.total}</button>
+    </div></div>`;
+  return head+(ui.mode==='pack'?viewPack(t):viewDays(t,days));
+}
+
+function viewDays(t,days){
+  const keys=['all',...days];const k=ui.day;
+  const cnt=key=>Object.values(t.picks[key]||{}).filter(Boolean).length;
+  const gates=keys.map(key=>{
+    const lbl=key==='all'?T.whole:WD(key);
+    const sub=key==='all'?T.things(cnt(key)):`${dm(key)} · ${cnt(key)}`;
+    return `<button class="gate" data-act="day" data-k="${key}" aria-pressed="${key===k}"><span class="g1">${lbl}</span><span class="g2">${sub}</span></button>`}).join('');
+  const picks=t.picks[k]||{};
+  const chosen=Object.entries(picks).filter(([id,q])=>q&&item(id)).map(([id,q])=>({it:item(id),q}));
+  const grouped=byCat(chosen).flatMap(([c,l])=>l.sort((a,b)=>cmp(a.it.name,b.it.name)));
+  const idx=days.indexOf(k);
+  const title=k==='all'?T.wholeTitle:`${WDL(k)} ${dm(k)}`;
+  const list=grouped.length?`<div class="picked">${grouped.map(({it,q})=>`<div class="pick">
+      <span class="nm">${esc(it.name)}<span class="ct">${dot(it.cat||OTHER())}${esc(it.cat||OTHER())}</span></span>
+      <span class="step"><button data-act="qty" data-id="${it.id}" data-d="-1" aria-label="${T.less}">−</button><span>${q}</span><button data-act="qty" data-id="${it.id}" data-d="1" aria-label="${T.more}">+</button></span>
+      <button class="x" data-act="rm-pick" data-id="${it.id}" aria-label="${T.remove} ${esc(it.name)}">×</button></div>`).join('')}</div>`
+    :`<div class="empty">${esc(k==='all'?T.emptyWhole:T.emptyDay)}</div>`;
+  const actions=`<div class="row">
+      ${idx>0?`<button class="btn" data-act="copy-prev">${T.copyPrev}</button>`:''}
+      ${k!=='all'&&days.length>1?`<button class="btn" data-act="to-all-days">${T.toAll}</button>`:''}
+      ${grouped.length?`<button class="btn ghost" data-act="clear-day">${T.clear}</button>`:''}</div>`;
+  const picker=byCat(state.items).map(([c,l])=>`<div class="cat" data-cat><h3>${dot(c)}${esc(c)}</h3><div class="chips">${
+      l.slice().sort((a,b)=>cmp(a.name,b.name)).map(it=>`<button class="chip ${picks[it.id]?'on':''}" data-act="toggle-pick" data-id="${it.id}" data-name="${esc(it.name.toLowerCase())}">${dot(it.cat||OTHER())}${esc(it.name)}</button>`).join('')}</div></div>`).join('');
+  return `<div class="gates" role="group" aria-label="${T.tripDays}">${gates}</div>
+    <section class="panel"><div class="row"><h2>${title}</h2></div>${list}${actions}</section>
+    <section class="panel">
+      <div class="row"><h2>${T.addFromInv}</h2><span class="spacer"></span>
+        <input class="inp" id="search" type="search" placeholder="${T.search}" style="max-width:200px" autocomplete="off"></div>
+      ${picker||`<p class="note">${esc(T.invEmptyPick)}</p>`}
+      <form id="addToDay" class="row" style="border-top:1px solid var(--line);padding-top:14px">
+        <div class="field" style="flex:2 1 160px"><label for="ad-name">${T.newThing}</label><input class="inp" id="ad-name" name="name" required placeholder="${esc(T.newThingPh)}" autocomplete="off"></div>
+        <div class="field" style="flex:1 1 120px"><label for="ad-cat">${T.category}</label><input class="inp" id="ad-cat" name="cat" list="catlist" placeholder="${esc(OTHER())}" autocomplete="off"></div>
+        <button class="btn" type="submit" style="align-self:flex-end">${T.addBoth}</button>
+      </form>
+    </section>`;
+}
+
+function viewPack(t){
+  const a=aggregate(t);const done=a.filter(x=>t.packed[x.it.id]).length;const pct=a.length?Math.round(done/a.length*100):0;
+  const n=tripDays(t).length;
+  const daysTxt=x=>{if(x.keys.includes('all')&&x.keys.length===1)return T.wholeTrip;
+    const dCount=x.keys.filter(k=>k!=='all').length;
+    if(dCount===n&&n>1)return (x.keys.includes('all')?T.wholeTrip+' + ':'')+T.everyDay;
+    return x.keys.map(k=>k==='all'?T.wholeTrip:WD(k)).join(', ')};
+  if(!a.length)return `<div class="empty">${esc(T.noPicks)}</div>`;
+  return `<section class="panel">
+      <div class="progress"><span class="big">${done}<span class="muted">/${a.length}</span></span><span class="muted">${done===a.length?T.allPacked:T.packedOf}</span>
+        <span class="spacer"></span>${done?`<button class="btn ghost" data-act="reset-pack">${T.resetPack}</button>`:''}</div>
+      <div class="meter"><i style="width:${pct}%"></i></div>
+    </section>
+    <section class="panel">${byCat(a).map(([c,l])=>`<div class="cat"><h3>${dot(c)}${esc(c)}</h3>${l.map(x=>`
+      <label class="pk ${t.packed[x.it.id]?'done':''}"><input type="checkbox" id="pk-${x.it.id}" data-pack="${x.it.id}" ${t.packed[x.it.id]?'checked':''}>
+        <span class="nm">${esc(x.it.name)}<span class="days">${esc(daysTxt(x))}</span></span><span class="q">×${x.qty}</span></label>`).join('')}</div>`).join('')}
+    </section>`;
+}
+
+function viewInv(){
+  const uses=id=>state.trips.filter(t=>Object.values(t.picks).some(p=>p&&p[id])).length;
+  const groups=byCat(state.items).map(([c,l])=>`<div class="cat"><h3><button class="colorbtn" data-act="pick-color" data-c="${esc(c)}" aria-expanded="${ui.colorCat===c}" aria-label="${T.color}: ${esc(c)}" title="${T.color}">${dot(c)}</button>${esc(c)} · ${l.length}</h3>${ui.colorCat===c?swatches(c):''}${
+    l.slice().sort((a,b)=>cmp(a.name,b.name)).map(it=>{const u=uses(it.id);
+      if(ui.delItem===it.id)return `<div class="confirm" style="margin-block:6px">${esc(T.delItemQ(it.name,u))} <span class="spacer"></span><button class="btn" data-act="del-item-no">${T.no}</button><button class="btn danger" data-act="del-item-yes" data-id="${it.id}">${T.del}</button></div>`;
+      return `<div class="inv"><input class="inp rename" id="nm-${it.id}" data-id="${it.id}" value="${esc(it.name)}" aria-label="${T.name}">
+        <input class="inp recat" id="ct-${it.id}" data-id="${it.id}" value="${esc(it.cat||'')}" list="catlist" aria-label="${T.category}" placeholder="${esc(OTHER())}">
+        <button class="x" data-act="del-item" data-id="${it.id}" aria-label="${T.del} ${esc(it.name)}">×</button></div>`}).join('')}</div>`).join('');
+  return `<div class="row"><h1>${T.inv}</h1><span class="spacer"></span><span class="muted">${T.things(state.items.length)}</span></div>
+    <form class="panel" id="addItem">
+      <div class="row" style="align-items:flex-end">
+        <div class="field" style="flex:2 1 180px"><label for="ai-name">${T.thing}</label><input class="inp" id="ai-name" name="name" required placeholder="${esc(T.thingPh)}" autocomplete="off"></div>
+        <div class="field" style="flex:1 1 130px"><label for="ai-cat">${T.category}</label><input class="inp" id="ai-cat" name="cat" list="catlist" placeholder="${esc(OTHER())}" autocomplete="off"></div>
+        <button class="btn primary" type="submit">${T.add}</button>
+      </div>
+      <p class="note">${esc(T.invNote)}</p>
+    </form>
+    <section class="panel">${groups||`<div class="empty">${esc(T.invEmpty)}</div>`}</section>
+    <section class="panel">
+      <h2>${T.backup}</h2>
+      <p class="note">${esc(T.backupNote)}</p>
+      <div class="row"><button class="btn" data-act="export">${T.dlBackup}</button><button class="btn" data-act="import-pick">${T.ulBackup}</button>
+        <input type="file" id="importFile" accept=".json,application/json" hidden></div>
+      ${pendingImport?`<div class="confirm">${esc(T.importQ(pendingImport.items.length,pendingImport.trips.length))} <span class="spacer"></span><button class="btn" data-act="import-no">${T.cancel}</button><button class="btn danger" data-act="import-yes">${T.upload}</button></div>`:''}
+      ${ui.importMsg?`<p class="note">${esc(T[ui.importMsg])}</p>`:''}
+    </section>`;
+}
+
+/* ---------- save & backup ---------- */
+let pendingImport=null;
+async function saveNow(){
+  const btn=document.getElementById('saveBtn');btn.disabled=true;btn.textContent=T.saving;
+  try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}
+  clearTimeout(timer);timer=null;
+  if(docRef){lastSaved='';await flush()}else setStatus('local');
+  btn.textContent=statusKey==='err'?T.retry:T.saved;btn.disabled=false;
+  setTimeout(()=>{btn.textContent=T.save},1800);
+}
+async function exportBackup(){
+  const dl=window.claude&&window.claude.use?await window.claude.use('downloads'):null;
+  if(!dl){
+    try{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const u=URL.createObjectURL(blob);
+      const a=document.createElement('a');a.href=u;a.download=T.fileName+iso(new Date())+'.json';document.body.appendChild(a);a.click();a.remove();
+      setTimeout(()=>URL.revokeObjectURL(u),2000);ui.importMsg='dlDone'}catch(e){ui.importMsg='dlFail'}
+    render();return}
+  try{await dl.save({filename:T.fileName+iso(new Date())+'.json',data:JSON.stringify(state,null,2)});ui.importMsg='dlDone'}
+  catch(e){ui.importMsg=e&&e.code==='declined'?'':'dlFail'}
+  render();
+}
+function readImport(file){
+  const r=new FileReader();
+  r.onload=()=>{try{const d=JSON.parse(r.result);if(!d||!Array.isArray(d.items)||!Array.isArray(d.trips))throw 0;pendingImport=sanitize(d);ui.importMsg=''}
+    catch(e){pendingImport=null;ui.importMsg='badFile'}render()};
+  r.readAsText(file);
+}
+
+/* ---------- actions ---------- */
+function setPick(t,k,id,q){t.picks[k]=t.picks[k]||{};if(q>0)t.picks[k][id]=q;else delete t.picks[k][id]}
+
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b)return;
+  const a=b.dataset.act,id=b.dataset.id,t=trip();
+  switch(a){
+    case 'lang':{const to=b.dataset.v;if(to===lang())return;translateStarter(to);state.lang=to;save();break}
+    case 'tab':ui.tab=b.dataset.v;ui.delItem=null;break;
+    case 'new-trip':ui.newTrip=!ui.newTrip;ui.tripErr='';break;
+    case 'open-trip':ui.tripId=id;ui.mode='days';ui.day='all';ui.delTrip=false;break;
+    case 'back':ui.tripId=null;ui.delTrip=false;break;
+    case 'mode':ui.mode=b.dataset.v;break;
+    case 'day':ui.day=b.dataset.k;break;
+    case 'toggle-pick':{const cur=(t.picks[ui.day]||{})[id];setPick(t,ui.day,id,cur?0:1);save();break}
+    case 'qty':{const cur=(t.picks[ui.day]||{})[id]||0;setPick(t,ui.day,id,Math.max(0,Math.min(99,cur+Number(b.dataset.d))));save();break}
+    case 'rm-pick':setPick(t,ui.day,id,0);save();break;
+    case 'clear-day':t.picks[ui.day]={};save();break;
+    case 'copy-prev':{const days=tripDays(t);const i=days.indexOf(ui.day);if(i>0){t.picks[ui.day]={...(t.picks[days[i-1]]||{})};save()}break}
+    case 'to-all-days':{const src={...(t.picks[ui.day]||{})};tripDays(t).forEach(d=>{t.picks[d]={...src}});save();break}
+    case 'reset-pack':t.packed={};save();break;
+    case 'save-now':saveNow();return;
+    case 'export':exportBackup();return;
+    case 'import-pick':document.getElementById('importFile').click();return;
+    case 'import-yes':if(pendingImport){state=pendingImport;pendingImport=null;ui.tripId=null;ui.importMsg='imported';save()}break;
+    case 'import-no':pendingImport=null;ui.importMsg='';break;
+    case 'del-trip':ui.delTrip=true;break;
+    case 'del-trip-no':ui.delTrip=false;break;
+    case 'del-trip-yes':state.trips=state.trips.filter(x=>x.id!==ui.tripId);ui.tripId=null;ui.delTrip=false;save();break;
+    case 'pick-color':ui.colorCat=ui.colorCat===b.dataset.c?null:b.dataset.c;break;
+    case 'set-color':state.catColors=state.catColors||{};state.catColors[b.dataset.c]=b.dataset.v;ui.colorCat=null;save();break;
+    case 'del-item':ui.delItem=id;break;
+    case 'del-item-no':ui.delItem=null;break;
+    case 'del-item-yes':state.items=state.items.filter(i=>i.id!==id);state.trips.forEach(tr=>{Object.values(tr.picks).forEach(p=>{if(p)delete p[id]});delete tr.packed[id]});ui.delItem=null;save();break;
+    default:return;
+  }
+  const y=window.scrollY;render();
+  window.scrollTo(0,(a==='open-trip'||a==='tab'||a==='back')?0:y);
+});
+
+document.addEventListener('submit',e=>{
+  e.preventDefault();const f=e.target;const fd=new FormData(f);
+  if(f.id==='newTrip'){
+    const name=String(fd.get('name')).trim(),s=fd.get('start'),en=fd.get('end');
+    if(!name||!s||!en)return;
+    if(en<s){ui.tripErr='errOrder';render();return}
+    if(Math.round((parseD(en)-parseD(s))/864e5)>59){ui.tripErr='errLong';render();return}
+    const t={id:uid(),name,start:s,end:en,picks:{all:{}},packed:{}};
+    state.trips.push(t);ui.newTrip=false;ui.tripErr='';ui.tripId=t.id;ui.mode='days';ui.day='all';save();render();window.scrollTo(0,0);
+  }
+  if(f.id==='addItem'||f.id==='addToDay'){
+    const name=String(fd.get('name')).trim();const cat=String(fd.get('cat')||'').trim()||OTHER();
+    if(!name)return;
+    let it=state.items.find(i=>i.name.toLowerCase()===name.toLowerCase()&&(i.cat||OTHER())===cat);
+    if(!it){it={id:uid(),name,cat};state.items.push(it);addCat(cat)}
+    if(f.id==='addToDay'){const t=trip();setPick(t,ui.day,it.id,Math.max(1,(t.picks[ui.day]||{})[it.id]||0))}
+    save();const y=window.scrollY;render();window.scrollTo(0,y);
+    const again=document.getElementById(f.id==='addItem'?'ai-name':'ad-name');if(again)again.focus();
+    const catEl=document.getElementById(f.id==='addItem'?'ai-cat':'ad-cat');if(catEl&&cat!==OTHER())catEl.value=cat;
+  }
+});
+
+document.addEventListener('change',e=>{
+  const el=e.target;
+  if(el.id==='importFile'){if(el.files&&el.files[0])readImport(el.files[0]);el.value='';return}
+  if(el.dataset&&el.dataset.pack){const t=trip();if(el.checked)t.packed[el.dataset.pack]=true;else delete t.packed[el.dataset.pack];save();const y=window.scrollY;render();window.scrollTo(0,y);return}
+  if(el.classList.contains('rename')){const it=item(el.dataset.id);const v=el.value.trim();if(it&&v&&v!==it.name){it.name=v;save()}else if(it)el.value=it.name;return}
+  if(el.classList.contains('recat')){const it=item(el.dataset.id);const v=el.value.trim()||OTHER();if(it&&v!==it.cat){it.cat=v;addCat(v);save();const y=window.scrollY;render();window.scrollTo(0,y)}return}
+});
+
+document.addEventListener('input',e=>{
+  if(e.target.id!=='search')return;
+  const q=e.target.value.trim().toLowerCase();
+  main.querySelectorAll('[data-cat]').forEach(c=>{let any=false;c.querySelectorAll('.chip').forEach(ch=>{const m=!q||ch.dataset.name.includes(q);ch.hidden=!m;if(m)any=true});c.hidden=!any});
+});
+
+render();
+connect();
+if('serviceWorker' in navigator&&location.protocol==='https:'){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+})();
+</script>
+</body>
+</html>
