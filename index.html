@@ -20,7 +20,7 @@
 :root{
   --bg:#F2F4F6; --surface:#FFFFFF; --ink:#16202B; --muted:#5B6878; --line:#D8DEE5; --chip:#E7EBF0;
   --bar:#16202B; --bar-fg:#F4F6F8; --bar-muted:#9AA7B5; --bar-line:#33404D;
-  --sign:#FFC62B; --sign-ink:#16202B; --ok:#1C8556; --danger:#C2412D;
+  --sign:#FFC62B; --sign-ink:#16202B; --ok:#1C8556; --danger:#C2412D; --gold:#A87A00;
   --c-blue:#2F6FD6; --c-green:#2E9550; --c-orange:#E07B1F; --c-purple:#8356D1; --c-red:#D4483A; --c-teal:#179C9C; --c-pink:#D2508E; --c-yellow:#D9A400; --c-gray:#7D8896;
   --f-display:"Archivo","Arial Narrow",Arial,sans-serif;
   --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -29,11 +29,11 @@
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0E1217; --surface:#171D24; --ink:#E8EDF2; --muted:#95A2B1; --line:#29323C; --chip:#212932;
   --bar:#1C242D; --bar-fg:#F4F6F8; --bar-muted:#8D9AA8; --bar-line:#36414D; --ok:#3DC48B; --danger:#F07560;
-  --c-blue:#5B97F5; --c-green:#4CC077; --c-orange:#F59A45; --c-purple:#A783F0; --c-red:#F06F62; --c-teal:#3CC4C4; --c-pink:#EE7AB0; --c-yellow:#F2C230; --c-gray:#9AA5B2; color-scheme:dark}}
+  --c-blue:#5B97F5; --c-green:#4CC077; --c-orange:#F59A45; --c-purple:#A783F0; --c-red:#F06F62; --c-teal:#3CC4C4; --c-pink:#EE7AB0; --c-yellow:#F2C230; --c-gray:#9AA5B2; --gold:#FFC62B; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0E1217; --surface:#171D24; --ink:#E8EDF2; --muted:#95A2B1; --line:#29323C; --chip:#212932;
   --bar:#1C242D; --bar-fg:#F4F6F8; --bar-muted:#8D9AA8; --bar-line:#36414D; --ok:#3DC48B; --danger:#F07560;
-  --c-blue:#5B97F5; --c-green:#4CC077; --c-orange:#F59A45; --c-purple:#A783F0; --c-red:#F06F62; --c-teal:#3CC4C4; --c-pink:#EE7AB0; --c-yellow:#F2C230; --c-gray:#9AA5B2; color-scheme:dark}
+  --c-blue:#5B97F5; --c-green:#4CC077; --c-orange:#F59A45; --c-purple:#A783F0; --c-red:#F06F62; --c-teal:#3CC4C4; --c-pink:#EE7AB0; --c-yellow:#F2C230; --c-gray:#9AA5B2; --gold:#FFC62B; color-scheme:dark}
 
 *{box-sizing:border-box}
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -62,6 +62,8 @@ button{cursor:pointer}
 @media (max-width:480px){.credit .sep,.help-credit .sep{display:block;height:4px;overflow:hidden;color:transparent;margin:0}}
 .credit a,.help-credit a{border-bottom-width:2px;padding-bottom:1px;white-space:nowrap}
 .credit a.coffee,.help-credit a.coffee{border-bottom-color:var(--sign)}
+.credit a.ig,.help-credit a.ig{color:var(--gold);border-bottom-color:color-mix(in srgb,var(--sign) 45%,transparent)}
+.credit a.ig:hover,.help-credit a.ig:hover{border-bottom-color:var(--gold)}
 .help-credit{margin:0;text-align:center;font-size:16px;line-height:1.9;color:var(--muted)}
 .infobtn{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--bar-line);background:none;color:var(--bar-fg);font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:700;font-size:16px;line-height:1;display:inline-grid;place-items:center;padding:0}
 .infobtn:hover{border-color:var(--bar-fg)}
@@ -434,7 +436,7 @@ function refreshCatList(){const all=[...new Set(catOrder().concat(state.cats))];
 /* ---------- views ---------- */
 const main=document.getElementById('main');
 const IG='https://www.instagram.com/i.vertalyot/',BMC='https://buymeacoffee.com/i.vertalyot';
-const credit=()=>`${esc(T.madeBy)} <a href="${IG}" target="_blank" rel="noopener noreferrer" title="Instagram @i.vertalyot">i.vertalyot</a><span class="sep" aria-hidden="true">·</span><a class="coffee" href="${BMC}" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">☕</span> ${esc(T.coffee)}</a>`;
+const credit=()=>`${esc(T.madeBy)} <a class="ig" href="${IG}" target="_blank" rel="noopener noreferrer" title="Instagram @i.vertalyot">i.vertalyot</a><span class="sep" aria-hidden="true">·</span><a class="coffee" href="${BMC}" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">☕</span> ${esc(T.coffee)}</a>`;
 function render(){
   T=L[lang()];
   document.documentElement.lang=lang();
