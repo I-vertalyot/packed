@@ -110,6 +110,8 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 .btn.back{background:var(--sign);border:1px solid var(--sign);color:var(--sign-ink);font-weight:700;font-size:14px;padding:7px 13px 7px 10px;gap:6px}
 .btn.back svg{width:14px;height:14px}
 .head>.row:first-child{margin-bottom:12px}
+.btn.pdfbtn{background:var(--ink);border-color:var(--ink);color:var(--bg);font-weight:700}
+.btn.pdfbtn:hover:not(:disabled){filter:brightness(1.25);border-color:var(--ink)}
 .btn.back:hover{background:var(--sign);border-color:var(--sign);filter:brightness(.94)}
 
 .field{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
@@ -515,7 +517,7 @@ function viewTrip(){
       <button data-act="mode" data-v="days" aria-pressed="${ui.mode==='days'}">${T.byDay}</button>
       <button data-act="mode" data-v="pack" aria-pressed="${ui.mode==='pack'}">${T.packing} · ${p.done}/${p.total}</button>
     </div><span class="spacer"></span>
-    <button class="btn" data-act="pdf" ${p.total?'':'disabled'}><svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4.5 6.8 8 10.3l3.5-3.5M2.5 13.5h11"/></svg>${T.pdfBtn}</button></div>
+    <button class="btn pdfbtn" data-act="pdf" ${p.total?'':'disabled'}><svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4.5 6.8 8 10.3l3.5-3.5M2.5 13.5h11"/></svg>${T.pdfBtn}</button></div>
     ${ui.tripMsg?`<p class="note">${esc(T[ui.tripMsg])}</p>`:''}`;
   return head+(ui.mode==='pack'?viewPack(t):viewDays(t,days));
 }
