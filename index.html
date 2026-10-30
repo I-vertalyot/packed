@@ -105,6 +105,9 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 .btn.ghost:hover{color:var(--ink)}
 .btn.danger{color:var(--danger)}
 .btn:disabled{opacity:.45;cursor:default}
+.btn.back{border:1.5px solid var(--ink);color:var(--ink);font-weight:700;font-size:15px;padding:9px 16px 9px 12px;gap:8px}
+.head>.row:first-child{margin-bottom:12px}
+.btn.back:hover{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 
 .field{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
 .field label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
@@ -497,7 +500,7 @@ function viewTrip(){
   const t=trip();const days=tripDays(t);const n=days.length;const p=progress(t);
   if(ui.day!=='all'&&!days.includes(ui.day))ui.day='all';
   const head=`<div class="head">
-      <div class="row"><button class="btn ghost" data-act="back">${T.back}</button><span class="spacer"></span>
+      <div class="row"><button class="btn back" data-act="back"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 8H3.5M7.5 3.5 3 8l4.5 4.5"/></svg>${esc(T.back.replace(/^←\s*/,''))}</button><span class="spacer"></span>
         ${ui.delTrip?'':`<button class="btn ghost danger" data-act="del-trip">${T.delTrip}</button>`}</div>
       ${ui.delTrip?`<div class="confirm">${esc(T.delTripQ(t.name))} <span class="spacer"></span><button class="btn" data-act="del-trip-no">${T.no}</button><button class="btn danger" data-act="del-trip-yes">${T.del}</button></div>`:''}
       <h1>${esc(t.name)}</h1>
