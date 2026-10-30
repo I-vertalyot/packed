@@ -164,6 +164,7 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 
 .cat{display:flex;flex-direction:column;gap:8px}
 .cat h3{margin:0;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);display:flex;align-items:center;gap:8px}
+.cat h3[style]{color:color-mix(in srgb,var(--cc) 80%,var(--ink))}
 .dot{width:10px;height:10px;border-radius:50%;background:var(--cc);flex:none;display:inline-block;vertical-align:middle}
 .ct .dot{width:8px;height:8px;margin-right:3px;vertical-align:1px}
 .chip .dot{width:8px;height:8px}
@@ -543,7 +544,7 @@ function viewDays(t,days){
       ${idx>0?`<button class="btn" data-act="copy-prev">${T.copyPrev}</button>`:''}
       ${k!=='all'&&days.length>1?`<button class="btn" data-act="to-all-days">${T.toAll}</button>`:''}
       ${grouped.length?`<button class="btn ghost" data-act="clear-day">${T.clear}</button>`:''}</div>`;
-  const picker=byCat(state.items).map(([c,l])=>`<div class="cat" data-cat><h3>${dot(c)}${esc(c)}</h3><div class="chips">${
+  const picker=byCat(state.items).map(([c,l])=>`<div class="cat" data-cat><h3 style="--cc:var(--c-${catColor(c)})">${dot(c)}${esc(c)}</h3><div class="chips">${
       l.slice().sort((a,b)=>cmp(a.name,b.name)).map(it=>`<button class="chip ${picks[it.id]?'on':''}" data-act="toggle-pick" data-id="${it.id}" data-name="${esc(it.name.toLowerCase())}">${dot(it.cat||OTHER())}${esc(it.name)}</button>`).join('')}</div></div>`).join('');
   return `<div class="gates" role="group" aria-label="${T.tripDays}">${gates}</div>
     <section class="panel"><div class="row"><h2>${title}</h2></div>${list}${actions}</section>
@@ -572,7 +573,7 @@ function viewPack(t){
         <span class="spacer"></span>${done?`<button class="btn ghost" data-act="reset-pack">${T.resetPack}</button>`:''}</div>
       <div class="meter"><i style="width:${pct}%"></i></div>
     </section>
-    <section class="panel">${byCat(a).map(([c,l])=>`<div class="cat"><h3>${dot(c)}${esc(c)}</h3>${l.map(x=>`
+    <section class="panel">${byCat(a).map(([c,l])=>`<div class="cat"><h3 style="--cc:var(--c-${catColor(c)})">${dot(c)}${esc(c)}</h3>${l.map(x=>`
       <label class="pk ${t.packed[x.it.id]?'done':''}"><input type="checkbox" id="pk-${x.it.id}" data-pack="${x.it.id}" ${t.packed[x.it.id]?'checked':''}>
         <span class="nm">${esc(x.it.name)}<span class="days">${esc(daysTxt(x))}</span></span><span class="q">×${x.qty}</span></label>`).join('')}</div>`).join('')}
     </section>`;
@@ -580,7 +581,7 @@ function viewPack(t){
 
 function viewInv(){
   const uses=id=>state.trips.filter(t=>Object.values(t.picks).some(p=>p&&p[id])).length;
-  const groups=byCat(state.items).map(([c,l])=>`<div class="cat"><h3><button class="colorbtn" data-act="pick-color" data-c="${esc(c)}" aria-expanded="${ui.colorCat===c}" aria-label="${T.color}: ${esc(c)}" title="${T.color}">${dot(c)}</button>${esc(c)} · ${l.length}</h3>${ui.colorCat===c?swatches(c):''}${
+  const groups=byCat(state.items).map(([c,l])=>`<div class="cat"><h3 style="--cc:var(--c-${catColor(c)})"><button class="colorbtn" data-act="pick-color" data-c="${esc(c)}" aria-expanded="${ui.colorCat===c}" aria-label="${T.color}: ${esc(c)}" title="${T.color}">${dot(c)}</button>${esc(c)} · ${l.length}</h3>${ui.colorCat===c?swatches(c):''}${
     l.slice().sort((a,b)=>cmp(a.name,b.name)).map(it=>{const u=uses(it.id);
       if(ui.delItem===it.id)return `<div class="confirm" style="margin-block:6px">${esc(T.delItemQ(it.name,u))} <span class="spacer"></span><button class="btn" data-act="del-item-no">${T.no}</button><button class="btn danger" data-act="del-item-yes" data-id="${it.id}">${T.del}</button></div>`;
       return `<div class="inv"><input class="inp rename" id="nm-${it.id}" data-id="${it.id}" value="${esc(it.name)}" aria-label="${T.name}">
@@ -708,6 +709,7 @@ function pdfDoc(){
     }};
   return d;
 }
+function shade(h){const a=parseInt(h.slice(1),16),b=0x16202B,m=(s)=>Math.round(((a>>s)&255)*0.8+((b>>s)&255)*0.2);return '#'+[16,8,0].map(s=>m(s).toString(16).padStart(2,'0')).join('')}
 function itemDays(t,x){const n=tripDays(t).length;
   if(x.keys.includes('all')&&x.keys.length===1)return T.wholeTrip;
   const dCount=x.keys.filter(k=>k!=='all').length;
@@ -741,7 +743,7 @@ function tripPDF(t){
     if(bi===splitAt&&col===0&&bi>0){leftEnd=cy;col=1;cy=top}
     ensure(HEAD+ROW);let x0=M+col*(colW+GAP);
     d.circle(x0+3.6,cy-2.9,3.4,PDFC[catColor(c)]);
-    d.text(fit(c.toUpperCase(),'B',8,colW-14),x0+12,cy,{font:'B',size:8,color:INK,cs:0.7});cy+=HEAD-12;
+    d.text(fit(c.toUpperCase(),'B',8,colW-14),x0+12,cy,{font:'B',size:8,color:shade(PDFC[catColor(c)]),cs:0.7});cy+=HEAD-12;
     l.forEach(x=>{ensure(ROW);x0=M+col*(colW+GAP);const packed=!!t.packed[x.it.id],by=cy+3.5;
       d.rect(x0,by,10,10,{stroke:packed?OK:'#8A96A3',lw:0.9,fill:packed?'#E3F2EA':null});
       if(packed)d.poly([[x0+2.2,by+5.3],[x0+4.4,by+7.6],[x0+8,by+2.7]],{color:OK,lw:1.3});
