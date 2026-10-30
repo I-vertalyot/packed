@@ -55,12 +55,13 @@ button{cursor:pointer}
 .status.ok b{background:#3DC48B}.status.saving b{background:var(--sign)}.status.err b{background:#F07560}
 .savebtn{background:var(--sign);color:var(--sign-ink);border:0;border-radius:6px;padding:7px 14px;font-weight:700;font-size:14px}
 .savebtn:disabled{opacity:.6;cursor:default}
-.credit{max-width:720px;margin:-40px auto 0;padding-block:0 32px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));text-align:center;font-size:12px;color:var(--muted)}
+.credit{max-width:720px;margin:-40px auto 0;padding-block:0 32px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));text-align:center;font-size:16px;line-height:2;color:var(--muted)}
 .credit a,.help-credit a{color:var(--ink);font-weight:600;text-decoration:none;border-bottom:1px solid var(--line)}
 .credit a:hover,.help-credit a:hover{border-bottom-color:var(--ink)}
-.credit .sep,.help-credit .sep{margin:0 8px;opacity:.6}
+.credit .sep,.help-credit .sep{margin:0 10px;opacity:.6}
+.credit a,.help-credit a{border-bottom-width:2px;padding-bottom:1px;white-space:nowrap}
 .credit a.coffee,.help-credit a.coffee{border-bottom-color:var(--sign)}
-.help-credit{margin:0;text-align:center;font-size:12px;color:var(--muted)}
+.help-credit{margin:0;text-align:center;font-size:15px;line-height:1.9;color:var(--muted)}
 .infobtn{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--bar-line);background:none;color:var(--bar-fg);font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:700;font-size:16px;line-height:1;display:inline-grid;place-items:center;padding:0}
 .infobtn:hover{border-color:var(--bar-fg)}
 .sheet{position:fixed;inset:0;z-index:20;display:flex;align-items:flex-end;justify-content:center;padding:16px max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
