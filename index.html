@@ -163,7 +163,9 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 .x:hover{background:var(--chip);color:var(--danger)}
 
 .cat{display:flex;flex-direction:column;gap:8px}
-.cat h3{margin:0;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);display:flex;align-items:center;gap:8px}
+.cat h3{margin:0;font-family:var(--f-display);font-stretch:85%;font-size:18px;font-weight:800;line-height:1.15;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);display:flex;align-items:center;gap:9px}
+.cat h3>.dot{width:12px;height:12px}
+.cat+.cat{margin-top:6px}
 .cat h3[style]{color:color-mix(in srgb,var(--cc) 80%,var(--ink))}
 .dot{width:10px;height:10px;border-radius:50%;background:var(--cc);flex:none;display:inline-block;vertical-align:middle}
 .ct .dot{width:8px;height:8px;margin-right:3px;vertical-align:1px}
@@ -734,16 +736,16 @@ function tripPDF(t){
   header(true);
   // 1) packing checklist, two columns
   d.text(T.pdfList.toUpperCase(),M,y,{font:'B',size:8.5,color:MUT,cs:0.9});y+=20;
-  const GAP=26,colW=(CW-GAP)/2,ROW=25,HEAD=17;let col=0,top=y,cy=y,leftEnd=y;
+  const GAP=26,colW=(CW-GAP)/2,ROW=25,HEAD=22;let col=0,top=y,cy=y,leftEnd=y;
   const ensure=h=>{if(cy+h<=BOT)return;if(col===0){leftEnd=cy;col=1;cy=top}else{header(false);col=0;top=y;cy=y;leftEnd=y}};
-  const blocks=byCat(a),bh=blocks.map(([c,l])=>HEAD-12+l.length*ROW+14),sum=bh.reduce((p,v)=>p+v,0),avail=BOT-top;
+  const blocks=byCat(a),bh=blocks.map(([c,l])=>HEAD-12+l.length*ROW+20),sum=bh.reduce((p,v)=>p+v,0),avail=BOT-top;
   let splitAt=-1;
   if(sum<=avail*2){let best=1e9,acc=0;for(let i=0;i<=blocks.length;i++){const m=Math.max(acc,sum-acc);if(acc<=avail&&sum-acc<=avail&&m<best){best=m;splitAt=i}acc+=bh[i]||0}}
   blocks.forEach(([c,l],bi)=>{
     if(bi===splitAt&&col===0&&bi>0){leftEnd=cy;col=1;cy=top}
     ensure(HEAD+ROW);let x0=M+col*(colW+GAP);
-    d.circle(x0+3.6,cy-2.9,3.4,PDFC[catColor(c)]);
-    d.text(fit(c.toUpperCase(),'B',8,colW-14),x0+12,cy,{font:'B',size:8,color:shade(PDFC[catColor(c)]),cs:0.7});cy+=HEAD-12;
+    d.circle(x0+4.2,cy-4.1,4.2,PDFC[catColor(c)]);
+    d.text(fit(c.toUpperCase(),'B',11.5,colW-16),x0+14,cy,{font:'B',size:11.5,color:shade(PDFC[catColor(c)]),cs:0.5});cy+=HEAD-12;
     l.forEach(x=>{ensure(ROW);x0=M+col*(colW+GAP);const packed=!!t.packed[x.it.id],by=cy+3.5;
       d.rect(x0,by,10,10,{stroke:packed?OK:'#8A96A3',lw:0.9,fill:packed?'#E3F2EA':null});
       if(packed)d.poly([[x0+2.2,by+5.3],[x0+4.4,by+7.6],[x0+8,by+2.7]],{color:OK,lw:1.3});
@@ -753,7 +755,7 @@ function tripPDF(t){
       d.text(fit(itemDays(t,x),'R',7.5,colW-17-qw-8),x0+17,cy+21,{size:7.5,color:MUT});
       cy+=ROW;d.line(x0+17,cy,x0+colW,cy,{color:SOFT,lw:0.6});
     });
-    cy+=14;
+    cy+=20;
   });
   y=col===1?Math.max(leftEnd,cy):cy;
   // 2) day by day overview, full width
