@@ -5,6 +5,7 @@ A travel packing app. Keep an inventory of the things you usually take, plan wha
 - **Inventory:** items grouped into categories, each with its own colour
 - **Trips:** a list for each day plus "Whole trip" for documents, chargers and so on; copy a day or use it for every day
 - **Packing:** one combined checklist with quantities added up
+- **PDF export:** download a printable packing list for any trip
 - **Czech / English:** switch with CS / EN (the English version is called *Packed*)
 - **Works offline** and can be added to your phone's home screen
 
