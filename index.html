@@ -548,7 +548,7 @@ const INSTALLED=(()=>{ /* true only inside the Google Play / App Store apps, nev
   try{const store=/[?&]source=(twa|ios|store)\b/.test(location.search)||document.referrer.indexOf('android-app://com.ivertalyot.packed')===0;
     if(store){try{sessionStorage.setItem('sbaleno-store','1')}catch(e){}return true}
     try{return sessionStorage.getItem('sbaleno-store')==='1'}catch(e){return false}}catch(e){return false}})();
-const credit=()=>`<span class="by">${esc(T.madeBy)} <button class="ig" type="button" aria-haspopup="dialog" title="@i.vertalyot">i.vertalyot</button></span>${INSTALLED?'':`<span class="sep" aria-hidden="true">·</span><a class="coffee" href="${BMC}" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">☕</span> ${esc(T.coffee)}</a>`}`;
+const credit=()=>`<span class="by">${esc(T.madeBy)} <button class="ig" type="button" aria-haspopup="dialog" title="@i.vertalyot">Vert Alyot</button></span>${INSTALLED?'':`<span class="sep" aria-hidden="true">·</span><a class="coffee" href="${BMC}" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">☕</span> ${esc(T.coffee)}</a>`}`;
 function render(){
   T=L[lang()];
   document.documentElement.lang=lang();
