@@ -62,23 +62,23 @@ button{cursor:pointer}
 @media (max-width:480px){.credit .sep,.help-credit .sep{display:block;height:4px;overflow:hidden;color:transparent;margin:0}}
 .credit a,.help-credit a{border-bottom-width:2px;padding-bottom:1px;white-space:nowrap}
 .credit a.coffee,.help-credit a.coffee{border-bottom-color:var(--sign)}
-.credit a.ig,.credit a.coffee,.help-credit a.ig,.help-credit a.coffee{font-weight:700}
+.credit .ig,.credit a.coffee,.help-credit .ig,.help-credit a.coffee{font-weight:700}
 .credit a.coffee>span,.help-credit a.coffee>span{font-size:.8em;vertical-align:.08em;margin-right:1px}
-.credit a.ig,.help-credit a.ig{color:var(--gold);border-bottom-color:color-mix(in srgb,var(--sign) 45%,transparent)}
-.credit a.ig:hover,.help-credit a.ig:hover{border-bottom-color:var(--gold)}
+.credit .ig,.help-credit .ig{color:var(--gold);border-bottom-color:color-mix(in srgb,var(--sign) 45%,transparent)}
+.credit .ig:hover,.help-credit .ig:hover{border-bottom-color:var(--gold)}
 .credit{position:fixed;left:0;right:0;bottom:0;z-index:15;margin:0;max-width:none;text-align:left;font-size:14px;line-height:1.2;pointer-events:none;
   padding:0 max(12px,env(safe-area-inset-right,0px)) max(12px,env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px))}
 .credit .credit-box{pointer-events:auto;width:max-content;max-width:100%;margin:0 auto;display:grid;grid-template-columns:auto auto;align-items:center;gap:14px;
   background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 6px 6px 18px;box-shadow:0 6px 24px rgba(10,14,19,.18);color:var(--muted)}
 .credit .credit-box:not(:has(.coffee)){padding-right:18px}
 .credit .credit-box .sep{display:none!important}
-.credit .credit-box a.ig{border-bottom-width:1.5px}
+.credit .credit-box .ig{border-bottom-width:1.5px}
 .credit .credit-box .by{white-space:nowrap}
 .credit .credit-box a.coffee{background:var(--sign);color:var(--sign-ink);border:0;border-radius:999px;padding:9px 15px;font-weight:700;white-space:nowrap}
 .credit .credit-box a.coffee:hover{filter:brightness(.95)}
 main#main{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
-.credit a.ig,.help-credit a.ig{display:inline-block}
-a.ig.pop{animation:igpop .55s cubic-bezier(.3,1.6,.5,1)}
+.credit .ig,.help-credit .ig{display:inline-block}
+.ig.pop{animation:igpop .55s cubic-bezier(.3,1.6,.5,1)}
 @keyframes igpop{0%{transform:scale(1)}30%{transform:scale(1.25) rotate(-5deg)}60%{transform:scale(.94) rotate(2deg)}100%{transform:scale(1)}}
 .spark{position:fixed;z-index:30;pointer-events:none;line-height:1;font-weight:700;transform:translate(-50%,-50%) scale(.3);animation:spark .85s cubic-bezier(.15,.75,.3,1) forwards}
 @keyframes spark{0%{opacity:1;transform:translate(-50%,-50%) scale(.3)}65%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) rotate(var(--rot)) scale(1)}}
@@ -137,6 +137,8 @@ a.ig.pop{animation:igpop .55s cubic-bezier(.3,1.6,.5,1)}
 @keyframes htype{from{opacity:0;letter-spacing:.6em;filter:blur(4px)}to{opacity:1;letter-spacing:.14em;filter:none}}
 @keyframes hrise{from{opacity:0;transform:translateY(14px) scale(.92)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.holo *,.holo *::before,.holo *::after{animation:none!important}.holo-scan{display:none}}
+button.ig{appearance:none;-webkit-appearance:none;background:none;border:0;border-bottom:2px solid var(--line);margin:0;padding:0 0 1px;
+  font:inherit;font-weight:700;line-height:inherit;color:var(--gold);cursor:pointer;white-space:nowrap;display:inline-block;border-radius:0}
 .help-credit{margin:0;text-align:center;font-size:16px;line-height:1.9;color:var(--muted)}
 .infobtn{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--bar-line);background:none;color:var(--bar-fg);font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:700;font-size:16px;line-height:1;display:inline-grid;place-items:center;padding:0}
 .infobtn:hover{border-color:var(--bar-fg)}
@@ -543,7 +545,7 @@ const PRIVACY='https://i-vertalyot.github.io/packed/privacy.html';
 const IG='https://www.instagram.com/i.vertalyot/',BMC='https://buymeacoffee.com/i.vertalyot';
 /* Running as an installed app (Google Play / App Store wrapper or home-screen install): store rules don't allow outside tip links. */
 const INSTALLED=(()=>{try{return matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches||navigator.standalone===true||document.referrer.indexOf('android-app://')===0||/[?&]source=(twa|ios|store)/.test(location.search)}catch(e){return false}})();
-const credit=()=>`<span class="by">${esc(T.madeBy)} <a class="ig" href="${IG}" target="_blank" rel="noopener noreferrer" title="Instagram @i.vertalyot">i.vertalyot</a></span>${INSTALLED?'':`<span class="sep" aria-hidden="true">·</span><a class="coffee" href="${BMC}" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">☕</span> ${esc(T.coffee)}</a>`}`;
+const credit=()=>`<span class="by">${esc(T.madeBy)} <button class="ig" type="button" aria-haspopup="dialog" title="@i.vertalyot">i.vertalyot</button></span>${INSTALLED?'':`<span class="sep" aria-hidden="true">·</span><a class="coffee" href="${BMC}" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">☕</span> ${esc(T.coffee)}</a>`}`;
 function render(){
   T=L[lang()];
   document.documentElement.lang=lang();
@@ -973,7 +975,7 @@ function openHolo(from){holoBack=from||null;holo.classList.remove('on','off');ho
 function closeHolo(){if(holo.hidden)return;holo.classList.add('off');
   setTimeout(()=>{holo.hidden=true;holo.classList.remove('on','off');document.documentElement.style.overflow='';if(holoBack&&holoBack.isConnected)holoBack.focus({preventScroll:true})},250)}
 holo.addEventListener('click',e=>{if(e.target.closest('.holo-x')||e.target.classList.contains('holo-bg')||e.target===holo||e.target.classList.contains('holo-stage'))closeHolo()});
-document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('a.ig');if(a){e.preventDefault();e.stopPropagation();openHolo(a)}},true);
+document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('.ig');if(a){e.stopPropagation();openHolo(a)}},true);
 
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!holo.hidden){closeHolo();return}if(e.key==='Escape'&&ui.help){ui.help=false;render();document.getElementById('infoBtn').focus()}});
 
