@@ -455,7 +455,7 @@ function translateStarter(to){
   state.items.forEach(i=>{i.name=tr(i.name);i.cat=tr(i.cat)});
   state.cats=[...new Set(state.cats.map(tr))];
   const cc={};Object.entries(state.catColors||{}).forEach(([k,v])=>{cc[tr(k)]=v});state.catColors=cc;
-  if(state.folded)Object.keys(state.folded).forEach(k=>{if(Array.isArray(state.folded[k]))state.folded[k]=state.folded[k].map(tr)});
+  if(state.open)Object.keys(state.open).forEach(k=>{if(Array.isArray(state.open[k]))state.open[k]=state.open[k].map(tr)});
   state.trips.forEach(t=>{t.name=tr(t.name)});
 }
 let T=L.cs;
@@ -490,7 +490,7 @@ function starter(lg){
 }
 function sanitize(d){
   if(!d||typeof d!=='object')return starter();
-  return {v:1,folded:(d.folded&&typeof d.folded==='object')?JSON.parse(JSON.stringify(d.folded)):{},theme:d.theme==='light'?'light':'dark',lang:d.lang==='en'?'en':'cs',catColors:(d.catColors&&typeof d.catColors==='object')?{...d.catColors}:{},cats:Array.isArray(d.cats)?d.cats.slice():[],items:Array.isArray(d.items)?d.items.map(x=>({...x})):[],
+  return {v:1,open:(d.open&&typeof d.open==='object')?JSON.parse(JSON.stringify(d.open)):{},theme:d.theme==='light'?'light':'dark',lang:d.lang==='en'?'en':'cs',catColors:(d.catColors&&typeof d.catColors==='object')?{...d.catColors}:{},cats:Array.isArray(d.cats)?d.cats.slice():[],items:Array.isArray(d.items)?d.items.map(x=>({...x})):[],
     trips:Array.isArray(d.trips)?d.trips.map(t=>({...t,picks:JSON.parse(JSON.stringify(t.picks||{})),packed:{...(t.packed||{})}})):[]};
 }
 function loadLocal(){try{const s=localStorage.getItem(KEY);return s?sanitize(JSON.parse(s)):null}catch(e){return null}}
@@ -574,7 +574,8 @@ function applyTheme(){const t=state.theme==='light'?'light':'dark';document.docu
   const m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',t==='dark'?'#0E1217':'#16202B');
   const b=document.getElementById('themeBtn');if(b){const l=t==='dark'?T.toLight:T.toDark;b.setAttribute('aria-label',l);b.title=l}}
 const CHEV='<svg class="chev" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>';
-const isFolded=(v,c)=>!!(state.folded&&Array.isArray(state.folded[v])&&state.folded[v].includes(c));
+const isFolded=(v,c)=>!(state.open&&Array.isArray(state.open[v])&&state.open[v].includes(c));
+function openCat(v,c){state.open=state.open||{};const l=new Set(state.open[v]||[]);l.add(c);state.open[v]=[...l]}
 const fold=(v,c)=>isFolded(v,c)?' folded':'';
 const foldBtn=(v,c,label,count)=>`<button class="fold" type="button" data-act="fold" data-v="${v}" data-c="${esc(c)}" aria-expanded="${!isFolded(v,c)}"><span class="fold-l">${label}</span><span class="fold-n">${esc(count)}</span>${CHEV}</button>`;
 const foldAll=(v,cats)=>{if(!cats.length)return '';const all=cats.every(c=>isFolded(v,c));return `<button class="btn ghost foldall" type="button" data-act="foldall" data-v="${v}" data-all="${all?'1':''}">${all?T.expandAll:T.collapseAll}</button>`};
@@ -930,8 +931,8 @@ document.addEventListener('click',e=>{
   const b=e.target.closest('[data-act]');if(!b)return;
   const a=b.dataset.act,id=b.dataset.id,t=trip();
   switch(a){
-    case 'fold':{const v=b.dataset.v,c=b.dataset.c;state.folded=state.folded||{};const l=new Set(state.folded[v]||[]);l.has(c)?l.delete(c):l.add(c);state.folded[v]=[...l];save();break}
-    case 'foldall':{const v=b.dataset.v;state.folded=state.folded||{};state.folded[v]=b.dataset.all?[]:catOrder();save();break}
+    case 'fold':{const v=b.dataset.v,c=b.dataset.c;state.open=state.open||{};const l=new Set(state.open[v]||[]);l.has(c)?l.delete(c):l.add(c);state.open[v]=[...l];save();break}
+    case 'foldall':{const v=b.dataset.v;state.open=state.open||{};state.open[v]=b.dataset.all?catOrder():[];save();break}
     case 'theme':state.theme=state.theme==='light'?'dark':'light';save();break;
     case 'lang':{const to=b.dataset.v;if(to===lang())return;translateStarter(to);state.lang=to;save();break}
     case 'tab':ui.tab=b.dataset.v;ui.delItem=null;break;
@@ -987,6 +988,7 @@ document.addEventListener('submit',e=>{
     if(!name)return;
     let it=state.items.find(i=>i.name.toLowerCase()===name.toLowerCase()&&(i.cat||OTHER())===cat);
     if(!it){it={id:uid(),name,cat};state.items.push(it);addCat(cat)}
+    openCat(f.id==='addItem'?'inv':'pick',cat);
     if(f.id==='addToDay'){const t=trip();setPick(t,ui.day,it.id,Math.max(1,(t.picks[ui.day]||{})[it.id]||0))}
     save();const y=window.scrollY;render();window.scrollTo(0,y);
     const again=document.getElementById(f.id==='addItem'?'ai-name':'ad-name');if(again)again.focus();
