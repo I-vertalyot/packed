@@ -1,15 +1,68 @@
 {
-  "name": "Sbaleno – Packed",
-  "short_name": "Sbaleno",
-  "description": "Travel packing list: an inventory of your things and a day-by-day plan for every trip.",
-  "start_url": "./",
+  "id": "/packed/",
+  "name": "Packed – Travel Packing List",
+  "short_name": "Packed",
+  "description": "A travel packing list. Keep an inventory of the things you take, plan what you need for each day of a trip, tick items off as you pack and print the list as a PDF. Czech and English.",
+  "lang": "en",
+  "dir": "ltr",
+  "start_url": "./?source=pwa",
   "scope": "./",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#F2F4F6",
   "theme_color": "#16202B",
+  "categories": [
+    "travel",
+    "productivity",
+    "lifestyle"
+  ],
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
-    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/screen-1.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "All your trips in one place"
+    },
+    {
+      "src": "screenshots/screen-2.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Plan what to take each day"
+    },
+    {
+      "src": "screenshots/screen-3.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Tick things off as you pack"
+    }
   ]
 }

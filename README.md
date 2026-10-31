@@ -20,3 +20,13 @@ Your data is stored on your own device (in the browser's local storage). Use **I
 ## Install on your phone
 
 Open that address on your phone. In Safari tap **Share → Add to Home Screen**; in Chrome tap **⋮ → Add to Home screen** (or **Install app**).
+
+## App stores
+
+Everything for Google Play and the App Store is in the [`store`](store) folder:
+
+- [`store/store-listing.md`](store/store-listing.md) – names, descriptions, keywords and privacy answers in English and Czech
+- icons, the Google Play feature graphic and phone screenshots for both stores
+- [`store/github-user-site`](store/github-user-site) – files for a separate repository named `I-vertalyot.github.io`, needed so the Android app opens without a browser bar
+
+App ID: `com.ivertalyot.packed` · Privacy policy: https://i-vertalyot.github.io/packed/privacy.html
