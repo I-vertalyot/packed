@@ -73,6 +73,7 @@ button{cursor:pointer}
 @media (min-width:600px){.sheet{align-items:center}}
 .sheet-bg{position:absolute;inset:0;background:rgba(10,14,19,.55)}
 .sheet-card{position:relative;background:var(--surface);color:var(--ink);border-radius:12px;width:100%;max-width:520px;max-height:calc(100% - env(safe-area-inset-top,0px) - 16px);overflow:auto;padding:20px;display:flex;flex-direction:column;gap:16px;box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.help-about{margin:0;font-size:15px;line-height:1.5;color:var(--ink);padding-bottom:14px;border-bottom:1px solid var(--line)}
 .help-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;counter-reset:s}
 .help-steps li{display:grid;grid-template-columns:28px 1fr;gap:12px;counter-increment:s}
 .help-steps li::before{content:counter(s);width:28px;height:28px;border-radius:5px;background:var(--sign);color:var(--sign-ink);font-family:var(--f-display);font-weight:800;display:grid;place-items:center}
@@ -276,6 +277,7 @@ const L={
     ['Balení','Přepni na „Balení“. Všechno je v jednom seznamu se sečtenými kusy, takže jen odškrtáváš, co už máš v kufru.'],
     ['PDF seznam','Na stránce cesty klikni na „Stáhnout PDF“. Dostaneš seznam k vytištění se zaškrtávacími políčky podle kategorií a přehled, co bereš na který den.'],
     ['Jiné zařízení','Inventář → Export a záloha → „Exportovat inventář“. Na druhém zařízení soubor nahraješ přes „Nahrát soubor…“.']],
+  about:'Sbaleno je balicí seznam na cesty. Sepíšeš si věci, které běžně bereš, na každý den cesty vybereš, co potřebuješ, a při balení jen odškrtáváš. Už nic nezapomeneš.',
   helpTip:'Všechno se ukládá samo. Jazyk přepneš tlačítky CS / EN.',
   invExp:'Exportovat inventář',invXNote:'Inventář si vyexportuj do souboru a na jiném zařízení ho nahraj přes „Nahrát soubor…“. Věci se přidají k těm, které tam už máš.',invFileName:'sbaleno-inventar-',
   invDone:'Inventář stažen. Soubor si pošli do druhého zařízení (e-mailem, přes cloud…) a nahraj ho tam.',
@@ -322,6 +324,7 @@ const L={
     ['Packing','Switch to “Packing”. Everything is in one list with the totals added up, so you just tick off what’s in your bag.'],
     ['PDF list','On a trip page, tap “Download PDF”. You get a printable checklist grouped by category, plus an overview of what you’re taking each day.'],
     ['Another device','Inventory → Export & backup → “Export inventory”. On the other device, load the file with “Upload file…”.']],
+  about:'Packed is a packing list for your travels. List the things you usually take, choose what you need for each day of a trip, then tick them off as you pack. Never forget anything again.',
   helpTip:'Everything saves automatically. Switch language with CS / EN.',
   invExp:'Export inventory',invXNote:'Export your inventory to a file, then load it on another device with “Upload file…”. The items are added to whatever is already there.',invFileName:'packed-inventory-',
   invDone:'Inventory downloaded. Send the file to your other device (email, cloud…) and upload it there.',
@@ -449,7 +452,9 @@ function refreshCatList(){const all=[...new Set(catOrder().concat(state.cats))];
 /* ---------- views ---------- */
 const main=document.getElementById('main');
 const IG='https://www.instagram.com/i.vertalyot/',BMC='https://buymeacoffee.com/i.vertalyot';
-const credit=()=>`${esc(T.madeBy)} <a class="ig" href="${IG}" target="_blank" rel="noopener noreferrer" title="Instagram @i.vertalyot">i.vertalyot</a><span class="sep" aria-hidden="true">·</span><a class="coffee" href="${BMC}" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">☕</span> ${esc(T.coffee)}</a>`;
+/* Running as an installed app (Google Play / App Store wrapper or home-screen install): store rules don't allow outside tip links. */
+const INSTALLED=(()=>{try{return matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches||navigator.standalone===true||document.referrer.indexOf('android-app://')===0||/[?&]source=(twa|ios|store)/.test(location.search)}catch(e){return false}})();
+const credit=()=>`${esc(T.madeBy)} <a class="ig" href="${IG}" target="_blank" rel="noopener noreferrer" title="Instagram @i.vertalyot">i.vertalyot</a>${INSTALLED?'':`<span class="sep" aria-hidden="true">·</span><a class="coffee" href="${BMC}" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">☕</span> ${esc(T.coffee)}</a>`}`;
 function render(){
   T=L[lang()];
   document.documentElement.lang=lang();
@@ -467,6 +472,7 @@ function render(){
   const ib=document.getElementById('infoBtn');ib.setAttribute('aria-label',T.info);ib.title=T.info;
   const hp=document.getElementById('help');hp.hidden=!ui.help;
   if(ui.help)document.getElementById('helpCard').innerHTML=`<h1 id="helpTitle" style="font-size:24px">${esc(T.helpTitle)}</h1>
+    <p class="help-about">${esc(T.about)}</p>
     <ol class="help-steps">${T.help.map(([h,t])=>`<li><div><b>${esc(h)}</b><span>${esc(t)}</span></div></li>`).join('')}</ol>
     <p class="note">${esc(T.helpTip)}</p>
     <button class="btn primary" data-act="help-close" id="helpClose" style="justify-content:center">${esc(T.close)}</button>
