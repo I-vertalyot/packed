@@ -77,6 +77,11 @@ button{cursor:pointer}
 .credit .credit-box a.coffee{background:var(--sign);color:var(--sign-ink);border:0;border-radius:999px;padding:9px 15px;font-weight:700;white-space:nowrap}
 .credit .credit-box a.coffee:hover{filter:brightness(.95)}
 main#main{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
+.credit a.ig,.help-credit a.ig{display:inline-block}
+a.ig.pop{animation:igpop .55s cubic-bezier(.3,1.6,.5,1)}
+@keyframes igpop{0%{transform:scale(1)}30%{transform:scale(1.25) rotate(-5deg)}60%{transform:scale(.94) rotate(2deg)}100%{transform:scale(1)}}
+.spark{position:fixed;z-index:30;pointer-events:none;line-height:1;font-weight:700;transform:translate(-50%,-50%) scale(.3);animation:spark .85s cubic-bezier(.15,.75,.3,1) forwards}
+@keyframes spark{0%{opacity:1;transform:translate(-50%,-50%) scale(.3)}65%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) rotate(var(--rot)) scale(1)}}
 .help-credit{margin:0;text-align:center;font-size:16px;line-height:1.9;color:var(--muted)}
 .infobtn{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--bar-line);background:none;color:var(--bar-fg);font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:700;font-size:16px;line-height:1;display:inline-grid;place-items:center;padding:0}
 .infobtn:hover{border-color:var(--bar-fg)}
@@ -890,6 +895,19 @@ document.addEventListener('change',e=>{
   if(el.classList.contains('rename')){const it=item(el.dataset.id);const v=el.value.trim();if(it&&v&&v!==it.name){it.name=v;save()}else if(it)el.value=it.name;return}
   if(el.classList.contains('recat')){const it=item(el.dataset.id);const v=el.value.trim()||OTHER();if(it&&v!==it.cat){it.cat=v;addCat(v);save();const y=window.scrollY;render();window.scrollTo(0,y)}return}
 });
+
+/* Little burst of hearts and stars when someone taps the author's name */
+function burst(el){
+  try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return}catch(e){}
+  el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop');
+  const r=el.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+  const cols=['#FFC62B','#F59A45','#EE7AB0','#E0503F','#FFC62B','#A783F0'],shapes=['\u2764\uFE0E','\u2605','\u2764\uFE0E','\u25CF'];
+  for(let i=0;i<16;i++){const sp=document.createElement('span');sp.className='spark';sp.setAttribute('aria-hidden','true');sp.textContent=shapes[i%shapes.length];
+    const a=(i/16)*Math.PI*2+Math.random()*0.35,d=34+Math.random()*38;
+    sp.style.cssText=`left:${cx}px;top:${cy}px;color:${cols[i%cols.length]};--dx:${(Math.cos(a)*d).toFixed(1)}px;--dy:${(Math.sin(a)*d-16).toFixed(1)}px;--rot:${Math.round(Math.random()*140-70)}deg;font-size:${Math.round(10+Math.random()*9)}px;animation-delay:${Math.round(Math.random()*60)}ms`;
+    document.body.appendChild(sp);setTimeout(()=>sp.remove(),1000)}
+}
+document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('a.ig');if(a)burst(a)},true);
 
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ui.help){ui.help=false;render();document.getElementById('infoBtn').focus()}});
 
