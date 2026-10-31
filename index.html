@@ -544,7 +544,10 @@ const main=document.getElementById('main');
 const PRIVACY='https://i-vertalyot.github.io/packed/privacy.html';
 const IG='https://www.instagram.com/i.vertalyot/',BMC='https://buymeacoffee.com/i.vertalyot';
 /* Running as an installed app (Google Play / App Store wrapper or home-screen install): store rules don't allow outside tip links. */
-const INSTALLED=(()=>{try{return matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches||navigator.standalone===true||document.referrer.indexOf('android-app://')===0||/[?&]source=(twa|ios|store)/.test(location.search)}catch(e){return false}})();
+const INSTALLED=(()=>{ /* true only inside the Google Play / App Store apps, never in a normal browser */
+  try{const store=/[?&]source=(twa|ios|store)\b/.test(location.search)||document.referrer.indexOf('android-app://com.ivertalyot.packed')===0;
+    if(store){try{sessionStorage.setItem('sbaleno-store','1')}catch(e){}return true}
+    try{return sessionStorage.getItem('sbaleno-store')==='1'}catch(e){return false}}catch(e){return false}})();
 const credit=()=>`<span class="by">${esc(T.madeBy)} <button class="ig" type="button" aria-haspopup="dialog" title="@i.vertalyot">i.vertalyot</button></span>${INSTALLED?'':`<span class="sep" aria-hidden="true">·</span><a class="coffee" href="${BMC}" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">☕</span> ${esc(T.coffee)}</a>`}`;
 function render(){
   T=L[lang()];
@@ -876,7 +879,7 @@ function tripPDF(t){
   return d.save(t.name);
 }
 async function saveBlob(fname,blob){
-  try{if(INSTALLED&&/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)&&navigator.canShare){const f=new File([blob],fname,{type:blob.type});if(navigator.canShare({files:[f]})){await navigator.share({files:[f],title:fname});return true}}}
+  try{if((INSTALLED||navigator.standalone===true)&&/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)&&navigator.canShare){const f=new File([blob],fname,{type:blob.type});if(navigator.canShare({files:[f]})){await navigator.share({files:[f],title:fname});return true}}}
   catch(e){if(e&&e.name==='AbortError')return false}
   const u=URL.createObjectURL(blob);const el=document.createElement('a');el.href=u;el.download=fname;document.body.appendChild(el);el.click();el.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);return true}
 async function downloadTripPDF(){
