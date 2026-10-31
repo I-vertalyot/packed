@@ -246,6 +246,15 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 .cat{display:flex;flex-direction:column;gap:8px}
 .cat h3{margin:0;font-family:var(--f-display);font-stretch:85%;font-size:18px;font-weight:800;line-height:1.15;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);display:flex;align-items:center;gap:9px}
 .cat h3>.dot{width:12px;height:12px}
+.fold{flex:1;min-width:0;display:flex;align-items:center;gap:9px;background:none;border:0;padding:4px 0;margin:-4px 0;color:inherit;font:inherit;letter-spacing:inherit;text-transform:inherit;text-align:left;cursor:pointer}
+.fold-l{display:flex;align-items:center;gap:9px;min-width:0;overflow-wrap:anywhere}
+.fold-n{margin-left:auto;font-family:var(--f-mono);font-size:12px;font-weight:700;letter-spacing:0;color:var(--muted);background:var(--chip);border-radius:999px;padding:3px 9px;white-space:nowrap}
+.fold .chev{flex:none;color:var(--muted);transition:transform .2s ease}
+.cat.folded .fold .chev{transform:rotate(-90deg)}
+.fold:hover .chev{color:var(--ink)}
+.cat.folded:not(.force)>:not(h3){display:none!important}
+.cat.folded{gap:0}
+.foldall{font-size:13px;padding:5px 8px}
 .cat+.cat{margin-top:6px}
 .cat h3[style]{color:color-mix(in srgb,var(--cc) 80%,var(--ink))}
 .cat h3[style*="--c-yellow"]{color:var(--c-yellow)}
@@ -364,7 +373,7 @@ const L={
   dlBackup:'Stáhnout celou zálohu',ulBackup:'Nahrát soubor…',
   importQ:(i,t)=>`Nahrát zálohu (${i} věcí, ${t} cest)? Současná data se přepíšou.`,upload:'Nahrát',
   imported:'Záloha nahrána.',noDl:'Stahování souborů tady není dostupné.',dlDone:'Záloha stažena.',dlFail:'Zálohu se nepodařilo stáhnout.',
-  badFile:'Tenhle soubor není záloha ze Sbaleno.',fileName:'sbaleno-zaloha-',appName:'Sbaleno',toLight:'Přepnout na světlý vzhled',toDark:'Přepnout na tmavý vzhled',madeBy:'Made by',
+  badFile:'Tenhle soubor není záloha ze Sbaleno.',fileName:'sbaleno-zaloha-',appName:'Sbaleno',collapseAll:'Sbalit vše',expandAll:'Rozbalit vše',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Přepnout na světlý vzhled',toDark:'Přepnout na tmavý vzhled',madeBy:'Made by',
   pdfBtn:'Stáhnout PDF',pdfLabel:'BALICÍ SEZNAM',pdfPacked:(d,t)=>`sbaleno ${d} z ${t}`,pdfList:'Co zabalit',pdfByDay:'Po dnech',pdfDone:'PDF staženo.',pdfFail:'PDF se nepodařilo vytvořit.',coffee:'Buy me a coffee',
   info:'Nápověda',helpTitle:'Jak používat Sbaleno',close:'Rozumím',
   help:[['Inventář','Na kartě Inventář si sepiš věci, které běžně bereš. Barevným kolečkem u kategorie změníš její barvu.'],
@@ -412,7 +421,7 @@ const L={
   dlBackup:'Download full backup',ulBackup:'Upload file…',
   importQ:(i,t)=>`Upload backup (${i} items, ${t} trips)? Your current data will be replaced.`,upload:'Upload',
   imported:'Backup uploaded.',noDl:'File downloads aren’t available here.',dlDone:'Backup downloaded.',dlFail:'Couldn’t download the backup.',
-  badFile:'This file isn’t a Packed backup.',fileName:'packed-backup-',appName:'Packed',toLight:'Switch to light mode',toDark:'Switch to dark mode',madeBy:'Made by',
+  badFile:'This file isn’t a Packed backup.',fileName:'packed-backup-',appName:'Packed',collapseAll:'Collapse all',expandAll:'Expand all',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Switch to light mode',toDark:'Switch to dark mode',madeBy:'Made by',
   pdfBtn:'Download PDF',pdfLabel:'PACKING LIST',pdfPacked:(d,t)=>`${d} of ${t} packed`,pdfList:'What to pack',pdfByDay:'Day by day',pdfDone:'PDF downloaded.',pdfFail:'Couldn’t create the PDF.',coffee:'Buy me a coffee',
   info:'Help',helpTitle:'How to use Packed',close:'Got it',
   help:[['Inventory','On the Inventory tab, list the things you usually take. Tap the coloured dot next to a category to change its colour.'],
@@ -446,6 +455,7 @@ function translateStarter(to){
   state.items.forEach(i=>{i.name=tr(i.name);i.cat=tr(i.cat)});
   state.cats=[...new Set(state.cats.map(tr))];
   const cc={};Object.entries(state.catColors||{}).forEach(([k,v])=>{cc[tr(k)]=v});state.catColors=cc;
+  if(state.folded)Object.keys(state.folded).forEach(k=>{if(Array.isArray(state.folded[k]))state.folded[k]=state.folded[k].map(tr)});
   state.trips.forEach(t=>{t.name=tr(t.name)});
 }
 let T=L.cs;
@@ -480,7 +490,7 @@ function starter(lg){
 }
 function sanitize(d){
   if(!d||typeof d!=='object')return starter();
-  return {v:1,theme:d.theme==='light'?'light':'dark',lang:d.lang==='en'?'en':'cs',catColors:(d.catColors&&typeof d.catColors==='object')?{...d.catColors}:{},cats:Array.isArray(d.cats)?d.cats.slice():[],items:Array.isArray(d.items)?d.items.map(x=>({...x})):[],
+  return {v:1,folded:(d.folded&&typeof d.folded==='object')?JSON.parse(JSON.stringify(d.folded)):{},theme:d.theme==='light'?'light':'dark',lang:d.lang==='en'?'en':'cs',catColors:(d.catColors&&typeof d.catColors==='object')?{...d.catColors}:{},cats:Array.isArray(d.cats)?d.cats.slice():[],items:Array.isArray(d.items)?d.items.map(x=>({...x})):[],
     trips:Array.isArray(d.trips)?d.trips.map(t=>({...t,picks:JSON.parse(JSON.stringify(t.picks||{})),packed:{...(t.packed||{})}})):[]};
 }
 function loadLocal(){try{const s=localStorage.getItem(KEY);return s?sanitize(JSON.parse(s)):null}catch(e){return null}}
@@ -563,6 +573,11 @@ function applyTheme(){const t=state.theme==='light'?'light':'dark';document.docu
   try{localStorage.setItem('sbaleno-theme',t)}catch(e){}
   const m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',t==='dark'?'#0E1217':'#16202B');
   const b=document.getElementById('themeBtn');if(b){const l=t==='dark'?T.toLight:T.toDark;b.setAttribute('aria-label',l);b.title=l}}
+const CHEV='<svg class="chev" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>';
+const isFolded=(v,c)=>!!(state.folded&&Array.isArray(state.folded[v])&&state.folded[v].includes(c));
+const fold=(v,c)=>isFolded(v,c)?' folded':'';
+const foldBtn=(v,c,label,count)=>`<button class="fold" type="button" data-act="fold" data-v="${v}" data-c="${esc(c)}" aria-expanded="${!isFolded(v,c)}"><span class="fold-l">${label}</span><span class="fold-n">${esc(count)}</span>${CHEV}</button>`;
+const foldAll=(v,cats)=>{if(!cats.length)return '';const all=cats.every(c=>isFolded(v,c));return `<button class="btn ghost foldall" type="button" data-act="foldall" data-v="${v}" data-all="${all?'1':''}">${all?T.expandAll:T.collapseAll}</button>`};
 function render(){
   T=L[lang()];
   document.documentElement.lang=lang();
@@ -662,12 +677,12 @@ function viewDays(t,days){
       ${idx>0?`<button class="btn" data-act="copy-prev">${T.copyPrev}</button>`:''}
       ${k!=='all'&&days.length>1?`<button class="btn" data-act="to-all-days">${T.toAll}</button>`:''}
       ${grouped.length?`<button class="btn ghost" data-act="clear-day">${T.clear}</button>`:''}</div>`;
-  const picker=byCat(state.items).map(([c,l])=>`<div class="cat" data-cat><h3 style="--cc:var(--c-${catColor(c)})">${dot(c)}${esc(c)}</h3><div class="chips">${
+  const picker=byCat(state.items).map(([c,l])=>`<div class="cat${fold('pick',c)}" data-cat><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pick',c,dot(c)+esc(c),T.nPicked(l.filter(it=>picks[it.id]).length,l.length))}</h3><div class="chips">${
       l.slice().sort((a,b)=>cmp(a.name,b.name)).map(it=>`<button class="chip ${picks[it.id]?'on':''}" data-act="toggle-pick" data-id="${it.id}" data-name="${esc(it.name.toLowerCase())}">${dot(it.cat||OTHER())}${esc(it.name)}</button>`).join('')}</div></div>`).join('');
   return `<div class="gates" role="group" aria-label="${T.tripDays}">${gates}</div>
     <section class="panel"><div class="row"><h2>${title}</h2></div>${list}${actions}</section>
     <section class="panel">
-      <div class="row"><h2>${T.addFromInv}</h2><span class="spacer"></span>
+      <div class="row"><h2>${T.addFromInv}</h2><span class="spacer"></span>${foldAll('pick',byCat(state.items).map(g=>g[0]))}
         <input class="inp" id="search" type="search" placeholder="${T.search}" style="max-width:200px" autocomplete="off"></div>
       ${picker||`<p class="note">${esc(T.invEmptyPick)}</p>`}
       <form id="addToDay" class="row" style="border-top:1px solid var(--line);padding-top:14px">
@@ -691,7 +706,7 @@ function viewPack(t){
         <span class="spacer"></span>${done?`<button class="btn ghost" data-act="reset-pack">${T.resetPack}</button>`:''}</div>
       <div class="meter"><i style="width:${pct}%"></i></div>
     </section>
-    <section class="panel">${byCat(a).map(([c,l])=>`<div class="cat"><h3 style="--cc:var(--c-${catColor(c)})">${dot(c)}${esc(c)}</h3>${l.map(x=>`
+    <section class="panel"><div class="row" style="justify-content:flex-end">${foldAll('pack',byCat(a).map(g=>g[0]))}</div>${byCat(a).map(([c,l])=>`<div class="cat${fold('pack',c)}"><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pack',c,dot(c)+esc(c),T.nPacked(l.filter(x=>t.packed[x.it.id]).length,l.length))}</h3>${l.map(x=>`
       <label class="pk ${t.packed[x.it.id]?'done':''}"><input type="checkbox" id="pk-${x.it.id}" data-pack="${x.it.id}" ${t.packed[x.it.id]?'checked':''}>
         <span class="nm">${esc(x.it.name)}<span class="days">${esc(daysTxt(x))}</span></span><span class="q">×${x.qty}</span></label>`).join('')}</div>`).join('')}
     </section>`;
@@ -699,7 +714,7 @@ function viewPack(t){
 
 function viewInv(){
   const uses=id=>state.trips.filter(t=>Object.values(t.picks).some(p=>p&&p[id])).length;
-  const groups=byCat(state.items).map(([c,l])=>`<div class="cat"><h3 style="--cc:var(--c-${catColor(c)})"><button class="colorbtn" data-act="pick-color" data-c="${esc(c)}" aria-expanded="${ui.colorCat===c}" aria-label="${T.color}: ${esc(c)}" title="${T.color}">${dot(c)}</button>${esc(c)} · ${l.length}</h3>${ui.colorCat===c?swatches(c):''}${
+  const groups=byCat(state.items).map(([c,l])=>`<div class="cat${fold('inv',c)}"><h3 style="--cc:var(--c-${catColor(c)})"><button class="colorbtn" data-act="pick-color" data-c="${esc(c)}" aria-expanded="${ui.colorCat===c}" aria-label="${T.color}: ${esc(c)}" title="${T.color}">${dot(c)}</button>${foldBtn('inv',c,esc(c),T.nItems(l.length))}</h3>${ui.colorCat===c?swatches(c):''}${
     l.slice().sort((a,b)=>cmp(a.name,b.name)).map(it=>{const u=uses(it.id);
       if(ui.delItem===it.id)return `<div class="confirm" style="margin-block:6px">${esc(T.delItemQ(it.name,u))} <span class="spacer"></span><button class="btn" data-act="del-item-no">${T.no}</button><button class="btn danger" data-act="del-item-yes" data-id="${it.id}">${T.del}</button></div>`;
       return `<div class="inv"><input class="inp rename" id="nm-${it.id}" data-id="${it.id}" value="${esc(it.name)}" aria-label="${T.name}">
@@ -714,7 +729,7 @@ function viewInv(){
       </div>
       <p class="note">${esc(T.invNote)}</p>
     </form>
-    <section class="panel">${groups||`<div class="empty">${esc(T.invEmpty)}</div>`}</section>
+    <section class="panel">${groups?`<div class="row" style="justify-content:flex-end">${foldAll('inv',byCat(state.items).map(g=>g[0]))}</div>`+groups:`<div class="empty">${esc(T.invEmpty)}</div>`}</section>
     <section class="panel">
       <h2>${T.backup}</h2>
       <p class="note">${esc(T.invXNote)}</p>
@@ -915,6 +930,8 @@ document.addEventListener('click',e=>{
   const b=e.target.closest('[data-act]');if(!b)return;
   const a=b.dataset.act,id=b.dataset.id,t=trip();
   switch(a){
+    case 'fold':{const v=b.dataset.v,c=b.dataset.c;state.folded=state.folded||{};const l=new Set(state.folded[v]||[]);l.has(c)?l.delete(c):l.add(c);state.folded[v]=[...l];save();break}
+    case 'foldall':{const v=b.dataset.v;state.folded=state.folded||{};state.folded[v]=b.dataset.all?[]:catOrder();save();break}
     case 'theme':state.theme=state.theme==='light'?'dark':'light';save();break;
     case 'lang':{const to=b.dataset.v;if(to===lang())return;translateStarter(to);state.lang=to;save();break}
     case 'tab':ui.tab=b.dataset.v;ui.delItem=null;break;
@@ -1001,7 +1018,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!holo.hidden){close
 document.addEventListener('input',e=>{
   if(e.target.id!=='search')return;
   const q=e.target.value.trim().toLowerCase();
-  main.querySelectorAll('[data-cat]').forEach(c=>{let any=false;c.querySelectorAll('.chip').forEach(ch=>{const m=!q||ch.dataset.name.includes(q);ch.hidden=!m;if(m)any=true});c.hidden=!any});
+  main.querySelectorAll('[data-cat]').forEach(c=>{let any=false;c.querySelectorAll('.chip').forEach(ch=>{const m=!q||ch.dataset.name.includes(q);ch.hidden=!m;if(m)any=true});c.hidden=!any;c.classList.toggle('force',!!q)});
 });
 
 render();
