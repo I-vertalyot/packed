@@ -20,20 +20,17 @@
 :root{
   --bg:#F2F4F6; --surface:#FFFFFF; --ink:#16202B; --muted:#5B6878; --line:#D8DEE5; --chip:#E7EBF0;
   --bar:#16202B; --bar-fg:#F4F6F8; --bar-muted:#9AA7B5; --bar-line:#33404D;
-  --sign:#FFC62B; --sign-ink:#16202B; --ok:#1C8556; --danger:#C2412D; --gold:#A87A00;
-  --c-blue:#2F6FD6; --c-green:#2E9550; --c-orange:#E07B1F; --c-purple:#8356D1; --c-red:#D4483A; --c-teal:#179C9C; --c-pink:#D2508E; --c-yellow:#D9A400; --c-gray:#7D8896;
+  --sign:#FFC62B; --sign-ink:#16202B; --ok:#1C8556; --danger:#C2412D; --gold:#FFC62B;
+  --c-blue:#2F6FD6; --c-green:#2E9550; --c-orange:#E07B1F; --c-purple:#8356D1; --c-red:#D4483A; --c-teal:#179C9C; --c-pink:#D2508E; --c-yellow:#FFC62B; --c-gray:#7D8896;
   --f-display:"Archivo","Arial Narrow",Arial,sans-serif;
   --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+:root[data-app-theme="dark"]{
   --bg:#0E1217; --surface:#171D24; --ink:#E8EDF2; --muted:#95A2B1; --line:#29323C; --chip:#212932;
   --bar:#1C242D; --bar-fg:#F4F6F8; --bar-muted:#8D9AA8; --bar-line:#36414D; --ok:#3DC48B; --danger:#F07560;
-  --c-blue:#5B97F5; --c-green:#4CC077; --c-orange:#F59A45; --c-purple:#A783F0; --c-red:#F06F62; --c-teal:#3CC4C4; --c-pink:#EE7AB0; --c-yellow:#F2C230; --c-gray:#9AA5B2; --gold:#FFC62B; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#0E1217; --surface:#171D24; --ink:#E8EDF2; --muted:#95A2B1; --line:#29323C; --chip:#212932;
-  --bar:#1C242D; --bar-fg:#F4F6F8; --bar-muted:#8D9AA8; --bar-line:#36414D; --ok:#3DC48B; --danger:#F07560;
-  --c-blue:#5B97F5; --c-green:#4CC077; --c-orange:#F59A45; --c-purple:#A783F0; --c-red:#F06F62; --c-teal:#3CC4C4; --c-pink:#EE7AB0; --c-yellow:#F2C230; --c-gray:#9AA5B2; --gold:#FFC62B; color-scheme:dark}
+  --c-blue:#5B97F5; --c-green:#4CC077; --c-orange:#F59A45; --c-purple:#A783F0; --c-red:#F06F62; --c-teal:#3CC4C4; --c-pink:#EE7AB0; --c-gray:#9AA5B2; color-scheme:dark}
 
 *{box-sizing:border-box}
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -165,7 +162,10 @@ button.ig{appearance:none;-webkit-appearance:none;background:none;border:0;borde
 .lang button[aria-pressed="true"]{background:var(--bar-fg);color:var(--bar)}
 .tabs{flex:1 1 auto;display:flex;gap:4px;margin-top:6px;min-width:0}
 .bar-in .infobtn{margin-top:6px;align-self:center}
-.bar-in>.status{order:1}.bar-in>.lang{order:2}.bar-in>.savebtn{order:3}.bar-in>.tabs{order:4;flex-basis:calc(100% - 48px)}.bar-in>.infobtn{order:5}
+.themebtn{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--bar-line);background:none;color:var(--sign);display:inline-grid;place-items:center;padding:0;margin-top:6px;align-self:center}
+.themebtn:hover{border-color:var(--bar-fg)}
+:root[data-app-theme="dark"] .themebtn .i-moon,:root:not([data-app-theme="dark"]) .themebtn .i-sun{display:none}
+.bar-in>.status{order:1}.bar-in>.lang{order:2}.bar-in>.savebtn{order:3}.bar-in>.tabs{order:4;flex-basis:calc(100% - 88px)}.bar-in>.themebtn{order:5}.bar-in>.infobtn{order:6}
 .tabs button{background:none;border:0;color:var(--bar-muted);padding:10px 12px 12px;font-family:var(--f-display);font-weight:700;font-stretch:87%;font-size:15px;text-transform:uppercase;letter-spacing:.05em;border-bottom:3px solid transparent}
 .tabs button[aria-selected="true"]{color:var(--bar-fg);border-bottom-color:var(--sign)}
 @media (max-width:440px){.status span{display:none}}
@@ -248,6 +248,7 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 .cat h3>.dot{width:12px;height:12px}
 .cat+.cat{margin-top:6px}
 .cat h3[style]{color:color-mix(in srgb,var(--cc) 80%,var(--ink))}
+.cat h3[style*="--c-yellow"]{color:var(--c-yellow)}
 .dot{width:10px;height:10px;border-radius:50%;background:var(--cc);flex:none;display:inline-block;vertical-align:middle}
 .ct .dot{width:8px;height:8px;margin-right:3px;vertical-align:1px}
 .chip .dot{width:8px;height:8px}
@@ -283,6 +284,7 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 </style>
 </head>
 <body>
+<script>(function(){var t='dark';try{t=localStorage.getItem('sbaleno-theme')||'dark'}catch(e){}document.documentElement.setAttribute('data-app-theme',t==='light'?'light':'dark')})();</script>
 
 <header class="bar">
   <div class="bar-in">
@@ -297,6 +299,7 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
       <button role="tab" id="tab-trips" data-act="tab" data-v="trips" aria-selected="true"></button>
       <button role="tab" id="tab-inv" data-act="tab" data-v="inv" aria-selected="false"></button>
     </nav>
+    <button class="themebtn" id="themeBtn" data-act="theme" type="button"><svg class="i-sun" width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg><svg class="i-moon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.6 8.6 0 1 0 11.1 11.1z"/></svg></button>
     <button class="infobtn" id="infoBtn" data-act="info" aria-haspopup="dialog">i</button>
   </div>
 </header>
@@ -361,7 +364,7 @@ const L={
   dlBackup:'Stáhnout celou zálohu',ulBackup:'Nahrát soubor…',
   importQ:(i,t)=>`Nahrát zálohu (${i} věcí, ${t} cest)? Současná data se přepíšou.`,upload:'Nahrát',
   imported:'Záloha nahrána.',noDl:'Stahování souborů tady není dostupné.',dlDone:'Záloha stažena.',dlFail:'Zálohu se nepodařilo stáhnout.',
-  badFile:'Tenhle soubor není záloha ze Sbaleno.',fileName:'sbaleno-zaloha-',appName:'Sbaleno',madeBy:'Made by',
+  badFile:'Tenhle soubor není záloha ze Sbaleno.',fileName:'sbaleno-zaloha-',appName:'Sbaleno',toLight:'Přepnout na světlý vzhled',toDark:'Přepnout na tmavý vzhled',madeBy:'Made by',
   pdfBtn:'Stáhnout PDF',pdfLabel:'BALICÍ SEZNAM',pdfPacked:(d,t)=>`sbaleno ${d} z ${t}`,pdfList:'Co zabalit',pdfByDay:'Po dnech',pdfDone:'PDF staženo.',pdfFail:'PDF se nepodařilo vytvořit.',coffee:'Buy me a coffee',
   info:'Nápověda',helpTitle:'Jak používat Sbaleno',close:'Rozumím',
   help:[['Inventář','Na kartě Inventář si sepiš věci, které běžně bereš. Barevným kolečkem u kategorie změníš její barvu.'],
@@ -409,7 +412,7 @@ const L={
   dlBackup:'Download full backup',ulBackup:'Upload file…',
   importQ:(i,t)=>`Upload backup (${i} items, ${t} trips)? Your current data will be replaced.`,upload:'Upload',
   imported:'Backup uploaded.',noDl:'File downloads aren’t available here.',dlDone:'Backup downloaded.',dlFail:'Couldn’t download the backup.',
-  badFile:'This file isn’t a Packed backup.',fileName:'packed-backup-',appName:'Packed',madeBy:'Made by',
+  badFile:'This file isn’t a Packed backup.',fileName:'packed-backup-',appName:'Packed',toLight:'Switch to light mode',toDark:'Switch to dark mode',madeBy:'Made by',
   pdfBtn:'Download PDF',pdfLabel:'PACKING LIST',pdfPacked:(d,t)=>`${d} of ${t} packed`,pdfList:'What to pack',pdfByDay:'Day by day',pdfDone:'PDF downloaded.',pdfFail:'Couldn’t create the PDF.',coffee:'Buy me a coffee',
   info:'Help',helpTitle:'How to use Packed',close:'Got it',
   help:[['Inventory','On the Inventory tab, list the things you usually take. Tap the coloured dot next to a category to change its colour.'],
@@ -469,7 +472,7 @@ function starter(lg){
   Object.entries(cats).forEach(([c,list])=>list.forEach(n=>{const id=uid();items.push({id,name:n,cat:c});by[n]=id}));
   const all={};['Pas','Peněženka','Platební karta','Telefon','Nabíječka','Kartáček na zuby','Zubní pasta','Deodorant','Klíče'].forEach(n=>all[by[n]]=1);
   const day=extra=>{const o={};o[by['Tričko']]=1;o[by['Spodní prádlo']]=1;o[by['Ponožky']]=1;(extra||[]).forEach(n=>o[by[n]]=1);return o};
-  return {v:1,lang:'cs',catColors:{},cats:Object.keys(cats),items,trips:[{
+  return {v:1,theme:(()=>{try{return localStorage.getItem('sbaleno-theme')==='light'?'light':'dark'}catch(e){return 'dark'}})(),lang:'cs',catColors:{},cats:Object.keys(cats),items,trips:[{
     id:uid(),name:'Ukázka: víkend ve Vídni',start:'2026-10-30',end:'2026-11-01',
     picks:{all,'2026-10-30':day(['Kalhoty','Mikina','Bunda']),'2026-10-31':day(['Deštník']),'2026-11-01':day()},
     packed:{[by['Pas']]:true,[by['Telefon']]:true}
@@ -477,7 +480,7 @@ function starter(lg){
 }
 function sanitize(d){
   if(!d||typeof d!=='object')return starter();
-  return {v:1,lang:d.lang==='en'?'en':'cs',catColors:(d.catColors&&typeof d.catColors==='object')?{...d.catColors}:{},cats:Array.isArray(d.cats)?d.cats.slice():[],items:Array.isArray(d.items)?d.items.map(x=>({...x})):[],
+  return {v:1,theme:d.theme==='light'?'light':'dark',lang:d.lang==='en'?'en':'cs',catColors:(d.catColors&&typeof d.catColors==='object')?{...d.catColors}:{},cats:Array.isArray(d.cats)?d.cats.slice():[],items:Array.isArray(d.items)?d.items.map(x=>({...x})):[],
     trips:Array.isArray(d.trips)?d.trips.map(t=>({...t,picks:JSON.parse(JSON.stringify(t.picks||{})),packed:{...(t.packed||{})}})):[]};
 }
 function loadLocal(){try{const s=localStorage.getItem(KEY);return s?sanitize(JSON.parse(s)):null}catch(e){return null}}
@@ -556,9 +559,14 @@ const INSTALLED=(()=>{ /* true only inside the Google Play / App Store apps, nev
     if(store){try{sessionStorage.setItem('sbaleno-store','1')}catch(e){}return true}
     try{return sessionStorage.getItem('sbaleno-store')==='1'}catch(e){return false}}catch(e){return false}})();
 const credit=()=>`<span class="by">${esc(T.madeBy)} <button class="ig" type="button" aria-haspopup="dialog" title="@i.vertalyot">Vert Alyot</button></span>${INSTALLED?'':`<span class="sep" aria-hidden="true">·</span><a class="coffee" href="${BMC}" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">☕</span> ${esc(T.coffee)}</a>`}`;
+function applyTheme(){const t=state.theme==='light'?'light':'dark';document.documentElement.setAttribute('data-app-theme',t);
+  try{localStorage.setItem('sbaleno-theme',t)}catch(e){}
+  const m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',t==='dark'?'#0E1217':'#16202B');
+  const b=document.getElementById('themeBtn');if(b){const l=t==='dark'?T.toLight:T.toDark;b.setAttribute('aria-label',l);b.title=l}}
 function render(){
   T=L[lang()];
   document.documentElement.lang=lang();
+  applyTheme();
   document.getElementById('brandName').textContent=T.appName;document.title=T.appName;
   document.getElementById('lang-cs').setAttribute('aria-pressed',lang()==='cs');
   document.getElementById('lang-en').setAttribute('aria-pressed',lang()==='en');
@@ -907,6 +915,7 @@ document.addEventListener('click',e=>{
   const b=e.target.closest('[data-act]');if(!b)return;
   const a=b.dataset.act,id=b.dataset.id,t=trip();
   switch(a){
+    case 'theme':state.theme=state.theme==='light'?'dark':'light';save();break;
     case 'lang':{const to=b.dataset.v;if(to===lang())return;translateStarter(to);state.lang=to;save();break}
     case 'tab':ui.tab=b.dataset.v;ui.delItem=null;break;
     case 'new-trip':ui.newTrip=!ui.newTrip;ui.tripErr='';break;
