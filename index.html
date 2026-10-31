@@ -71,6 +71,10 @@ button{cursor:pointer}
 .credit .credit-box{pointer-events:auto;width:max-content;max-width:100%;margin:0 auto;display:grid;grid-template-columns:auto auto;align-items:center;gap:14px;
   background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 6px 6px 18px;box-shadow:0 6px 24px rgba(10,14,19,.18);color:var(--muted)}
 .credit .credit-box:not(:has(.coffee)){padding-right:18px}
+.credit .credit-box{width:100%;grid-template-columns:1fr auto;justify-content:stretch}
+.credit .credit-box .by{justify-self:start;min-width:0}
+.credit .credit-box:not(:has(.coffee)){grid-template-columns:1fr;justify-items:center}
+.credit .credit-box:not(:has(.coffee)) .by{justify-self:center}
 .credit .credit-box .sep{display:none!important}
 .credit .credit-box .ig{border-bottom-width:1.5px}
 .credit .credit-box .by{white-space:nowrap}
