@@ -72,8 +72,10 @@ button{cursor:pointer}
   background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 6px 6px 18px;box-shadow:0 6px 24px rgba(10,14,19,.18);color:var(--muted)}
 .credit .credit-box:not(:has(.coffee)){padding-right:18px}
 .credit .credit-box{width:100%;grid-template-columns:1fr auto;justify-content:stretch}
-.credit .credit-box .by{justify-self:center;min-width:0}
-@media (min-width:600px){.credit .credit-box:has(.coffee){grid-template-columns:1fr auto 1fr;padding-left:6px}.credit .credit-box:has(.coffee) .by{grid-column:2}.credit .credit-box .coffee{grid-column:3;justify-self:end}}
+.credit .credit-box .by{min-width:0;padding-left:8px}
+.credit .credit-box{display:flex;justify-content:center;align-items:center;gap:16px;padding:6px}
+.credit .credit-box:not(:has(.coffee)){padding:12px 6px}
+.credit .credit-box:not(:has(.coffee)) .by{padding-left:0}
 .credit .credit-box:not(:has(.coffee)){grid-template-columns:1fr;justify-items:center}
 .credit .credit-box:not(:has(.coffee)) .by{justify-self:center}
 .credit .credit-box .sep{display:none!important}
