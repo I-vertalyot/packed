@@ -796,10 +796,10 @@ function viewDays(t,days){
 function viewPack(t){
   const a=aggregate(t);const done=a.filter(x=>isDone(t,x)).length;const pct=a.length?Math.round(done/a.length*100):0;
   const n=tripDays(t).length;
-  const daysTxt=x=>{if(x.keys.includes('all')&&x.keys.length===1)return T.wholeTrip;
-    const dCount=x.keys.filter(k=>k!=='all').length;
-    if(dCount===n&&n>1)return (x.keys.includes('all')?T.wholeTrip+' + ':'')+T.everyDay;
-    return x.keys.map(k=>k==='all'?T.wholeTrip:WD(k)).join(', ')};
+  /* which days an item is for; items for the whole trip get no label */
+  const daysTxt=x=>{const d=x.keys.filter(k=>k!=='all');if(!d.length)return '';
+    if(d.length===n&&n>1)return T.everyDay;
+    return d.map(k=>WD(k)).join(', ')};
   if(!a.length)return `<div class="empty">${esc(T.noPicks)}</div>`;
   return `<section class="panel">
       <div class="progress"><span class="big">${done}<span class="muted">/${a.length}</span></span><span class="muted">${done===a.length?T.allPacked:T.packedOf}</span>
@@ -808,7 +808,7 @@ function viewPack(t){
     </section>
     <section class="panel"><div class="row" style="justify-content:flex-end">${foldAll('pack',byCat(a).map(g=>g[0]))}</div>${byCat(a).map(([c,l])=>`<div class="cat${fold('pack',c)}"><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pack',c,dot(c)+esc(c),T.nPacked(l.filter(x=>isDone(t,x)).length,l.length))}</h3>${l.map(x=>`
       ${(()=>{const pn=packedN(t,x),dn=pn>=x.qty,part=pn>0&&!dn;return `<div class="pk ${dn?'done':''}${part?' part':''}"><label class="pk-l"><input type="checkbox" id="pk-${x.it.id}" data-pack="${x.it.id}" ${dn?'checked':''} ${part?'data-partial="1"':''}>
-        <span class="nm">${esc(x.it.name)}<span class="days">${esc(daysTxt(x))}</span></span></label>${x.qty>1?`<span class="pstep" aria-label="${esc(T.piecesPacked)}"><button type="button" data-act="pk-dec" data-id="${x.it.id}" aria-label="${T.less}" ${pn<=0?'disabled':''}>−</button><span class="pn">${pn}/${x.qty}</span><button type="button" data-act="pk-inc" data-id="${x.it.id}" aria-label="${T.more}" ${dn?'disabled':''}>+</button></span>`:`<span class="q">×1</span>`}</div>`})()}`).join('')}</div>`).join('')}
+        <span class="nm">${esc(x.it.name)}${daysTxt(x)?`<span class="days">${esc(daysTxt(x))}</span>`:''}</span></label>${x.qty>1?`<span class="pstep" aria-label="${esc(T.piecesPacked)}"><button type="button" data-act="pk-dec" data-id="${x.it.id}" aria-label="${T.less}" ${pn<=0?'disabled':''}>−</button><span class="pn">${pn}/${x.qty}</span><button type="button" data-act="pk-inc" data-id="${x.it.id}" aria-label="${T.more}" ${dn?'disabled':''}>+</button></span>`:`<span class="q">×1</span>`}</div>`})()}`).join('')}</div>`).join('')}
     </section>`;
 }
 
