@@ -307,7 +307,16 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 
 .progress{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 .progress .big{font-family:var(--f-display);font-stretch:75%;font-weight:800;font-size:40px;line-height:1}
-.pk{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line);cursor:pointer}
+.pk{display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.pk-l{flex:1;min-width:0;display:flex;gap:12px;align-items:center;cursor:pointer}
+.pstep{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;overflow:hidden;flex:none}
+.pstep button{border:0;background:none;width:30px;height:30px;font-size:16px;line-height:1;color:var(--ink)}
+.pstep button:hover:not(:disabled){background:var(--chip)}
+.pstep button:disabled{opacity:.3;cursor:default}
+.pstep .pn{min-width:38px;text-align:center;font-family:var(--f-mono);font-weight:700;font-size:13px}
+.pk.part .pstep{border-color:var(--ok)}
+.pk.part .pn{color:var(--ok)}
+.pk.done .pn{color:var(--muted)}
 .cat .pk:first-of-type{border-top:0}
 .pk input{width:22px;height:22px;accent-color:var(--ok);margin:0}
 .pk .nm{min-width:0;overflow-wrap:anywhere;font-weight:500}
@@ -427,14 +436,14 @@ const L={
   dlBackup:'Stáhnout celou zálohu',ulBackup:'Nahrát soubor…',
   importQ:(i,t)=>`Nahrát zálohu (${i} věcí, ${t} cest)? Současná data se přepíšou.`,upload:'Nahrát',
   imported:'Záloha nahrána.',noDl:'Stahování souborů tady není dostupné.',dlDone:'Záloha stažena.',dlFail:'Zálohu se nepodařilo stáhnout.',
-  badFile:'Tenhle soubor není záloha z aplikace Packed.',fileName:'packed-zaloha-',appName:'Packed',showMore:'Zobrazit více',showLess:'Zobrazit méně',edit:'Upravit',saveChanges:'Uložit změny',saveAnyway:'Přesto uložit',editNote:'Věci se při změně termínu přesunou podle pořadí dnů: 1. den zůstane 1. dnem.',shortenWarn:n=>`Cesta se zkrátí a ${n} ${csPl(n,'den','dny','dní')} na konci se smaže i s vybranými věcmi. Klikni na „Přesto uložit“.`,moveTo:'Přesunout do kategorie',newCat:'Nová kategorie',newCatOpt:'+ Nová kategorie…',newCatPh:'Název nové kategorie',ok:'OK',collapseAll:'Sbalit vše',expandAll:'Rozbalit vše',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Přepnout na světlý vzhled',toDark:'Přepnout na tmavý vzhled',madeBy:'Made by',
+  badFile:'Tenhle soubor není záloha z aplikace Packed.',fileName:'packed-zaloha-',appName:'Packed',piecesPacked:'Sbalené kusy',showMore:'Zobrazit více',showLess:'Zobrazit méně',edit:'Upravit',saveChanges:'Uložit změny',saveAnyway:'Přesto uložit',editNote:'Věci se při změně termínu přesunou podle pořadí dnů: 1. den zůstane 1. dnem.',shortenWarn:n=>`Cesta se zkrátí a ${n} ${csPl(n,'den','dny','dní')} na konci se smaže i s vybranými věcmi. Klikni na „Přesto uložit“.`,moveTo:'Přesunout do kategorie',newCat:'Nová kategorie',newCatOpt:'+ Nová kategorie…',newCatPh:'Název nové kategorie',ok:'OK',collapseAll:'Sbalit vše',expandAll:'Rozbalit vše',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Přepnout na světlý vzhled',toDark:'Přepnout na tmavý vzhled',madeBy:'Made by',
   pdfBtn:'Stáhnout PDF',pdfLabel:'BALICÍ SEZNAM',pdfPacked:(d,t)=>`sbaleno ${d} z ${t}`,pdfList:'Co zabalit',pdfByDay:'Po dnech',pdfDone:'PDF staženo.',pdfFail:'PDF se nepodařilo vytvořit.',coffee:'Buy me a coffee',
   info:'Nápověda',helpTitle:'Jak používat Packed',close:'Rozumím',
   help:[['Inventář','Na kartě Inventář si sepiš věci, které běžně bereš. Barevným kolečkem u kategorie změníš její barvu.'],
     ['Skrývání kategorií','Všechny kategorie jsou na začátku sbalené, aby byl seznam přehledný. Klepnutím na název kategorie ji rozbalíš nebo zase sbalíš. Tlačítkem „Rozbalit vše“ otevřeš všechny najednou.'],
     ['Nová cesta','Na kartě Cesty klikni na „+ Nová cesta“ a zadej, kam a kdy jedeš.'],
     ['Sbírání','V režimu „Sbírání“ nahoře vyber den a ťukáním přidej věci z inventáře. Věci na celou dobu dej do „Celá cesta“. Tlačítky − a + nastavíš počet kusů.'],
-    ['Balení','Přepni na „Balení“. Všechno je v jednom seznamu se sečtenými kusy, takže jen odškrtáváš, co už máš v kufru.'],
+    ['Balení','Přepni na „Balení“. Všechno je v jednom seznamu se sečtenými kusy, takže jen odškrtáváš, co už máš v kufru. U věcí s více kusy tlačítky − a + označíš, kolik jich už je sbaleno.'],
     ['PDF seznam','Na stránce cesty klikni na „Stáhnout PDF“. Dostaneš seznam k vytištění se zaškrtávacími políčky podle kategorií a přehled, co bereš na který den.'],
     ['Jiné zařízení','Inventář → Export a záloha → „Exportovat inventář“. Na druhém zařízení soubor nahraješ přes „Nahrát soubor…“.']],
   about:'Packed je balicí seznam na cesty. Sepíšeš si věci, které běžně bereš, na každý den cesty vybereš, co potřebuješ, a při balení jen odškrtáváš. Už nic nezapomeneš.',
@@ -476,14 +485,14 @@ const L={
   dlBackup:'Download full backup',ulBackup:'Upload file…',
   importQ:(i,t)=>`Upload backup (${i} items, ${t} trips)? Your current data will be replaced.`,upload:'Upload',
   imported:'Backup uploaded.',noDl:'File downloads aren’t available here.',dlDone:'Backup downloaded.',dlFail:'Couldn’t download the backup.',
-  badFile:'This file isn’t a Packed backup.',fileName:'packed-backup-',appName:'Packed',showMore:'Show more',showLess:'Show less',edit:'Edit',saveChanges:'Save changes',saveAnyway:'Save anyway',editNote:'If you change the dates, your plan moves with the day order: day 1 stays day 1.',shortenWarn:n=>`The trip gets shorter: ${n} ${enPl(n,'day','days')} at the end will be removed with their items. Tap “Save anyway” to continue.`,moveTo:'Move to category',newCat:'New category',newCatOpt:'+ New category…',newCatPh:'New category name',ok:'OK',collapseAll:'Collapse all',expandAll:'Expand all',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Switch to light mode',toDark:'Switch to dark mode',madeBy:'Made by',
+  badFile:'This file isn’t a Packed backup.',fileName:'packed-backup-',appName:'Packed',piecesPacked:'Pieces packed',showMore:'Show more',showLess:'Show less',edit:'Edit',saveChanges:'Save changes',saveAnyway:'Save anyway',editNote:'If you change the dates, your plan moves with the day order: day 1 stays day 1.',shortenWarn:n=>`The trip gets shorter: ${n} ${enPl(n,'day','days')} at the end will be removed with their items. Tap “Save anyway” to continue.`,moveTo:'Move to category',newCat:'New category',newCatOpt:'+ New category…',newCatPh:'New category name',ok:'OK',collapseAll:'Collapse all',expandAll:'Expand all',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Switch to light mode',toDark:'Switch to dark mode',madeBy:'Made by',
   pdfBtn:'Download PDF',pdfLabel:'PACKING LIST',pdfPacked:(d,t)=>`${d} of ${t} packed`,pdfList:'What to pack',pdfByDay:'Day by day',pdfDone:'PDF downloaded.',pdfFail:'Couldn’t create the PDF.',coffee:'Buy me a coffee',
   info:'Help',helpTitle:'How to use Packed',close:'Got it',
   help:[['Inventory','On the Inventory tab, list the things you usually take. Tap the coloured dot next to a category to change its colour.'],
     ['Folding categories','All categories start folded to keep things tidy. Tap a category’s name to show or hide its items. Use “Expand all” to open them all at once.'],
     ['New trip','On the Trips tab, tap “+ New trip” and enter where and when you’re going.'],
     ['Collecting','In “Collecting”, pick a day at the top and tap items from your inventory to add them. Things you need the whole time go under “Whole trip”. Use − and + to set how many.'],
-    ['Packing','Switch to “Packing”. Everything is in one list with the totals added up, so you just tick off what’s in your bag.'],
+    ['Packing','Switch to “Packing”. Everything is in one list with the totals added up, so you just tick off what’s in your bag. For items with several pieces, use − and + to mark how many are already packed.'],
     ['PDF list','On a trip page, tap “Download PDF”. You get a printable checklist grouped by category, plus an overview of what you’re taking each day.'],
     ['Another device','Inventory → Export & backup → “Export inventory”. On the other device, load the file with “Upload file…”.']],
   about:'Packed is a packing list for your travels. List the things you usually take, choose what you need for each day of a trip, then tick them off as you pack. Never forget anything again.',
@@ -611,7 +620,10 @@ function aggregate(t){
   ['all',...days].forEach(k=>{const p=t.picks[k]||{};Object.entries(p).forEach(([id,q])=>{const it=item(id);if(!it||!q)return;m[id]=m[id]||{it,qty:0,keys:[]};m[id].qty+=q;m[id].keys.push(k)})});
   return Object.values(m).sort((a,b)=>cmp(a.it.name,b.it.name));
 }
-function progress(t){const a=aggregate(t);const done=a.filter(x=>t.packed[x.it.id]).length;return {done,total:a.length}}
+function packedN(t,x){const v=t.packed[x.it.id];return v===true?x.qty:(typeof v==='number'?Math.max(0,Math.min(v,x.qty)):0)}
+function isDone(t,x){return packedN(t,x)>=x.qty}
+function setPacked(t,id,n,qty){if(n>=qty)t.packed[id]=true;else if(n<=0)delete t.packed[id];else t.packed[id]=n}
+function progress(t){const a=aggregate(t);const done=a.filter(x=>isDone(t,x)).length;return {done,total:a.length}}
 function addCat(c){if(c&&!state.cats.includes(c))state.cats.push(c)}
 function refreshCatList(){const all=[...new Set(catOrder().concat(state.cats))];document.getElementById('catlist').innerHTML=all.map(c=>`<option value="${esc(c)}">`).join('')}
 
@@ -657,6 +669,7 @@ function render(){
   refreshCatList();
   main.innerHTML=ui.tab==='inv'?viewInv():(ui.tripId?viewTrip():viewTrips());
   setBarH();
+  main.querySelectorAll('input[data-partial]').forEach(c=>{c.indeterminate=true});
   const ib=document.getElementById('infoBtn');ib.setAttribute('aria-label',T.info);ib.title=T.info;
   const hp=document.getElementById('help');hp.hidden=!ui.help;
   if(ui.help)document.getElementById('helpCard').innerHTML=`<h1 id="helpTitle" style="font-size:24px">${esc(T.helpTitle)}</h1>
@@ -781,7 +794,7 @@ function viewDays(t,days){
 }
 
 function viewPack(t){
-  const a=aggregate(t);const done=a.filter(x=>t.packed[x.it.id]).length;const pct=a.length?Math.round(done/a.length*100):0;
+  const a=aggregate(t);const done=a.filter(x=>isDone(t,x)).length;const pct=a.length?Math.round(done/a.length*100):0;
   const n=tripDays(t).length;
   const daysTxt=x=>{if(x.keys.includes('all')&&x.keys.length===1)return T.wholeTrip;
     const dCount=x.keys.filter(k=>k!=='all').length;
@@ -793,9 +806,9 @@ function viewPack(t){
         <span class="spacer"></span>${done?`<button class="btn ghost" data-act="reset-pack">${T.resetPack}</button>`:''}</div>
       <div class="meter"><i style="width:${pct}%"></i></div>
     </section>
-    <section class="panel"><div class="row" style="justify-content:flex-end">${foldAll('pack',byCat(a).map(g=>g[0]))}</div>${byCat(a).map(([c,l])=>`<div class="cat${fold('pack',c)}"><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pack',c,dot(c)+esc(c),T.nPacked(l.filter(x=>t.packed[x.it.id]).length,l.length))}</h3>${l.map(x=>`
-      <label class="pk ${t.packed[x.it.id]?'done':''}"><input type="checkbox" id="pk-${x.it.id}" data-pack="${x.it.id}" ${t.packed[x.it.id]?'checked':''}>
-        <span class="nm">${esc(x.it.name)}<span class="days">${esc(daysTxt(x))}</span></span><span class="q">×${x.qty}</span></label>`).join('')}</div>`).join('')}
+    <section class="panel"><div class="row" style="justify-content:flex-end">${foldAll('pack',byCat(a).map(g=>g[0]))}</div>${byCat(a).map(([c,l])=>`<div class="cat${fold('pack',c)}"><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pack',c,dot(c)+esc(c),T.nPacked(l.filter(x=>isDone(t,x)).length,l.length))}</h3>${l.map(x=>`
+      ${(()=>{const pn=packedN(t,x),dn=pn>=x.qty,part=pn>0&&!dn;return `<div class="pk ${dn?'done':''}${part?' part':''}"><label class="pk-l"><input type="checkbox" id="pk-${x.it.id}" data-pack="${x.it.id}" ${dn?'checked':''} ${part?'data-partial="1"':''}>
+        <span class="nm">${esc(x.it.name)}<span class="days">${esc(daysTxt(x))}</span></span></label>${x.qty>1?`<span class="pstep" aria-label="${esc(T.piecesPacked)}"><button type="button" data-act="pk-dec" data-id="${x.it.id}" aria-label="${T.less}" ${pn<=0?'disabled':''}>−</button><span class="pn">${pn}/${x.qty}</span><button type="button" data-act="pk-inc" data-id="${x.it.id}" aria-label="${T.more}" ${dn?'disabled':''}>+</button></span>`:`<span class="q">×1</span>`}</div>`})()}`).join('')}</div>`).join('')}
     </section>`;
 }
 
@@ -939,7 +952,7 @@ const cap1=s=>s.charAt(0).toUpperCase()+s.slice(1);
 function tripPDF(t){
   const d=pdfDoc(),M=48,W=d.W,H=d.H,CW=W-2*M,BOT=H-60;
   const INK='#16202B',MUT='#5B6878',LINE='#D8DEE5',SOFT='#E7EBF0',SIGN='#FFC62B',OK='#1C8556';
-  const days=tripDays(t),n=days.length,a=aggregate(t),done=a.filter(x=>t.packed[x.it.id]).length;
+  const days=tripDays(t),n=days.length,a=aggregate(t),done=a.filter(x=>isDone(t,x)).length;
   const wrap=(s,k,size,maxW)=>{const out=[];let line='';String(s).split(/\s+/).forEach(w=>{const tr=line?line+' '+w:w;if(!line||d.width(tr,k,size)<=maxW)line=tr;else{out.push(line);line=w}});if(line)out.push(line);return out};
   const fit=(s,k,size,maxW)=>{s=String(s);if(d.width(s,k,size)<=maxW)return s;while(s.length>1&&d.width(s+'…',k,size)>maxW)s=s.slice(0,-1);return s+'…'};
   let y=0;
@@ -964,10 +977,10 @@ function tripPDF(t){
     ensure(HEAD+ROW);let x0=M+col*(colW+GAP);
     d.circle(x0+4.2,cy-4.1,4.2,PDFC[catColor(c)]);
     d.text(fit(c.toUpperCase(),'B',11.5,colW-16),x0+14,cy,{font:'B',size:11.5,color:shade(PDFC[catColor(c)]),cs:0.5});cy+=HEAD-12;
-    l.forEach(x=>{ensure(ROW);x0=M+col*(colW+GAP);const packed=!!t.packed[x.it.id],by=cy+3.5;
+    l.forEach(x=>{ensure(ROW);x0=M+col*(colW+GAP);const pn=packedN(t,x),packed=pn>=x.qty,by=cy+3.5;
       d.rect(x0,by,10,10,{stroke:packed?OK:'#8A96A3',lw:0.9,fill:packed?'#E3F2EA':null});
       if(packed)d.poly([[x0+2.2,by+5.3],[x0+4.4,by+7.6],[x0+8,by+2.7]],{color:OK,lw:1.3});
-      const q='×'+x.qty,qw=d.width(q,'B',10);
+      const q=(pn>0&&!packed?pn+'/':'×')+x.qty,qw=d.width(q,'B',10);
       d.text(fit(x.it.name,'R',10,colW-18-qw-8),x0+17,cy+12,{size:10,color:packed?MUT:INK});
       d.text(q,x0+colW-qw,cy+12,{font:'B',size:10,color:packed?MUT:INK});
       d.text(fit(itemDays(t,x),'R',7.5,colW-17-qw-8),x0+17,cy+21,{size:7.5,color:MUT});
@@ -1037,6 +1050,7 @@ document.addEventListener('click',e=>{
     case 'clear-day':t.picks[ui.day]={};save();break;
     case 'copy-prev':{const days=tripDays(t);const i=days.indexOf(ui.day);if(i>0){t.picks[ui.day]={...(t.picks[days[i-1]]||{})};save()}break}
     case 'to-all-days':{const src={...(t.picks[ui.day]||{})};tripDays(t).forEach(d=>{t.picks[d]={...src}});save();break}
+    case 'pk-inc':case 'pk-dec':{const x=aggregate(t).find(z=>z.it.id===id);if(!x)break;setPacked(t,id,packedN(t,x)+(a==='pk-inc'?1:-1),x.qty);save();break}
     case 'reset-pack':t.packed={};save();break;
     case 'save-now':saveNow();return;
     case 'info':ui.help=true;render();{const c=document.getElementById('helpClose');if(c)c.focus()}return;
@@ -1109,7 +1123,7 @@ document.addEventListener('change',e=>{
     if(n){n.hidden=el.value!=='__new';n.required=el.value==='__new';if(el.value==='__new')n.focus()}
     if(el.value!=='__new'){ui.lastCat=el.value;el.closest('.catpick').style.setProperty('--cc',`var(--c-${catColor(el.value)})`)}return}
   if(el.id==='importFile'){if(el.files&&el.files[0])readImport(el.files[0]);el.value='';return}
-  if(el.dataset&&el.dataset.pack){const t=trip();if(el.checked)t.packed[el.dataset.pack]=true;else delete t.packed[el.dataset.pack];save();const y=window.scrollY;render();window.scrollTo(0,y);return}
+  if(el.dataset&&el.dataset.pack){const t=trip();if(el.checked||el.dataset.partial)t.packed[el.dataset.pack]=true;else delete t.packed[el.dataset.pack];save();const y=window.scrollY;render();window.scrollTo(0,y);return}
   if(el.classList.contains('rename')){const it=item(el.dataset.id);const v=el.value.trim();if(it&&v&&v!==it.name){it.name=v;save()}else if(it)el.value=it.name;return}
   if(el.classList.contains('recat')){const it=item(el.dataset.id);const v=el.value.trim()||OTHER();if(it&&v!==it.cat){it.cat=v;addCat(v);save();const y=window.scrollY;render();window.scrollTo(0,y)}return}
 });
