@@ -290,7 +290,10 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 .movebtn{position:relative;display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 9px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;max-width:118px}
 .movebtn .mv-l{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .movebtn svg{flex:none}
-.movebtn:hover,.movebtn:focus-within{border-color:var(--muted);color:var(--ink)}
+.movebtn{border-color:color-mix(in srgb,var(--cc) 70%,transparent);background:color-mix(in srgb,var(--cc) 16%,transparent);color:var(--ink)}
+.movebtn:hover,.movebtn:focus-within{border-color:var(--cc);background:color-mix(in srgb,var(--cc) 26%,transparent)}
+.catpick{border-color:color-mix(in srgb,var(--cc) 70%,transparent);background:color-mix(in srgb,var(--cc) 14%,var(--surface))}
+.catpick:hover,.catpick:focus-within{border-color:var(--cc)}
 .movebtn select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:16px}
 .newcat{display:flex;gap:6px;align-items:center;padding:4px 0 10px}
 .newcat .inp{flex:1;min-width:0}
@@ -747,7 +750,7 @@ function viewInv(){
     l.slice().sort((a,b)=>cmp(a.name,b.name)).map(it=>{const u=uses(it.id);
       if(ui.delItem===it.id)return `<div class="confirm" style="margin-block:6px">${esc(T.delItemQ(it.name,u))} <span class="spacer"></span><button class="btn" data-act="del-item-no">${T.no}</button><button class="btn danger" data-act="del-item-yes" data-id="${it.id}">${T.del}</button></div>`;
       return `<div class="inv"><input class="inp rename" id="nm-${it.id}" data-id="${it.id}" value="${esc(it.name)}" aria-label="${T.name}">
-        <label class="movebtn" title="${esc(T.moveTo)}"><span class="mv-l">${esc(it.cat||OTHER())}</span><svg width="10" height="10" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg><select class="recat-sel" id="mv-${it.id}" data-id="${it.id}" aria-label="${esc(T.moveTo)}: ${esc(it.name)}">${catOptions(it.cat||OTHER())}</select></label>
+        <label class="movebtn" title="${esc(T.moveTo)}" style="--cc:var(--c-${catColor(it.cat||OTHER())})"><span class="mv-l">${esc(it.cat||OTHER())}</span><svg width="10" height="10" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg><select class="recat-sel" id="mv-${it.id}" data-id="${it.id}" aria-label="${esc(T.moveTo)}: ${esc(it.name)}">${catOptions(it.cat||OTHER())}</select></label>
         <button class="x" data-act="del-item" data-id="${it.id}" aria-label="${T.del} ${esc(it.name)}">×</button></div>
         ${ui.newCatFor===it.id?`<form class="newcat" data-id="${it.id}"><input class="inp" id="nc-${it.id}" name="newcat" required placeholder="${esc(T.newCatPh)}" autocomplete="off" aria-label="${esc(T.newCat)}"><button class="btn primary" type="submit">${T.ok}</button><button class="btn ghost" type="button" data-act="newcat-cancel">${T.cancel}</button></form>`:''}`}).join('')}</div>`).join('');
   return `<div class="row"><h1>${T.inv}</h1><span class="spacer"></span><span class="muted">${T.things(state.items.length)}</span></div>
