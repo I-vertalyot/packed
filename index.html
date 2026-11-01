@@ -408,7 +408,7 @@ const L={
   dlBackup:'Stáhnout celou zálohu',ulBackup:'Nahrát soubor…',
   importQ:(i,t)=>`Nahrát zálohu (${i} věcí, ${t} cest)? Současná data se přepíšou.`,upload:'Nahrát',
   imported:'Záloha nahrána.',noDl:'Stahování souborů tady není dostupné.',dlDone:'Záloha stažena.',dlFail:'Zálohu se nepodařilo stáhnout.',
-  badFile:'Tenhle soubor není záloha z aplikace Packed.',fileName:'packed-zaloha-',appName:'Packed',moveTo:'Přesunout do kategorie',newCat:'Nová kategorie',newCatOpt:'+ Nová kategorie…',newCatPh:'Název nové kategorie',ok:'OK',collapseAll:'Sbalit vše',expandAll:'Rozbalit vše',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Přepnout na světlý vzhled',toDark:'Přepnout na tmavý vzhled',madeBy:'Made by',
+  badFile:'Tenhle soubor není záloha z aplikace Packed.',fileName:'packed-zaloha-',appName:'Packed',edit:'Upravit',saveChanges:'Uložit změny',saveAnyway:'Přesto uložit',editNote:'Věci se při změně termínu přesunou podle pořadí dnů: 1. den zůstane 1. dnem.',shortenWarn:n=>`Cesta se zkrátí a ${n} ${csPl(n,'den','dny','dní')} na konci se smaže i s vybranými věcmi. Klikni na „Přesto uložit“.`,moveTo:'Přesunout do kategorie',newCat:'Nová kategorie',newCatOpt:'+ Nová kategorie…',newCatPh:'Název nové kategorie',ok:'OK',collapseAll:'Sbalit vše',expandAll:'Rozbalit vše',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Přepnout na světlý vzhled',toDark:'Přepnout na tmavý vzhled',madeBy:'Made by',
   pdfBtn:'Stáhnout PDF',pdfLabel:'BALICÍ SEZNAM',pdfPacked:(d,t)=>`sbaleno ${d} z ${t}`,pdfList:'Co zabalit',pdfByDay:'Po dnech',pdfDone:'PDF staženo.',pdfFail:'PDF se nepodařilo vytvořit.',coffee:'Buy me a coffee',
   info:'Nápověda',helpTitle:'Jak používat Packed',close:'Rozumím',
   help:[['Inventář','Na kartě Inventář si sepiš věci, které běžně bereš. Barevným kolečkem u kategorie změníš její barvu.'],
@@ -457,7 +457,7 @@ const L={
   dlBackup:'Download full backup',ulBackup:'Upload file…',
   importQ:(i,t)=>`Upload backup (${i} items, ${t} trips)? Your current data will be replaced.`,upload:'Upload',
   imported:'Backup uploaded.',noDl:'File downloads aren’t available here.',dlDone:'Backup downloaded.',dlFail:'Couldn’t download the backup.',
-  badFile:'This file isn’t a Packed backup.',fileName:'packed-backup-',appName:'Packed',moveTo:'Move to category',newCat:'New category',newCatOpt:'+ New category…',newCatPh:'New category name',ok:'OK',collapseAll:'Collapse all',expandAll:'Expand all',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Switch to light mode',toDark:'Switch to dark mode',madeBy:'Made by',
+  badFile:'This file isn’t a Packed backup.',fileName:'packed-backup-',appName:'Packed',edit:'Edit',saveChanges:'Save changes',saveAnyway:'Save anyway',editNote:'If you change the dates, your plan moves with the day order: day 1 stays day 1.',shortenWarn:n=>`The trip gets shorter: ${n} ${enPl(n,'day','days')} at the end will be removed with their items. Tap “Save anyway” to continue.`,moveTo:'Move to category',newCat:'New category',newCatOpt:'+ New category…',newCatPh:'New category name',ok:'OK',collapseAll:'Collapse all',expandAll:'Expand all',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Switch to light mode',toDark:'Switch to dark mode',madeBy:'Made by',
   pdfBtn:'Download PDF',pdfLabel:'PACKING LIST',pdfPacked:(d,t)=>`${d} of ${t} packed`,pdfList:'What to pack',pdfByDay:'Day by day',pdfDone:'PDF downloaded.',pdfFail:'Couldn’t create the PDF.',coffee:'Buy me a coffee',
   info:'Help',helpTitle:'How to use Packed',close:'Got it',
   help:[['Inventory','On the Inventory tab, list the things you usually take. Tap the coloured dot next to a category to change its colour.'],
@@ -679,15 +679,32 @@ function viewTrips(){
     ${trips.length?`<div class="trips">${cards}</div>`:`<div class="empty">${esc(T.noTrips)}</div>`}`;
 }
 
+function editForm(t){const v=ui.editVals||{name:t.name,start:t.start,end:t.end};
+  return `<form class="panel" id="editTrip">
+      <div class="formgrid">
+        <div class="field wide"><label for="et-name">${T.where}</label><input class="inp" id="et-name" name="name" required value="${esc(v.name)}" autocomplete="off"></div>
+        <div class="field"><label for="et-start">${T.depart}</label><input class="inp" type="date" id="et-start" name="start" value="${v.start}" required></div>
+        <div class="field"><label for="et-end">${T.ret}</label><input class="inp" type="date" id="et-end" name="end" value="${v.end}" required></div>
+      </div>
+      ${ui.editErr?`<p class="err">${esc(T[ui.editErr])}</p>`:''}
+      ${ui.editWarn?`<p class="err">${esc(T.shortenWarn(ui.editWarn))}</p>`:`<p class="note">${esc(T.editNote)}</p>`}
+      <div class="row"><button class="btn primary" type="submit">${ui.editWarn?T.saveAnyway:T.saveChanges}</button><button class="btn ghost" type="button" data-act="edit-cancel">${T.cancel}</button></div>
+    </form>`}
+/* Move a trip's per-day plan to new dates: day 1 stays day 1, and so on */
+function retime(t,start,end){const oldDays=tripDays(t),newDays=tripDays({start,end});
+  const picks={all:t.picks.all||{}};oldDays.forEach((d,i)=>{if(i<newDays.length&&t.picks[d])picks[newDays[i]]=t.picks[d]});
+  t.start=start;t.end=end;t.picks=picks;}
+function droppedDays(t,start,end){const oldDays=tripDays(t),nn=tripDays({start,end}).length;
+  return oldDays.slice(nn).filter(d=>Object.values(t.picks[d]||{}).some(Boolean)).length}
 function viewTrip(){
   const t=trip();const days=tripDays(t);const n=days.length;const p=progress(t);
   if(ui.day!=='all'&&!days.includes(ui.day))ui.day='all';
   const head=`<div class="head">
       <div class="row"><button class="btn back" data-act="back"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 8H3.5M7.5 3.5 3 8l4.5 4.5"/></svg>${esc(T.back.replace(/^←\s*/,''))}</button><span class="spacer"></span>
-        ${ui.delTrip?'':`<button class="btn ghost danger" data-act="del-trip">${T.delTrip}</button>`}</div>
+        ${ui.delTrip||ui.editTrip?'':`<button class="btn ghost" data-act="edit-trip"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>${T.edit}</button><button class="btn ghost danger" data-act="del-trip">${T.delTrip}</button>`}</div>
       ${ui.delTrip?`<div class="confirm">${esc(T.delTripQ(t.name))} <span class="spacer"></span><button class="btn" data-act="del-trip-no">${T.no}</button><button class="btn danger" data-act="del-trip-yes">${T.del}</button></div>`:''}
-      <h1>${esc(t.name)}</h1>
-      <div class="muted mono">${WDL(t.start)} ${dm(t.start)} – ${WDL(t.end)} ${dm(t.end)} · ${T.days(n)}</div>
+      ${ui.editTrip?editForm(t):`<h1>${esc(t.name)}</h1>
+      <div class="muted mono">${WDL(t.start)} ${dm(t.start)} – ${WDL(t.end)} ${dm(t.end)} · ${T.days(n)}</div>`}
     </div>
     <div class="row"><div class="seg" role="group" aria-label="${T.view}">
       <button data-act="mode" data-v="days" aria-pressed="${ui.mode==='days'}"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>${T.byDay}</button>
@@ -985,8 +1002,8 @@ document.addEventListener('click',e=>{
     case 'tab':ui.tab=b.dataset.v;ui.delItem=null;break;
     case 'new-trip':ui.newTrip=!ui.newTrip;ui.tripErr='';break;
     case 'pdf':downloadTripPDF();return;
-    case 'open-trip':ui.tripMsg='';ui.tripId=id;ui.mode='days';ui.day='all';ui.delTrip=false;break;
-    case 'back':ui.tripId=null;ui.delTrip=false;break;
+    case 'open-trip':ui.tripMsg='';ui.editTrip=false;ui.editVals=null;ui.editWarn=0;ui.tripId=id;ui.mode='days';ui.day='all';ui.delTrip=false;break;
+    case 'back':ui.editTrip=false;ui.editVals=null;ui.editWarn=0;ui.tripId=null;ui.delTrip=false;break;
     case 'mode':ui.mode=b.dataset.v;break;
     case 'day':ui.day=b.dataset.k;break;
     case 'toggle-pick':{const cur=(t.picks[ui.day]||{})[id];setPick(t,ui.day,id,cur?0:1);save();break}
@@ -1006,6 +1023,8 @@ document.addEventListener('click',e=>{
     case 'import-pick':document.getElementById('importFile').click();return;
     case 'import-yes':if(pendingImport){state=pendingImport;pendingImport=null;ui.tripId=null;ui.importMsg='imported';save()}break;
     case 'import-no':pendingImport=null;ui.importMsg='';break;
+    case 'edit-trip':ui.editTrip=true;ui.editVals=null;ui.editErr='';ui.editWarn=0;ui.delTrip=false;break;
+    case 'edit-cancel':ui.editTrip=false;ui.editVals=null;ui.editErr='';ui.editWarn=0;break;
     case 'del-trip':ui.delTrip=true;break;
     case 'del-trip-no':ui.delTrip=false;break;
     case 'del-trip-yes':state.trips=state.trips.filter(x=>x.id!==ui.tripId);ui.tripId=null;ui.delTrip=false;save();break;
@@ -1023,6 +1042,16 @@ document.addEventListener('click',e=>{
 
 document.addEventListener('submit',e=>{
   e.preventDefault();const f=e.target;const fd=new FormData(f);
+  if(f.id==='editTrip'){const t=trip();if(!t)return;
+    const name=String(fd.get('name')).trim(),st=String(fd.get('start')),en=String(fd.get('end'));
+    ui.editVals={name,start:st,end:en};ui.editErr='';
+    if(!name||!st||!en)return;
+    if(en<st){ui.editErr='errOrder';ui.editWarn=0;render();return}
+    if(Math.round((parseD(en)-parseD(st))/864e5)>59){ui.editErr='errLong';ui.editWarn=0;render();return}
+    const drop=droppedDays(t,st,en);
+    if(drop&&ui.editWarn!==drop){ui.editWarn=drop;render();return}
+    t.name=name;if(st!==t.start||en!==t.end)retime(t,st,en);
+    ui.editTrip=false;ui.editVals=null;ui.editWarn=0;ui.day='all';save();render();return}
   if(f.id==='newTrip'){
     const name=String(fd.get('name')).trim(),s=fd.get('start'),en=fd.get('end');
     if(!name||!s||!en)return;
@@ -1074,6 +1103,7 @@ document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!holo.hidden){closeHolo();return}if(e.key==='Escape'&&ui.help){ui.help=false;render();document.getElementById('infoBtn').focus()}});
 
 document.addEventListener('input',e=>{
+  if(e.target.id==='et-start'||e.target.id==='et-end'){ui.editWarn=0;return}
   if(e.target.id!=='search')return;
   const q=e.target.value.trim().toLowerCase();
   main.querySelectorAll('[data-cat]').forEach(c=>{let any=false;c.querySelectorAll('.chip').forEach(ch=>{const m=!q||ch.dataset.name.includes(q);ch.hidden=!m;if(m)any=true});c.hidden=!any;c.classList.toggle('force',!!q)});
