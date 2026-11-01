@@ -262,6 +262,12 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 .cat.folded:not(.force)>:not(h3){display:none!important}
 .cat.folded{gap:0}
 .foldall{font-size:13px;padding:5px 8px}
+.wholehead{margin:0;display:flex}
+.wholehead .fold{font:inherit;text-transform:inherit;letter-spacing:inherit;color:inherit}
+.wholehead .fold-n{text-transform:none}
+.wholebody{display:flex;flex-direction:column;gap:14px}
+.wholepanel.folded .wholebody{display:none}
+.wholepanel.folded .fold .chev{transform:rotate(-90deg)}
 .cat+.cat{margin-top:6px}
 .cat h3[style]{color:color-mix(in srgb,var(--cc) 80%,var(--ink))}
 .cat h3[style*="--c-yellow"]{color:var(--c-yellow)}
@@ -521,7 +527,7 @@ function starter(lg){
 }
 function sanitize(d){
   if(!d||typeof d!=='object')return starter();
-  return {v:1,open:(d.open&&typeof d.open==='object')?JSON.parse(JSON.stringify(d.open)):{},theme:d.theme==='light'?'light':'dark',lang:d.lang==='en'?'en':'cs',catColors:(d.catColors&&typeof d.catColors==='object')?{...d.catColors}:{},cats:Array.isArray(d.cats)?d.cats.slice():[],items:Array.isArray(d.items)?d.items.map(x=>({...x})):[],
+  return {v:1,wholeFolded:!!d.wholeFolded,open:(d.open&&typeof d.open==='object')?JSON.parse(JSON.stringify(d.open)):{},theme:d.theme==='light'?'light':'dark',lang:d.lang==='en'?'en':'cs',catColors:(d.catColors&&typeof d.catColors==='object')?{...d.catColors}:{},cats:Array.isArray(d.cats)?d.cats.slice():[],items:Array.isArray(d.items)?d.items.map(x=>({...x})):[],
     trips:Array.isArray(d.trips)?d.trips.map(t=>({...t,picks:JSON.parse(JSON.stringify(t.picks||{})),packed:{...(t.packed||{})}})):[]};
 }
 function loadLocal(){try{const s=localStorage.getItem(KEY);return s?sanitize(JSON.parse(s)):null}catch(e){return null}}
@@ -716,7 +722,7 @@ function viewDays(t,days){
   const picker=byCat(state.items).map(([c,l])=>`<div class="cat${fold('pick',c)}" data-cat><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pick',c,dot(c)+esc(c),T.nPicked(l.filter(it=>picks[it.id]).length,l.length))}</h3><div class="chips">${
       l.slice().sort((a,b)=>cmp(a.name,b.name)).map(it=>`<button class="chip ${picks[it.id]?'on':''}" data-act="toggle-pick" data-id="${it.id}" data-name="${esc(it.name.toLowerCase())}">${dot(it.cat||OTHER())}${esc(it.name)}</button>`).join('')}</div></div>`).join('');
   return `<div class="gates" role="group" aria-label="${T.tripDays}">${gates}</div>
-    <section class="panel"><div class="row"><h2>${title}</h2></div>${list}${actions}</section>
+    ${k==='all'?`<section class="panel wholepanel${state.wholeFolded?' folded':''}"><h2 class="wholehead"><button class="fold" type="button" data-act="fold-whole" aria-expanded="${!state.wholeFolded}"><span class="fold-l">${title}</span><span class="fold-n">${esc(T.things(grouped.length))}</span>${CHEV}</button></h2><div class="wholebody">${list}${actions}</div></section>`:`<section class="panel"><div class="row"><h2>${title}</h2></div>${list}${actions}</section>`}
     <section class="panel">
       <div class="row"><h2>${T.addFromInv}</h2><span class="spacer"></span>${foldAll('pick',byCat(state.items).map(g=>g[0]))}
         <input class="inp" id="search" type="search" placeholder="${T.search}" style="max-width:200px" autocomplete="off"></div>
@@ -971,6 +977,7 @@ document.addEventListener('click',e=>{
   const b=e.target.closest('[data-act]');if(!b)return;
   const a=b.dataset.act,id=b.dataset.id,t=trip();
   switch(a){
+    case 'fold-whole':state.wholeFolded=!state.wholeFolded;save();break;
     case 'fold':{const v=b.dataset.v,c=b.dataset.c;state.open=state.open||{};const l=new Set(state.open[v]||[]);l.has(c)?l.delete(c):l.add(c);state.open[v]=[...l];save();break}
     case 'foldall':{const v=b.dataset.v;state.open=state.open||{};state.open[v]=b.dataset.all?catOrder():[];save();break}
     case 'theme':state.theme=state.theme==='light'?'dark':'light';save();break;
