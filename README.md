@@ -1,4 +1,4 @@
-# Sbaleno · Packed
+# Packed
 
 A travel packing app. Keep an inventory of the things you usually take, plan what you need for each day of a trip, then tick items off while you pack.
 
@@ -6,7 +6,7 @@ A travel packing app. Keep an inventory of the things you usually take, plan wha
 - **Trips:** a list for each day plus "Whole trip" for documents, chargers and so on; copy a day or use it for every day
 - **Packing:** one combined checklist with quantities added up
 - **PDF export:** download a printable packing list for any trip
-- **Czech / English:** switch with CS / EN (the English version is called *Packed*)
+- **Czech / English:** switch with CS / EN
 - **Works offline** and can be added to your phone's home screen
 
 Your data is stored on your own device (in the browser's local storage). Use **Inventory → Backup** to download it as a file or move it to another device.

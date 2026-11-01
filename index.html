@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Sbaleno</title>
+<title>Packed</title>
 <meta name="description" content="Travel packing list: an inventory of your things and a day-by-day plan for every trip.">
 <meta name="theme-color" content="#16202B">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Sbaleno">
+<meta name="apple-mobile-web-app-title" content="Packed">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -319,7 +319,7 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 
 <header class="bar">
   <div class="bar-in">
-    <div class="brand"><i aria-hidden="true">✓</i><span id="brandName">Sbaleno</span></div>
+    <div class="brand"><i aria-hidden="true">✓</i><span id="brandName">Packed</span></div>
     <div class="status" id="status"><b></b><span></span></div>
     <div class="lang" role="group" aria-label="Language">
       <button id="lang-cs" data-act="lang" data-v="cs" aria-pressed="true">CS</button>
@@ -395,9 +395,9 @@ const L={
   dlBackup:'Stáhnout celou zálohu',ulBackup:'Nahrát soubor…',
   importQ:(i,t)=>`Nahrát zálohu (${i} věcí, ${t} cest)? Současná data se přepíšou.`,upload:'Nahrát',
   imported:'Záloha nahrána.',noDl:'Stahování souborů tady není dostupné.',dlDone:'Záloha stažena.',dlFail:'Zálohu se nepodařilo stáhnout.',
-  badFile:'Tenhle soubor není záloha ze Sbaleno.',fileName:'sbaleno-zaloha-',appName:'Sbaleno',moveTo:'Přesunout do kategorie',newCat:'Nová kategorie',newCatOpt:'+ Nová kategorie…',newCatPh:'Název nové kategorie',ok:'OK',collapseAll:'Sbalit vše',expandAll:'Rozbalit vše',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Přepnout na světlý vzhled',toDark:'Přepnout na tmavý vzhled',madeBy:'Made by',
+  badFile:'Tenhle soubor není záloha z aplikace Packed.',fileName:'packed-zaloha-',appName:'Packed',moveTo:'Přesunout do kategorie',newCat:'Nová kategorie',newCatOpt:'+ Nová kategorie…',newCatPh:'Název nové kategorie',ok:'OK',collapseAll:'Sbalit vše',expandAll:'Rozbalit vše',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Přepnout na světlý vzhled',toDark:'Přepnout na tmavý vzhled',madeBy:'Made by',
   pdfBtn:'Stáhnout PDF',pdfLabel:'BALICÍ SEZNAM',pdfPacked:(d,t)=>`sbaleno ${d} z ${t}`,pdfList:'Co zabalit',pdfByDay:'Po dnech',pdfDone:'PDF staženo.',pdfFail:'PDF se nepodařilo vytvořit.',coffee:'Buy me a coffee',
-  info:'Nápověda',helpTitle:'Jak používat Sbaleno',close:'Rozumím',
+  info:'Nápověda',helpTitle:'Jak používat Packed',close:'Rozumím',
   help:[['Inventář','Na kartě Inventář si sepiš věci, které běžně bereš. Barevným kolečkem u kategorie změníš její barvu.'],
     ['Skrývání kategorií','Všechny kategorie jsou na začátku sbalené, aby byl seznam přehledný. Klepnutím na název kategorie ji rozbalíš nebo zase sbalíš. Tlačítkem „Rozbalit vše“ otevřeš všechny najednou.'],
     ['Nová cesta','Na kartě Cesty klikni na „+ Nová cesta“ a zadej, kam a kdy jedeš.'],
@@ -405,10 +405,10 @@ const L={
     ['Balení','Přepni na „Balení“. Všechno je v jednom seznamu se sečtenými kusy, takže jen odškrtáváš, co už máš v kufru.'],
     ['PDF seznam','Na stránce cesty klikni na „Stáhnout PDF“. Dostaneš seznam k vytištění se zaškrtávacími políčky podle kategorií a přehled, co bereš na který den.'],
     ['Jiné zařízení','Inventář → Export a záloha → „Exportovat inventář“. Na druhém zařízení soubor nahraješ přes „Nahrát soubor…“.']],
-  about:'Sbaleno je balicí seznam na cesty. Sepíšeš si věci, které běžně bereš, na každý den cesty vybereš, co potřebuješ, a při balení jen odškrtáváš. Už nic nezapomeneš.',
+  about:'Packed je balicí seznam na cesty. Sepíšeš si věci, které běžně bereš, na každý den cesty vybereš, co potřebuješ, a při balení jen odškrtáváš. Už nic nezapomeneš.',
   privacy:'Ochrana soukromí',
   helpTip:'Všechno se ukládá samo. Jazyk přepneš tlačítky CS / EN.',
-  invExp:'Exportovat inventář',invXNote:'Inventář si vyexportuj do souboru a na jiném zařízení ho nahraj přes „Nahrát soubor…“. Věci se přidají k těm, které tam už máš.',invFileName:'sbaleno-inventar-',
+  invExp:'Exportovat inventář',invXNote:'Inventář si vyexportuj do souboru a na jiném zařízení ho nahraj přes „Nahrát soubor…“. Věci se přidají k těm, které tam už máš.',invFileName:'packed-inventar-',
   invDone:'Inventář stažen. Soubor si pošli do druhého zařízení (e-mailem, přes cloud…) a nahraj ho tam.',
   invQ:(n,k)=>`Přidat ${n} ${csPl(n,'novou věc','nové věci','nových věcí')} do inventáře?${k?` ${k} už máš, ty se přeskočí.`:''} Cesty zůstanou beze změny.`,
   invImported:'Věci přidány do inventáře.',invNothing:'Všechny věci z tohoto souboru už v inventáři máš.',

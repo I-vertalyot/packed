@@ -1,4 +1,4 @@
-# Store listing – Packed (Sbaleno)
+# Store listing – Packed
 
 Copy and paste these texts into Google Play Console and App Store Connect.
 English is the default language; Czech is added as a translation.
@@ -70,7 +70,7 @@ First release of Packed. Have a good trip!
 ## Čeština
 
 **Název aplikace** (≤ 30)
-Sbaleno – balicí seznam
+Packed – balicí seznam
 
 **Podtitul Apple** (≤ 30)
 Plánuj, balej, nic nezapomeň
@@ -88,7 +88,7 @@ balicí seznam,cestování,dovolená,kufr,checklist,výlet,plánovač,zavazadla,
 
 Už nikdy nic nezapomeneš.
 
-Sbaleno je jednoduchý balicí seznam na cesty. Sepíšeš si věci, které běžně bereš, na každý den cesty vybereš, co potřebuješ, a při balení jen odškrtáváš.
+Packed je jednoduchý balicí seznam na cesty. Sepíšeš si věci, které běžně bereš, na každý den cesty vybereš, co potřebuješ, a při balení jen odškrtáváš.
 
 PLÁN PO DNECH
 • Každá cesta má seznam pro každý den a navíc „Celou cestu“ pro doklady, nabíječky a další nezbytnosti
@@ -115,7 +115,7 @@ SOUKROMĚ A OFFLINE
 Česky a anglicky.
 
 **Co je nového** (první verze)
-První verze aplikace Sbaleno. Šťastnou cestu!
+První verze aplikace Packed. Šťastnou cestu!
 
 ## Google Play: Data safety form
 
