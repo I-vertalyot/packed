@@ -283,10 +283,27 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 .pk .q{font-family:var(--f-mono);font-weight:700;font-size:15px}
 .pk.done .nm{text-decoration:line-through;color:var(--muted)}
 
-.inv{display:grid;grid-template-columns:1fr 150px auto;gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--line)}
+.inv{display:grid;grid-template-columns:1fr auto auto;gap:4px;align-items:center;padding:4px 0;border-top:1px solid var(--line)}
+.inv .rename{border-color:transparent;background:transparent;padding:8px 6px;margin-left:-6px;font-weight:500}
+.inv .rename:hover{border-color:var(--line)}
+.inv .rename:focus{border-color:var(--ink);background:var(--surface)}
+.movebtn{position:relative;width:34px;height:34px;display:grid;place-items:center;border-radius:6px;color:var(--muted);cursor:pointer}
+.movebtn:hover,.movebtn:focus-within{background:var(--chip);color:var(--ink)}
+.movebtn select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:16px}
+.newcat{display:flex;gap:6px;align-items:center;padding:4px 0 10px}
+.newcat .inp{flex:1;min-width:0}
+.addrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.addrow>.inp{flex:1 1 160px;min-width:0}
+.addform{display:flex;flex-direction:column;gap:8px}
+.newcat-in{width:100%}
+.catpick{position:relative;display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);font-size:14px;font-weight:600;cursor:pointer;max-width:170px}
+.catpick:hover,.catpick:focus-within{border-color:var(--muted)}
+.catpick select{appearance:none;-webkit-appearance:none;border:0;background:transparent;color:inherit;font:inherit;padding:0;margin:0;min-width:0;max-width:110px;text-overflow:ellipsis;cursor:pointer;outline:none}
+.catpick select option{color:#16202B;background:#fff}
+.catpick svg{flex:none;color:var(--muted)}
 .cat .inv:first-of-type{border-top:0}
 .inv .inp{padding:7px 9px}
-@media (max-width:480px){.inv{grid-template-columns:1fr auto}.inv .recat{grid-column:1/2}}
+
 .note{font-size:13px;color:var(--muted);margin:0}
 .confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--chip);border-radius:6px;padding:10px 12px;font-size:14px}
 @media (prefers-reduced-motion:no-preference){.meter i{transition:width .3s ease}}
@@ -366,14 +383,14 @@ const L={
   noPicks:'Zatím nemáš vybrané žádné věci. Přepni na „Po dnech“ a poskládej si, co bereš.',
   allPacked:'Všechno sbaleno. Šťastnou cestu!',packedOf:'věcí sbaleno',resetPack:'Zrušit odškrtnutí',
   inv:'Inventář',thing:'Věc',thingPh:'např. Čelovka',add:'Přidat',
-  invNote:'Kategorii vyber ze seznamu, nebo napiš novou. Názvy a kategorie můžeš níž rovnou přepsat. Barvu kategorie změníš kliknutím na barevné kolečko.',
+  invNote:'Kategorii vyber v nabídce vedle názvu. Název věci přepíšeš klepnutím, ikonou složky ji přesuneš do jiné kategorie. Barvu kategorie změníš kliknutím na barevné kolečko.',
   invEmpty:'Inventář je prázdný. Přidej první věc výše.',name:'Název',
   delItemQ:(n,u)=>`Smazat „${n}“${u?` (je ve ${u} ${csPl(u,'cestě','cestách','cestách')})`:''}?`,
   backup:'Export a záloha',backupNote:'Všechno se ukládá automaticky v tomto zařízení. Zálohou do souboru si data pojistíš nebo je přeneseš do jiného telefonu či počítače.',
   dlBackup:'Stáhnout celou zálohu',ulBackup:'Nahrát soubor…',
   importQ:(i,t)=>`Nahrát zálohu (${i} věcí, ${t} cest)? Současná data se přepíšou.`,upload:'Nahrát',
   imported:'Záloha nahrána.',noDl:'Stahování souborů tady není dostupné.',dlDone:'Záloha stažena.',dlFail:'Zálohu se nepodařilo stáhnout.',
-  badFile:'Tenhle soubor není záloha ze Sbaleno.',fileName:'sbaleno-zaloha-',appName:'Sbaleno',collapseAll:'Sbalit vše',expandAll:'Rozbalit vše',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Přepnout na světlý vzhled',toDark:'Přepnout na tmavý vzhled',madeBy:'Made by',
+  badFile:'Tenhle soubor není záloha ze Sbaleno.',fileName:'sbaleno-zaloha-',appName:'Sbaleno',moveTo:'Přesunout do kategorie',newCat:'Nová kategorie',newCatOpt:'+ Nová kategorie…',newCatPh:'Název nové kategorie',ok:'OK',collapseAll:'Sbalit vše',expandAll:'Rozbalit vše',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Přepnout na světlý vzhled',toDark:'Přepnout na tmavý vzhled',madeBy:'Made by',
   pdfBtn:'Stáhnout PDF',pdfLabel:'BALICÍ SEZNAM',pdfPacked:(d,t)=>`sbaleno ${d} z ${t}`,pdfList:'Co zabalit',pdfByDay:'Po dnech',pdfDone:'PDF staženo.',pdfFail:'PDF se nepodařilo vytvořit.',coffee:'Buy me a coffee',
   info:'Nápověda',helpTitle:'Jak používat Sbaleno',close:'Rozumím',
   help:[['Inventář','Na kartě Inventář si sepiš věci, které běžně bereš. Barevným kolečkem u kategorie změníš její barvu.'],
@@ -415,14 +432,14 @@ const L={
   noPicks:'You haven’t picked anything yet. Switch to “By day” and choose what you’re taking.',
   allPacked:'All packed. Have a good trip!',packedOf:'items packed',resetPack:'Uncheck all',
   inv:'Inventory',thing:'Item',thingPh:'e.g. Headlamp',add:'Add',
-  invNote:'Pick a category from the list or type a new one. You can rename items and categories below. Click a category’s colour dot to change its colour.',
+  invNote:'Pick a category from the menu next to the name. Tap an item’s name to rename it; use the folder icon to move it to another category. Click a category’s colour dot to change its colour.',
   invEmpty:'Your inventory is empty. Add the first item above.',name:'Name',
   delItemQ:(n,u)=>`Delete “${n}”${u?` (used in ${u} ${enPl(u,'trip','trips')})`:''}?`,
   backup:'Export & backup',backupNote:'Everything saves automatically on this device. Download a backup file to keep your data safe or move it to another phone or computer.',
   dlBackup:'Download full backup',ulBackup:'Upload file…',
   importQ:(i,t)=>`Upload backup (${i} items, ${t} trips)? Your current data will be replaced.`,upload:'Upload',
   imported:'Backup uploaded.',noDl:'File downloads aren’t available here.',dlDone:'Backup downloaded.',dlFail:'Couldn’t download the backup.',
-  badFile:'This file isn’t a Packed backup.',fileName:'packed-backup-',appName:'Packed',collapseAll:'Collapse all',expandAll:'Expand all',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Switch to light mode',toDark:'Switch to dark mode',madeBy:'Made by',
+  badFile:'This file isn’t a Packed backup.',fileName:'packed-backup-',appName:'Packed',moveTo:'Move to category',newCat:'New category',newCatOpt:'+ New category…',newCatPh:'New category name',ok:'OK',collapseAll:'Collapse all',expandAll:'Expand all',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Switch to light mode',toDark:'Switch to dark mode',madeBy:'Made by',
   pdfBtn:'Download PDF',pdfLabel:'PACKING LIST',pdfPacked:(d,t)=>`${d} of ${t} packed`,pdfList:'What to pack',pdfByDay:'Day by day',pdfDone:'PDF downloaded.',pdfFail:'Couldn’t create the PDF.',coffee:'Buy me a coffee',
   info:'Help',helpTitle:'How to use Packed',close:'Got it',
   help:[['Inventory','On the Inventory tab, list the things you usually take. Tap the coloured dot next to a category to change its colour.'],
@@ -581,6 +598,10 @@ function openCat(v,c){state.open=state.open||{};const l=new Set(state.open[v]||[
 const fold=(v,c)=>isFolded(v,c)?' folded':'';
 const foldBtn=(v,c,label,count)=>`<button class="fold" type="button" data-act="fold" data-v="${v}" data-c="${esc(c)}" aria-expanded="${!isFolded(v,c)}"><span class="fold-l">${label}</span><span class="fold-n">${esc(count)}</span>${CHEV}</button>`;
 const foldAll=(v,cats)=>{if(!cats.length)return '';const all=cats.every(c=>isFolded(v,c));return `<button class="btn ghost foldall" type="button" data-act="foldall" data-v="${v}" data-all="${all?'1':''}">${all?T.expandAll:T.collapseAll}</button>`};
+const allCats=()=>{const l=[...new Set(catOrder().concat(state.cats))];if(!l.length)l.push(OTHER());return l};
+const catOptions=sel=>allCats().map(c=>`<option value="${esc(c)}"${c===sel?' selected':''}>${esc(c)}</option>`).join('')+`<option value="__new">${esc(T.newCatOpt)}</option>`;
+const catPick=pre=>{const cur=allCats().includes(ui.lastCat)?ui.lastCat:allCats()[0];
+  return `<label class="catpick" style="--cc:var(--c-${catColor(cur)})"><i class="dot" aria-hidden="true"></i><select id="${pre}-cat" name="cat" aria-label="${T.category}">${catOptions(cur)}</select><svg width="12" height="12" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg></label>`};
 function render(){
   T=L[lang()];
   document.documentElement.lang=lang();
@@ -688,10 +709,13 @@ function viewDays(t,days){
       <div class="row"><h2>${T.addFromInv}</h2><span class="spacer"></span>${foldAll('pick',byCat(state.items).map(g=>g[0]))}
         <input class="inp" id="search" type="search" placeholder="${T.search}" style="max-width:200px" autocomplete="off"></div>
       ${picker||`<p class="note">${esc(T.invEmptyPick)}</p>`}
-      <form id="addToDay" class="row" style="border-top:1px solid var(--line);padding-top:14px">
-        <div class="field" style="flex:2 1 160px"><label for="ad-name">${T.newThing}</label><input class="inp" id="ad-name" name="name" required placeholder="${esc(T.newThingPh)}" autocomplete="off"></div>
-        <div class="field" style="flex:1 1 120px"><label for="ad-cat">${T.category}</label><input class="inp" id="ad-cat" name="cat" list="catlist" placeholder="${esc(OTHER())}" autocomplete="off"></div>
-        <button class="btn" type="submit" style="align-self:flex-end">${T.addBoth}</button>
+      <form id="addToDay" class="addform" style="border-top:1px solid var(--line);padding-top:14px">
+        <div class="addrow" style="width:100%">
+          <input class="inp" id="ad-name" name="name" required placeholder="${esc(T.newThingPh)}" autocomplete="off" aria-label="${T.newThing}">
+          ${catPick('ad')}
+          <button class="btn" type="submit">${T.add}</button>
+        </div>
+        <input class="inp newcat-in" id="ad-newcat" name="newcat" placeholder="${esc(T.newCatPh)}" autocomplete="off" aria-label="${esc(T.newCat)}" hidden>
       </form>
     </section>`;
 }
@@ -721,15 +745,17 @@ function viewInv(){
     l.slice().sort((a,b)=>cmp(a.name,b.name)).map(it=>{const u=uses(it.id);
       if(ui.delItem===it.id)return `<div class="confirm" style="margin-block:6px">${esc(T.delItemQ(it.name,u))} <span class="spacer"></span><button class="btn" data-act="del-item-no">${T.no}</button><button class="btn danger" data-act="del-item-yes" data-id="${it.id}">${T.del}</button></div>`;
       return `<div class="inv"><input class="inp rename" id="nm-${it.id}" data-id="${it.id}" value="${esc(it.name)}" aria-label="${T.name}">
-        <input class="inp recat" id="ct-${it.id}" data-id="${it.id}" value="${esc(it.cat||'')}" list="catlist" aria-label="${T.category}" placeholder="${esc(OTHER())}">
-        <button class="x" data-act="del-item" data-id="${it.id}" aria-label="${T.del} ${esc(it.name)}">×</button></div>`}).join('')}</div>`).join('');
+        <label class="movebtn" title="${esc(T.moveTo)}"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5a2 2 0 0 1 2-2h4l2 2.2h8a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M10 13.2h7M14.2 10.4 17 13.2l-2.8 2.8"/></svg><select class="recat-sel" id="mv-${it.id}" data-id="${it.id}" aria-label="${esc(T.moveTo)}: ${esc(it.name)}">${catOptions(it.cat||OTHER())}</select></label>
+        <button class="x" data-act="del-item" data-id="${it.id}" aria-label="${T.del} ${esc(it.name)}">×</button></div>
+        ${ui.newCatFor===it.id?`<form class="newcat" data-id="${it.id}"><input class="inp" id="nc-${it.id}" name="newcat" required placeholder="${esc(T.newCatPh)}" autocomplete="off" aria-label="${esc(T.newCat)}"><button class="btn primary" type="submit">${T.ok}</button><button class="btn ghost" type="button" data-act="newcat-cancel">${T.cancel}</button></form>`:''}`}).join('')}</div>`).join('');
   return `<div class="row"><h1>${T.inv}</h1><span class="spacer"></span><span class="muted">${T.things(state.items.length)}</span></div>
     <form class="panel" id="addItem">
-      <div class="row" style="align-items:flex-end">
-        <div class="field" style="flex:2 1 180px"><label for="ai-name">${T.thing}</label><input class="inp" id="ai-name" name="name" required placeholder="${esc(T.thingPh)}" autocomplete="off"></div>
-        <div class="field" style="flex:1 1 130px"><label for="ai-cat">${T.category}</label><input class="inp" id="ai-cat" name="cat" list="catlist" placeholder="${esc(OTHER())}" autocomplete="off"></div>
+      <div class="addrow">
+        <input class="inp" id="ai-name" name="name" required placeholder="${esc(T.thingPh)}" autocomplete="off" aria-label="${T.thing}">
+        ${catPick('ai')}
         <button class="btn primary" type="submit">${T.add}</button>
       </div>
+      <input class="inp newcat-in" id="ai-newcat" name="newcat" placeholder="${esc(T.newCatPh)}" autocomplete="off" aria-label="${esc(T.newCat)}" hidden>
       <p class="note">${esc(T.invNote)}</p>
     </form>
     <section class="panel">${groups?`<div class="row" style="justify-content:flex-end">${foldAll('inv',byCat(state.items).map(g=>g[0]))}</div>`+groups:`<div class="empty">${esc(T.invEmpty)}</div>`}</section>
@@ -966,6 +992,7 @@ document.addEventListener('click',e=>{
     case 'del-trip-yes':state.trips=state.trips.filter(x=>x.id!==ui.tripId);ui.tripId=null;ui.delTrip=false;save();break;
     case 'pick-color':ui.colorCat=ui.colorCat===b.dataset.c?null:b.dataset.c;break;
     case 'set-color':state.catColors=state.catColors||{};state.catColors[b.dataset.c]=b.dataset.v;ui.colorCat=null;save();break;
+    case 'newcat-cancel':ui.newCatFor=null;break;
     case 'del-item':ui.delItem=id;break;
     case 'del-item-no':ui.delItem=null;break;
     case 'del-item-yes':state.items=state.items.filter(i=>i.id!==id);state.trips.forEach(tr=>{Object.values(tr.picks).forEach(p=>{if(p)delete p[id]});delete tr.packed[id]});ui.delItem=null;save();break;
@@ -985,8 +1012,11 @@ document.addEventListener('submit',e=>{
     const t={id:uid(),name,start:s,end:en,picks:{all:{}},packed:{}};
     state.trips.push(t);ui.newTrip=false;ui.tripErr='';ui.tripId=t.id;ui.mode='days';ui.day='all';save();render();window.scrollTo(0,0);
   }
+  if(f.classList.contains('newcat')){const it=item(f.dataset.id);const v=String(fd.get('newcat')||'').trim();
+    if(it&&v){it.cat=v;addCat(v);openCat('inv',v)}ui.newCatFor=null;save();const y=window.scrollY;render();window.scrollTo(0,y);return}
   if(f.id==='addItem'||f.id==='addToDay'){
-    const name=String(fd.get('name')).trim();const cat=String(fd.get('cat')||'').trim()||OTHER();
+    const name=String(fd.get('name')).trim();let cat=String(fd.get('cat')||'');if(cat==='__new')cat=String(fd.get('newcat')||'');cat=cat.trim()||OTHER();
+    ui.lastCat=cat;
     if(!name)return;
     let it=state.items.find(i=>i.name.toLowerCase()===name.toLowerCase()&&(i.cat||OTHER())===cat);
     if(!it){it={id:uid(),name,cat};state.items.push(it);addCat(cat)}
@@ -994,12 +1024,17 @@ document.addEventListener('submit',e=>{
     if(f.id==='addToDay'){const t=trip();setPick(t,ui.day,it.id,Math.max(1,(t.picks[ui.day]||{})[it.id]||0))}
     save();const y=window.scrollY;render();window.scrollTo(0,y);
     const again=document.getElementById(f.id==='addItem'?'ai-name':'ad-name');if(again)again.focus();
-    const catEl=document.getElementById(f.id==='addItem'?'ai-cat':'ad-cat');if(catEl&&cat!==OTHER())catEl.value=cat;
   }
 });
 
 document.addEventListener('change',e=>{
   const el=e.target;
+  if(el.classList.contains('recat-sel')){const it=item(el.dataset.id);if(!it)return;
+    if(el.value==='__new'){ui.newCatFor=it.id;const y=window.scrollY;render();window.scrollTo(0,y);const n=document.getElementById('nc-'+it.id);if(n)n.focus();return}
+    it.cat=el.value;openCat('inv',el.value);save();const y=window.scrollY;render();window.scrollTo(0,y);return}
+  if(el.id==='ai-cat'||el.id==='ad-cat'){const pre=el.id.slice(0,2);const n=document.getElementById(pre+'-newcat');
+    if(n){n.hidden=el.value!=='__new';n.required=el.value==='__new';if(el.value==='__new')n.focus()}
+    if(el.value!=='__new'){ui.lastCat=el.value;el.closest('.catpick').style.setProperty('--cc',`var(--c-${catColor(el.value)})`)}return}
   if(el.id==='importFile'){if(el.files&&el.files[0])readImport(el.files[0]);el.value='';return}
   if(el.dataset&&el.dataset.pack){const t=trip();if(el.checked)t.packed[el.dataset.pack]=true;else delete t.packed[el.dataset.pack];save();const y=window.scrollY;render();window.scrollTo(0,y);return}
   if(el.classList.contains('rename')){const it=item(el.dataset.id);const v=el.value.trim();if(it&&v&&v!==it.name){it.name=v;save()}else if(it)el.value=it.name;return}
