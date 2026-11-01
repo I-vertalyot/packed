@@ -241,6 +241,13 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 .picked{display:flex;flex-direction:column}
 .pick{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
 .pick:first-child{border-top:0}
+.picked{gap:14px}
+.pgroup{display:flex;flex-direction:column}
+.pg-h{margin:0 0 2px;display:flex;align-items:center;gap:7px;font-family:var(--f-display);font-stretch:85%;font-size:13px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:color-mix(in srgb,var(--cc) 80%,var(--ink))}
+.pg-h[style*="--c-yellow"]{color:var(--c-yellow)}
+.pg-h .dot{width:9px;height:9px}
+.pg-n{font-family:var(--f-mono);font-size:11px;font-weight:700;letter-spacing:0;color:var(--muted)}
+.pgroup .pick:nth-child(2){border-top:0}
 .pick .nm{min-width:0;overflow-wrap:anywhere;font-weight:500}
 .pick .ct{display:block;font-size:12px;color:var(--muted);font-weight:400}
 .step{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:6px;overflow:hidden}
@@ -735,10 +742,11 @@ function viewDays(t,days){
   const grouped=byCat(chosen).flatMap(([c,l])=>l.sort((a,b)=>cmp(a.it.name,b.it.name)));
   const idx=days.indexOf(k);
   const title=k==='all'?T.wholeTitle:`${WDL(k)} ${dm(k)}`;
-  const list=grouped.length?`<div class="picked">${grouped.map(({it,q})=>`<div class="pick">
-      <span class="nm">${esc(it.name)}<span class="ct">${dot(it.cat||OTHER())}${esc(it.cat||OTHER())}</span></span>
+  const pickRow=({it,q})=>`<div class="pick">
+      <span class="nm">${esc(it.name)}</span>
       <span class="step"><button data-act="qty" data-id="${it.id}" data-d="-1" aria-label="${T.less}">−</button><span>${q}</span><button data-act="qty" data-id="${it.id}" data-d="1" aria-label="${T.more}">+</button></span>
-      <button class="x" data-act="rm-pick" data-id="${it.id}" aria-label="${T.remove} ${esc(it.name)}">×</button></div>`).join('')}</div>`
+      <button class="x" data-act="rm-pick" data-id="${it.id}" aria-label="${T.remove} ${esc(it.name)}">×</button></div>`;
+  const list=grouped.length?`<div class="picked">${byCat(chosen).map(([c,l])=>`<div class="pgroup"><h4 class="pg-h" style="--cc:var(--c-${catColor(c)})">${dot(c)}<span>${esc(c)}</span><span class="pg-n">${l.length}</span></h4>${l.slice().sort((a,b)=>cmp(a.it.name,b.it.name)).map(pickRow).join('')}</div>`).join('')}</div>`
     :`<div class="empty">${esc(k==='all'?T.emptyWhole:T.emptyDay)}</div>`;
   const actions=`<div class="row">
       ${idx>0?`<button class="btn" data-act="copy-prev">${T.copyPrev}</button>`:''}
