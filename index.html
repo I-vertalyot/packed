@@ -263,9 +263,6 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 .cat.folded{gap:0}
 .foldall{font-size:13px;padding:5px 8px}
 .wholehead{margin:0;display:flex}
-.wholepanel .fold-l{flex-direction:column;align-items:flex-start;gap:3px}
-.wholepanel h2 .wsub{margin-top:4px}
-.wsub{display:block;font-family:var(--f-body);font-size:13px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--muted)}
 .wholehead .fold{font:inherit;text-transform:inherit;letter-spacing:inherit;color:inherit}
 .wholehead .fold-n{text-transform:none}
 .wholebody{display:flex;flex-direction:column;gap:14px}
@@ -274,6 +271,8 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 .showmore:hover{color:var(--ink);background:var(--chip)}
 .showmore .chev{transition:transform .2s ease;transform:rotate(180deg)}
 .wholepanel.folded .showmore .chev{transform:none}
+.wholehead .chev{transform:rotate(180deg)}
+.wholepanel.folded .wholehead .chev{transform:none}
 .wholepanel.folded .showmore{margin-top:-6px}
 .cat+.cat{margin-top:6px}
 .cat h3[style]{color:color-mix(in srgb,var(--cc) 80%,var(--ink))}
@@ -393,18 +392,18 @@ const L={
   save:'Uložit',saving:'Ukládám…',saved:'Uloženo ✓',retry:'Zkusit znovu',
   tabTrips:'Cesty',tabInv:'Inventář',other:'Ostatní',
   trips:'Cesty',newTrip:'+ Nová cesta',cancel:'Zrušit',where:'Kam jedeš',wherePh:'např. Chorvatsko 2027',depart:'Odjezd',ret:'Návrat',create:'Vytvořit cestu',
-  tripNote:'Každý den cesty dostane vlastní seznam. Věci na celou cestu (doklady, nabíječka) dáš do „Nezbytností“.',
+  tripNote:'Každý den cesty dostane vlastní seznam. Věci na celou cestu (doklady, nabíječka) dáš do „Celá cesta“.',
   noTrips:'Zatím žádná cesta. Klikni na „+ Nová cesta“, zadej kam a kdy, a pak si na každý den poskládej věci z inventáře.',
   errOrder:'Návrat musí být stejný den nebo po odjezdu.',errLong:'Cesta může mít nejvýš 60 dní.',
   back:'← Všechny cesty',delTrip:'Smazat cestu',delTripQ:n=>`Opravdu smazat „${n}“?`,no:'Ne',del:'Smazat',
   byDay:'Sbírání',packing:'Balení',view:'Zobrazení',tripDays:'Dny cesty',
-  whole:'Nezbytnosti',wholeTitle:'Nezbytnosti',wholeSub:'Potřebuješ je po celou cestu',
+  whole:'Celá cesta',wholeTitle:'Na celou cestu',
   emptyWhole:'Sem patří věci, které potřebuješ po celou dobu: doklady, nabíječka, kartáček… Klepni na kategorii níže a vyber věci.',emptyDay:'Vyber věci z inventáře níže. Klikni na kategorii a vyber věci.',
   less:'Méně',more:'Více',remove:'Odebrat',
   copyPrev:'Zkopírovat z předchozího dne',toAll:'Tento den do všech dnů',clear:'Vyčistit',
   addFromInv:'Přidat z inventáře',search:'Hledat…',invEmptyPick:'Inventář je prázdný. Přidej věci níže nebo na kartě Inventář.',
   newThing:'Nová věc',newThingPh:'např. Lyžařské brýle',category:'Kategorie',addBoth:'Přidat do inventáře i dne',
-  wholeTrip:'nezbytnosti',everyDay:'každý den',
+  wholeTrip:'celá cesta',everyDay:'každý den',
   noPicks:'Zatím nemáš vybrané žádné věci. Přepni na „Sbírání“ a poskládej si, co bereš.',
   allPacked:'Všechno sbaleno. Šťastnou cestu!',packedOf:'věcí sbaleno',resetPack:'Zrušit odškrtnutí',
   inv:'Inventář',thing:'Věc',thingPh:'např. Čelovka',add:'Přidat',
@@ -421,7 +420,7 @@ const L={
   help:[['Inventář','Na kartě Inventář si sepiš věci, které běžně bereš. Barevným kolečkem u kategorie změníš její barvu.'],
     ['Skrývání kategorií','Všechny kategorie jsou na začátku sbalené, aby byl seznam přehledný. Klepnutím na název kategorie ji rozbalíš nebo zase sbalíš. Tlačítkem „Rozbalit vše“ otevřeš všechny najednou.'],
     ['Nová cesta','Na kartě Cesty klikni na „+ Nová cesta“ a zadej, kam a kdy jedeš.'],
-    ['Sbírání','V režimu „Sbírání“ nahoře vyber den a ťukáním přidej věci z inventáře. Věci na celou cestu dej do „Nezbytností“. Tlačítky − a + nastavíš počet kusů.'],
+    ['Sbírání','V režimu „Sbírání“ nahoře vyber den a ťukáním přidej věci z inventáře. Věci na celou dobu dej do „Celá cesta“. Tlačítky − a + nastavíš počet kusů.'],
     ['Balení','Přepni na „Balení“. Všechno je v jednom seznamu se sečtenými kusy, takže jen odškrtáváš, co už máš v kufru.'],
     ['PDF seznam','Na stránce cesty klikni na „Stáhnout PDF“. Dostaneš seznam k vytištění se zaškrtávacími políčky podle kategorií a přehled, co bereš na který den.'],
     ['Jiné zařízení','Inventář → Export a záloha → „Exportovat inventář“. Na druhém zařízení soubor nahraješ přes „Nahrát soubor…“.']],
@@ -442,18 +441,18 @@ const L={
   save:'Save',saving:'Saving…',saved:'Saved ✓',retry:'Try again',
   tabTrips:'Trips',tabInv:'Inventory',other:'Other',
   trips:'Trips',newTrip:'+ New trip',cancel:'Cancel',where:'Where to',wherePh:'e.g. Croatia 2027',depart:'Departure',ret:'Return',create:'Create trip',
-  tripNote:'Each day of the trip gets its own list. Things for the whole trip (documents, charger) go under “Essentials”.',
+  tripNote:'Each day of the trip gets its own list. Things for the whole trip (documents, charger) go under “Whole trip”.',
   noTrips:'No trips yet. Click “+ New trip”, enter where and when, then pick items from your inventory for each day.',
   errOrder:'Return must be on or after the departure day.',errLong:'A trip can be at most 60 days.',
   back:'← All trips',delTrip:'Delete trip',delTripQ:n=>`Delete “${n}”?`,no:'No',del:'Delete',
   byDay:'Collecting',packing:'Packing',view:'View',tripDays:'Trip days',
-  whole:'Essentials',wholeTitle:'Essentials',wholeSub:'Needed for the whole trip',
+  whole:'Whole trip',wholeTitle:'For the whole trip',
   emptyWhole:'Put things you need the whole time here: documents, charger, toothbrush… Tap a category below and choose the items.',emptyDay:'Pick items from the inventory below. Click a category and choose the items.',
   less:'Less',more:'More',remove:'Remove',
   copyPrev:'Copy from previous day',toAll:'Use this day for all days',clear:'Clear',
   addFromInv:'Add from inventory',search:'Search…',invEmptyPick:'Your inventory is empty. Add items below or on the Inventory tab.',
   newThing:'New item',newThingPh:'e.g. Ski goggles',category:'Category',addBoth:'Add to inventory and this day',
-  wholeTrip:'essentials',everyDay:'every day',
+  wholeTrip:'whole trip',everyDay:'every day',
   noPicks:'You haven’t picked anything yet. Switch to “Collecting” and choose what you’re taking.',
   allPacked:'All packed. Have a good trip!',packedOf:'items packed',resetPack:'Uncheck all',
   inv:'Inventory',thing:'Item',thingPh:'e.g. Headlamp',add:'Add',
@@ -470,7 +469,7 @@ const L={
   help:[['Inventory','On the Inventory tab, list the things you usually take. Tap the coloured dot next to a category to change its colour.'],
     ['Folding categories','All categories start folded to keep things tidy. Tap a category’s name to show or hide its items. Use “Expand all” to open them all at once.'],
     ['New trip','On the Trips tab, tap “+ New trip” and enter where and when you’re going.'],
-    ['Collecting','In “Collecting”, pick a day at the top and tap items from your inventory to add them. Things you need for the whole trip go under “Essentials”. Use − and + to set how many.'],
+    ['Collecting','In “Collecting”, pick a day at the top and tap items from your inventory to add them. Things you need the whole time go under “Whole trip”. Use − and + to set how many.'],
     ['Packing','Switch to “Packing”. Everything is in one list with the totals added up, so you just tick off what’s in your bag.'],
     ['PDF list','On a trip page, tap “Download PDF”. You get a printable checklist grouped by category, plus an overview of what you’re taking each day.'],
     ['Another device','Inventory → Export & backup → “Export inventory”. On the other device, load the file with “Upload file…”.']],
@@ -735,7 +734,7 @@ function viewDays(t,days){
   const chosen=Object.entries(picks).filter(([id,q])=>q&&item(id)).map(([id,q])=>({it:item(id),q}));
   const grouped=byCat(chosen).flatMap(([c,l])=>l.sort((a,b)=>cmp(a.it.name,b.it.name)));
   const idx=days.indexOf(k);
-  const title=k==='all'?`${esc(T.wholeTitle)}<span class="wsub">${esc(T.wholeSub)}</span>`:`${WDL(k)} ${dm(k)}`;
+  const title=k==='all'?T.wholeTitle:`${WDL(k)} ${dm(k)}`;
   const list=grouped.length?`<div class="picked">${grouped.map(({it,q})=>`<div class="pick">
       <span class="nm">${esc(it.name)}<span class="ct">${dot(it.cat||OTHER())}${esc(it.cat||OTHER())}</span></span>
       <span class="step"><button data-act="qty" data-id="${it.id}" data-d="-1" aria-label="${T.less}">−</button><span>${q}</span><button data-act="qty" data-id="${it.id}" data-d="1" aria-label="${T.more}">+</button></span>
@@ -749,7 +748,7 @@ function viewDays(t,days){
       l.slice().sort((a,b)=>cmp(a.name,b.name)).map(it=>`<button class="chip ${picks[it.id]?'on':''}" data-act="toggle-pick" data-id="${it.id}" data-name="${esc(it.name.toLowerCase())}">${dot(it.cat||OTHER())}${esc(it.name)}</button>`).join('')}</div></div>`).join('');
   return `<div class="gates" role="group" aria-label="${T.tripDays}">${gates}</div>
     ${k==='all'?(()=>{const can=grouped.length>WHOLE_FOLD_MIN,fold=can&&!state.wholeOpen&&!ui.wholeKeep;
-      return `<section class="panel wholepanel${fold?' folded':''}">${can?`<h2 class="wholehead"><button class="fold" type="button" data-act="fold-whole" data-folded="${fold?1:''}" aria-expanded="${!fold}"><span class="fold-l">${title}</span><span class="fold-n">${esc(T.things(grouped.length))}</span></button></h2>`:`<div class="row"><h2>${title}</h2></div>`}<div class="wholebody">${list}${actions}</div>${can?`<button class="showmore" type="button" data-act="fold-whole" data-folded="${fold?1:''}" aria-expanded="${!fold}">${fold?T.showMore:T.showLess}${CHEV}</button>`:''}</section>`})():`<section class="panel"><div class="row"><h2>${title}</h2></div>${list}${actions}</section>`}
+      return `<section class="panel wholepanel${fold?' folded':''}">${can?`<h2 class="wholehead"><button class="fold" type="button" data-act="fold-whole" data-folded="${fold?1:''}" aria-expanded="${!fold}"><span class="fold-l">${title}</span><span class="fold-n">${esc(T.things(grouped.length))}</span>${CHEV}</button></h2>`:`<div class="row"><h2>${title}</h2></div>`}<div class="wholebody">${list}${actions}</div>${can?`<button class="showmore" type="button" data-act="fold-whole" data-folded="${fold?1:''}" aria-expanded="${!fold}">${fold?T.showMore:T.showLess}${CHEV}</button>`:''}</section>`})():`<section class="panel"><div class="row"><h2>${title}</h2></div>${list}${actions}</section>`}
     <section class="panel">
       <div class="row"><h2>${T.addFromInv}</h2><span class="spacer"></span>${foldAll('pick',byCat(state.items).map(g=>g[0]))}
         <input class="inp" id="search" type="search" placeholder="${T.search}" style="max-width:200px" autocomplete="off"></div>
