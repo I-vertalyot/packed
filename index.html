@@ -301,6 +301,7 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 .sw{width:28px;height:28px;border-radius:50%;background:var(--cc);border:0;padding:0}
 .sw[aria-pressed="true"]{outline:2px solid var(--ink);outline-offset:2px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
+.pick-box{padding:12px;border-radius:12px;border:1.5px solid color-mix(in srgb,var(--cc) 45%,transparent);background:color-mix(in srgb,var(--cc) 8%,var(--surface))}
 .chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:14px;display:inline-flex;align-items:center;gap:6px}
 .chip:hover{border-color:var(--muted)}
 .chip.on{background:var(--cc);color:#fff;border-color:var(--cc);font-weight:600}
@@ -779,7 +780,7 @@ function viewDays(t,days){
       ${idx>0?`<button class="btn" data-act="copy-prev">${T.copyPrev}</button>`:''}
       ${k!=='all'&&days.length>1?`<button class="btn" data-act="to-all-days">${T.toAll}</button>`:''}
       ${grouped.length?`<button class="btn ghost" data-act="clear-day">${T.clear}</button>`:''}</div>`;
-  const picker=byCat(state.items).map(([c,l])=>`<div class="cat${fold('pick',c)}" data-cat><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pick',c,dot(c)+esc(c),T.nPicked(l.filter(it=>picks[it.id]).length,l.length))}</h3><div class="chips">${
+  const picker=byCat(state.items).map(([c,l])=>`<div class="cat${fold('pick',c)}" data-cat><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pick',c,dot(c)+esc(c),T.nPicked(l.filter(it=>picks[it.id]).length,l.length))}</h3><div class="chips pick-box" style="--cc:var(--c-${catColor(c)})">${
       l.slice().sort((a,b)=>cmp(a.name,b.name)).map(it=>`<button class="chip ${picks[it.id]?'on':''}" style="--cc:var(--c-${catColor(it.cat||OTHER())})" data-act="toggle-pick" data-id="${it.id}" data-name="${esc(it.name.toLowerCase())}">${esc(it.name)}</button>`).join('')}</div></div>`).join('');
   return `<div class="gates" role="group" aria-label="${T.tripDays}">${gates}</div>
     ${(()=>{const isAll=k==='all',can=grouped.length>WHOLE_FOLD_MIN,fold=can&&!(isAll?state.wholeOpen:state.dayOpen);
