@@ -241,7 +241,9 @@ button.ig{appearance:none;-webkit-appearance:none;background:none;border:0;borde
 .themebtn{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--bar-line);background:none;color:var(--sign);display:inline-grid;place-items:center;padding:0;margin-top:6px;align-self:center}
 .themebtn:hover{border-color:var(--bar-fg)}
 :root[data-app-theme="dark"] .themebtn .i-moon,:root:not([data-app-theme="dark"]) .themebtn .i-sun{display:none}
-.bar-in>.status{order:1}.bar-in>.lang{order:2}.bar-in>.savebtn{order:3}.bar-in>.tabs{order:4;flex-basis:calc(100% - 88px)}.bar-in>.themebtn{order:5}.bar-in>.infobtn{order:6}
+/* top row: logo · language · theme · help; second row: the tabs */
+.bar-in>.status{order:1}.bar-in>.lang{order:2}.bar-in>.themebtn{order:3}.bar-in>.infobtn{order:4}.bar-in>.tabs{order:5;flex-basis:100%}
+.bar-in>.themebtn,.bar-in>.infobtn{margin-top:0}
 .tabs button{background:none;border:0;color:var(--bar-muted);padding:10px 12px 12px;font-family:var(--f-display);font-weight:700;font-stretch:87%;font-size:15px;text-transform:uppercase;letter-spacing:.05em;border-bottom:3px solid transparent}
 .tabs button[aria-selected="true"]{color:var(--bar-fg);border-bottom-color:var(--sign)}
 @media (max-width:440px){.status span{display:none}}
@@ -285,7 +287,8 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 .bar .status{display:none}
 .bar .lang{margin-left:auto}
 /* inside a trip the Trips / Inventory tabs step aside */
-:root[data-mode] .bar .tabs{visibility:hidden}
+:root[data-mode] .bar .tabs{display:none}
+:root[data-mode] .bar-in{padding-bottom:12px}
 .tr-confirm{display:flex;gap:6px;align-items:center;background:color-mix(in srgb,var(--danger) 12%,var(--surface));border:1px solid color-mix(in srgb,var(--danger) 45%,transparent);border-radius:10px;padding:4px 4px 4px 10px;font-size:14px;font-weight:700;color:var(--danger)}
 .tr-confirm span{white-space:nowrap}
 .tr-actions{margin-left:auto}
