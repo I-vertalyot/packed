@@ -319,6 +319,10 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 .trip .t-meta{font-size:13px;color:var(--muted)}
 .meter{height:6px;background:var(--chip);border-radius:3px;overflow:hidden;margin-top:6px}
 .meter i{display:block;height:100%;background:var(--ok)}
+.trip-w{position:relative}
+.trip-w .trip{padding-right:62px}
+.trip-edit{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--chip);color:var(--ink);display:grid;place-items:center;padding:0;cursor:pointer}
+.trip-edit:hover{border-color:var(--sign);color:var(--sign-ink);background:var(--sign)}
 .trip .pct{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
 
 .empty{border:1.5px dashed var(--line);border-radius:8px;padding:24px 16px;text-align:center;color:var(--muted)}
@@ -881,7 +885,7 @@ function viewTrips(){
   const cards=trips.map(t=>{
     const n=tripDays(t).length;const p=progress(t);const pct=p.total?Math.round(p.done/p.total*100):0;
     const d=parseD(t.start);const past=t.end<today;
-    return `<button class="trip" data-act="open-trip" data-id="${t.id}" style="${past?'opacity:.65':''}">
+    return `<div class="trip-w" style="${past?'opacity:.65':''}"><button class="trip" data-act="open-trip" data-id="${t.id}">
       <span class="when"><b>${T.dayNum(d)}</b><span>${d.toLocaleDateString(T.locale,{month:'short'}).replace('.','')}</span></span>
       <span style="min-width:0">
         <span class="t-name">${esc(t.name)}</span>
@@ -889,7 +893,7 @@ function viewTrips(){
         <span class="meter" aria-hidden="true" style="display:block"><i style="width:${pct}%"></i></span>
       </span>
       <span class="pct">${p.done}/${p.total}</span>
-    </button>`}).join('');
+    </button><button class="trip-edit" data-act="edit-trip-open" data-id="${t.id}" aria-label="${esc(T.editTrip)}: ${esc(t.name)}" title="${esc(T.editTrip)}"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></button></div>`}).join('');
   return `<div class="row"><h1>${T.trips}</h1><span class="spacer"></span>
       <button class="btn ${ui.newTrip?'':'primary'}" data-act="new-trip">${ui.newTrip?T.cancel:T.newTrip}</button></div>
     ${form}
@@ -1276,8 +1280,9 @@ document.addEventListener('click',e=>{
     case 'tab':ui.tab=b.dataset.v;ui.delItem=null;break;
     case 'new-trip':ui.newTrip=!ui.newTrip;ui.tripErr='';break;
     case 'pdf':downloadTripPDF();return;
-    case 'open-trip':ui.wholeKeep=false;ui.tripMsg='';ui.editTrip=false;ui.editVals=null;ui.editWarn=0;ui.tripId=id;ui.mode='days';ui.day='all';ui.delTrip=false;break;
-    case 'back':ui.editTrip=false;ui.editVals=null;ui.editWarn=0;ui.tripId=null;ui.delTrip=false;break;
+    case 'edit-trip-open':ui.editFromHome=true;ui.wholeKeep=false;ui.tripMsg='';ui.editTrip=true;ui.editVals=null;ui.editErr='';ui.editWarn=0;ui.tripId=id;ui.mode='days';ui.day='all';ui.delTrip=false;break;
+    case 'open-trip':ui.editFromHome=false;ui.wholeKeep=false;ui.tripMsg='';ui.editTrip=false;ui.editVals=null;ui.editWarn=0;ui.tripId=id;ui.mode='days';ui.day='all';ui.delTrip=false;break;
+    case 'back':ui.editFromHome=false;ui.editTrip=false;ui.editVals=null;ui.editWarn=0;ui.tripId=null;ui.delTrip=false;break;
     case 'mode':ui.mode=b.dataset.v;break;
     case 'day':ui.day=b.dataset.k;break;
     case 'toggle-pick':{if(ui.day==='all')ui.wholeKeep=true;const cur=(t.picks[ui.day]||{})[id];setPick(t,ui.day,id,cur?0:1);save();break}
@@ -1305,8 +1310,8 @@ document.addEventListener('click',e=>{
     case 'import-pick':document.getElementById('importFile').click();return;
     case 'import-yes':if(pendingImport){state=pendingImport;pendingImport=null;ui.tripId=null;ui.importMsg='imported';save()}break;
     case 'import-no':pendingImport=null;ui.importMsg='';break;
-    case 'edit-trip':ui.editTrip=true;ui.editVals=null;ui.editErr='';ui.editWarn=0;ui.delTrip=false;break;
-    case 'edit-cancel':ui.editTrip=false;ui.editVals=null;ui.editErr='';ui.editWarn=0;break;
+    case 'edit-trip':ui.editFromHome=false;ui.editTrip=true;ui.editVals=null;ui.editErr='';ui.editWarn=0;ui.delTrip=false;break;
+    case 'edit-cancel':ui.editTrip=false;ui.editVals=null;ui.editErr='';ui.editWarn=0;if(ui.editFromHome){ui.editFromHome=false;ui.tripId=null}break;
     case 'del-trip':ui.delTrip=true;break;
     case 'del-trip-no':ui.delTrip=false;break;
     case 'del-trip-yes':state.trips=state.trips.filter(x=>x.id!==ui.tripId);ui.tripId=null;ui.delTrip=false;save();break;
@@ -1336,7 +1341,7 @@ document.addEventListener('submit',e=>{
     const drop=droppedDays(t,st,en);
     if(drop&&ui.editWarn!==drop){ui.editWarn=drop;render();return}
     t.name=name;if(st!==t.start||en!==t.end)retime(t,st,en);
-    ui.editTrip=false;ui.editVals=null;ui.editWarn=0;ui.day='all';save();render();return}
+    ui.editTrip=false;ui.editVals=null;ui.editWarn=0;ui.day='all';if(ui.editFromHome){ui.editFromHome=false;ui.tripId=null}save();render();return}
   if(f.id==='newTrip'){
     const name=String(fd.get('name')).trim(),s=fd.get('start'),en=fd.get('end');
     if(!name||!s||!en)return;
