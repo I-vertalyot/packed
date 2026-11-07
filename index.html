@@ -269,6 +269,23 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 .head>.row:first-child{margin-bottom:12px;align-items:flex-start}
 .tr-actions{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
 .tr-top{display:flex;gap:2px;align-items:center}
+.tr-menu{position:relative}
+.menubtn{padding:6px 8px}
+.menubtn[aria-expanded="true"]{background:var(--chip)}
+.menu-pop{position:absolute;right:0;top:calc(100% + 6px);z-index:12;min-width:210px;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 14px 34px rgba(0,0,0,.28);padding:6px;display:flex;flex-direction:column;animation:menuin .16s ease-out}
+.menu-pop[hidden]{display:none}
+.menu-pop button{display:flex;align-items:center;gap:10px;width:100%;padding:11px 12px;border:0;border-radius:8px;background:none;color:var(--ink);font:inherit;font-weight:600;font-size:15px;text-align:left;cursor:pointer}
+.menu-pop button:hover:not([disabled]),.menu-pop button:focus-visible{background:var(--chip)}
+.menu-pop button[disabled]{opacity:.45;cursor:default}
+.menu-pop button.danger{color:var(--danger)}
+.menu-pop button svg{flex:none;color:var(--muted)}
+.menu-pop button.danger svg{color:currentColor}
+@keyframes menuin{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+/* no save dot: the app saves by itself */
+.bar .status{display:none}
+.bar .lang{margin-left:auto}
+/* inside a trip the Trips / Inventory tabs step aside */
+:root[data-mode] .bar .tabs{visibility:hidden}
 .tr-confirm{display:flex;gap:6px;align-items:center;background:color-mix(in srgb,var(--danger) 12%,var(--surface));border:1px solid color-mix(in srgb,var(--danger) 45%,transparent);border-radius:10px;padding:4px 4px 4px 10px;font-size:14px;font-weight:700;color:var(--danger)}
 .tr-confirm span{white-space:nowrap}
 .tr-actions{margin-left:auto}
@@ -541,7 +558,7 @@ const L={
   tripNote:'Každý den cesty dostane vlastní seznam. Věci na celou cestu (doklady, nabíječka) dáš do „Celá cesta“.',
   noTrips:'Zatím žádná cesta. Klikni na „+ Nová cesta“, zadej kam a kdy, a pak si na každý den poskládej věci z inventáře.',
   errOrder:'Návrat musí být stejný den nebo po odjezdu.',errLong:'Cesta může mít nejvýš 60 dní.',
-  back:'← Všechny cesty',delTrip:'Smazat cestu',delTripQ:n=>`Opravdu smazat „${n}“?`,delTripAsk:'Smazat cestu?',no:'Ne',del:'Smazat',
+  back:'← Zpět',menu:'Možnosti',editTrip:'Upravit cestu',delTrip:'Smazat cestu',delTripQ:n=>`Opravdu smazat „${n}“?`,delTripAsk:'Smazat cestu?',no:'Ne',del:'Smazat',
   byDay:'Sbírání',packing:'Balení',view:'Zobrazení',tripDays:'Dny cesty',
   whole:'Celá cesta',wholeTitle:'Na celou cestu',
   emptyWhole:'Sem patří věci, které potřebuješ po celou dobu: doklady, nabíječka, kartáček… Klepni na kategorii níže a vyber věci.',emptyDay:'Vyber věci z inventáře níže. Klikni na kategorii a vyber věci.',
@@ -591,7 +608,7 @@ const L={
   tripNote:'Each day of the trip gets its own list. Things for the whole trip (documents, charger) go under “Whole trip”.',
   noTrips:'No trips yet. Click “+ New trip”, enter where and when, then pick items from your inventory for each day.',
   errOrder:'Return must be on or after the departure day.',errLong:'A trip can be at most 60 days.',
-  back:'← All trips',delTrip:'Delete trip',delTripQ:n=>`Delete “${n}”?`,delTripAsk:'Delete trip?',no:'No',del:'Delete',
+  back:'← Back',menu:'Options',editTrip:'Edit trip',delTrip:'Delete trip',delTripQ:n=>`Delete “${n}”?`,delTripAsk:'Delete trip?',no:'No',del:'Delete',
   byDay:'Collecting',packing:'Packing',view:'View',tripDays:'Trip days',
   whole:'Whole trip',wholeTitle:'For the whole trip',
   emptyWhole:'Put things you need the whole time here: documents, charger, toothbrush… Tap a category below and choose the items.',emptyDay:'Pick items from the inventory below. Click a category and choose the items.',
@@ -893,10 +910,15 @@ function viewTrip(){
   if(ui.day!=='all'&&!days.includes(ui.day))ui.day='all';
   const head=`<div class="head">
       <div class="row"><button class="btn back" data-act="back"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 8H3.5M7.5 3.5 3 8l4.5 4.5"/></svg>${esc(T.back.replace(/^←\s*/,''))}</button><span class="spacer"></span>
-        <div class="tr-actions"><div class="tr-top">${ui.delTrip?`<div class="tr-confirm" role="group" aria-label="${esc(T.delTripQ(t.name))}"><span>${T.delTripAsk}</span><button class="btn small" data-act="del-trip-no">${T.no}</button><button class="btn small danger" data-act="del-trip-yes">${T.del}</button></div>`:ui.editTrip?'':`<button class="btn ghost" data-act="edit-trip"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>${T.edit}</button><button class="btn ghost danger" data-act="del-trip">${T.delTrip}</button>`}</div><button class="btn pdfbtn small" data-act="pdf" ${p.total?'':'disabled'}><svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4.5 6.8 8 10.3l3.5-3.5M2.5 13.5h11"/></svg>${T.pdfBtn}</button></div></div>
+        <div class="tr-actions"><div class="tr-top">${ui.delTrip?`<div class="tr-confirm" role="group" aria-label="${esc(T.delTripQ(t.name))}"><span>${T.delTripAsk}</span><button class="btn small" data-act="del-trip-no">${T.no}</button><button class="btn small danger" data-act="del-trip-yes">${T.del}</button></div>`:ui.editTrip?'':`<div class="tr-menu">
+          <button class="btn ghost menubtn" data-act="trip-menu" aria-haspopup="menu" aria-expanded="false" aria-label="${esc(T.menu)}" title="${esc(T.menu)}"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+          <div class="menu-pop" role="menu" hidden>
+            <button role="menuitem" data-act="edit-trip"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>${esc(T.editTrip)}</button>
+            <button role="menuitem" data-act="pdf" ${p.total?'':'disabled'}><svg width="17" height="17" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4.5 6.8 8 10.3l3.5-3.5M2.5 13.5h11"/></svg>${esc(T.pdfBtn)}</button>
+            <button role="menuitem" class="danger" data-act="del-trip"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>${esc(T.delTrip)}</button>
+          </div></div>`}</div></div></div>
       ${ui.tripMsg?`<p class="note" style="text-align:right">${esc(T[ui.tripMsg])}</p>`:''}
-      ${ui.editTrip?editForm(t):`<h1>${esc(t.name)}</h1>
-      <div class="muted mono">${WDL(t.start)} ${dm(t.start)} – ${WDL(t.end)} ${dm(t.end)} · ${T.days(n)}</div>`}
+      ${ui.editTrip?editForm(t):`<h1>${esc(t.name)}</h1>`}
     </div>
     <div class="modebar"><div class="seg" role="group" aria-label="${T.view}">
       <button data-act="mode" data-v="days" aria-pressed="${ui.mode==='days'}"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>${T.byDay}</button>
@@ -1228,6 +1250,12 @@ document.addEventListener('keydown',e=>{if(ui.tut==null)return;if(e.key==='Escap
 document.addEventListener('pointerdown',e=>{if(e.target.closest('#celeb'))endCeleb()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')endCeleb()});
 
+/* trip options menu (Edit trip, Download PDF, Delete trip) */
+function toggleTripMenu(open){const pop=document.querySelector('.menu-pop'),btn=document.querySelector('[data-act="trip-menu"]');if(!pop||!btn)return;
+  const o=open===undefined?pop.hidden:open;pop.hidden=!o;btn.setAttribute('aria-expanded',o);if(o){const f=pop.querySelector('button:not([disabled])');if(f)f.focus({preventScroll:true})}}
+document.addEventListener('click',e=>{if(!e.target.closest('.tr-menu'))toggleTripMenu(false)},true);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){const pop=document.querySelector('.menu-pop');if(pop&&!pop.hidden){toggleTripMenu(false);document.querySelector('[data-act="trip-menu"]').focus()}}});
+
 /* help steps are links into the app */
 const HELP_GO=['inv','new','days','pack','pdf','device'];
 function helpGo(k){
@@ -1241,6 +1269,7 @@ function helpGo(k){
     else{if(ui.tripId!==tr.id){ui.tripId=tr.id;ui.day='all';ui.wholeKeep=false;ui.tripMsg=''}
       ui.mode=k==='pack'?'pack':'days';sel=k==='pdf'?'[data-act="pdf"]':`[data-act="mode"][data-v="${ui.mode}"]`}}
   render();window.scrollTo(0,0);
+  if(k==='pdf')toggleTripMenu(true);
   const el=document.querySelector(sel);if(!el)return;
   if(sel!=='#tab-inv'&&!sel.includes('mode'))el.scrollIntoView({block:'center'});
   el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),1900)}
@@ -1272,6 +1301,7 @@ document.addEventListener('click',e=>{
     case 'info':ui.help=true;render();{const c=document.getElementById('helpClose');if(c)c.focus()}return;
     case 'help-close':ui.help=false;render();document.getElementById('infoBtn').focus();return;
     case 'help-go':helpGo(b.dataset.v);return;
+    case 'trip-menu':toggleTripMenu();return;
     case 'tut-next':if(ui.tut===T.tut.length-1)closeTut();else tutGo(ui.tut+1);return;
     case 'tut-back':tutGo(ui.tut-1);return;
     case 'tut-dot':tutGo(+b.dataset.v);return;
