@@ -303,8 +303,7 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:14px;display:inline-flex;align-items:center;gap:6px}
 .chip:hover{border-color:var(--muted)}
-.chip.on{background:var(--ok);color:#fff;border-color:var(--ok);font-weight:600}
-:root[data-app-theme="dark"] .chip.on{color:#06130C}
+.chip.on{border-color:var(--ok);box-shadow:inset 0 0 0 1px var(--ok);font-weight:600}
 
 .progress{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 .progress .big{font-family:var(--f-display);font-stretch:75%;font-weight:800;font-size:40px;line-height:1}
