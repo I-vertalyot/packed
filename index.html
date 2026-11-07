@@ -330,7 +330,15 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 :root[data-app-theme="dark"] .chip.on{color:#0E1217}
 
 .progress{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
-.progress .big{font-family:var(--f-display);font-stretch:75%;font-weight:800;font-size:40px;line-height:1}
+.progress .big{font-family:var(--f-display);font-stretch:75%;font-weight:800;font-size:40px;line-height:1;transition:font-size .2s}
+.pp-sent{height:0;margin-bottom:-20px}
+.progpanel{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--barh,108px) + var(--modeh,58px));z-index:3;transition:padding .2s,box-shadow .2s}
+.progpanel.stuck{padding:7px 14px;gap:6px;box-shadow:0 8px 18px rgba(0,0,0,.16)}
+.progpanel.stuck .progress{gap:8px;align-items:center}
+.progpanel.stuck .big{font-size:22px}
+.progpanel.stuck .progress>.muted{font-size:13px}
+.progpanel.stuck .btn{padding:2px 6px;font-size:12.5px}
+.progpanel.stuck .meter{margin-top:0;height:4px}
 .pk{display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
 .pk-l{flex:1;min-width:0;display:flex;gap:12px;align-items:center;cursor:pointer}
 .pstep{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;overflow:hidden;flex:none}
@@ -676,8 +684,14 @@ const allCats=()=>{const l=[...new Set(catOrder().concat(state.cats))];if(!l.len
 const catOptions=sel=>allCats().map(c=>`<option value="${esc(c)}"${c===sel?' selected':''}>${esc(c)}</option>`).join('')+`<option value="__new">${esc(T.newCatOpt)}</option>`;
 const catPick=pre=>{const cur=allCats().includes(ui.lastCat)?ui.lastCat:allCats()[0];
   return `<label class="catpick" style="--cc:var(--c-${catColor(cur)})"><i class="dot" aria-hidden="true"></i><select id="${pre}-cat" name="cat" aria-label="${T.category}">${catOptions(cur)}</select><svg width="12" height="12" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg></label>`};
-function setBarH(){const b=document.querySelector('.bar');if(b)document.documentElement.style.setProperty('--barh',b.offsetHeight+'px')}
+function setBarH(){const b=document.querySelector('.bar');if(b)document.documentElement.style.setProperty('--barh',b.offsetHeight+'px');
+  const m=document.querySelector('.modebar');if(m)document.documentElement.style.setProperty('--modeh',m.offsetHeight+'px');updateStuck()}
 addEventListener('resize',setBarH);
+/* the packing progress box shrinks while it is stuck under the switch */
+function updateStuck(){const pp=document.querySelector('.progpanel'),s=document.querySelector('.pp-sent');if(!pp||!s)return;
+  const top=parseFloat(getComputedStyle(pp).top)||0,want=s.getBoundingClientRect().top<top-2;if(want===pp.classList.contains('stuck'))return;
+  if(want){const full=pp.offsetHeight;pp.classList.add('stuck');pp.style.marginBottom=(full-pp.offsetHeight)+'px'}else{pp.classList.remove('stuck');pp.style.marginBottom=''}}
+addEventListener('scroll',updateStuck,{passive:true});
 function render(){
   T=L[lang()];
   document.documentElement.lang=lang();
@@ -830,7 +844,7 @@ function viewPack(t){
     if(d.length===n&&n>1)return T.everyDay;
     return d.map(k=>WD(k)).join(', ')};
   if(!a.length)return `<div class="empty">${esc(T.noPicks)}</div>`;
-  return `<section class="panel">
+  return `<div class="pp-sent" aria-hidden="true"></div><section class="panel progpanel">
       <div class="progress"><span class="big">${done}<span class="muted">/${a.length}</span></span><span class="muted">${done===a.length?T.allPacked:T.packedOf}</span>
         <span class="spacer"></span>${done?`<button class="btn ghost" data-act="reset-pack">${T.resetPack}</button>`:''}</div>
       <div class="meter"><i style="width:${pct}%"></i></div>
