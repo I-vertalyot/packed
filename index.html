@@ -159,6 +159,32 @@ button.ig{appearance:none;-webkit-appearance:none;background:none;border:0;borde
 .help-steps b{display:block;font-weight:700;margin-bottom:2px}
 .help-steps span{color:var(--muted);font-size:14px}
 .help-brand{color:var(--sign)}
+.help-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px;align-items:center}
+.linkbtn{background:none;border:0;padding:2px 0;font:inherit;font-weight:700;color:var(--ink);text-decoration:underline;text-decoration-color:var(--sign);text-decoration-thickness:2px;text-underline-offset:3px;cursor:pointer}
+/* first-run tutorial */
+.tut{position:fixed;inset:0;z-index:35;display:grid;place-items:center;padding:16px max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:color-mix(in srgb,#05080B 62%,transparent);animation:cfade .25s ease-out both}
+.tut[hidden]{display:none}
+.tut.out{animation:cout .26s ease-in forwards}
+.tut-card{width:min(420px,100%);background:var(--surface);color:var(--ink);border-radius:18px;padding:16px 20px 20px;display:flex;flex-direction:column;gap:16px;box-shadow:0 20px 50px rgba(0,0,0,.35);touch-action:pan-y;user-select:none}
+.tut-top{display:flex;justify-content:space-between;align-items:center;min-height:34px}
+.tut-lang{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.tut-lang button{border:0;background:none;padding:5px 10px;font-family:var(--f-mono);font-weight:700;font-size:13px;color:var(--muted)}
+.tut-lang button[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
+.tut-skip{background:none;border:0;padding:6px 2px;font:inherit;font-weight:700;font-size:15px;color:var(--muted);cursor:pointer}
+.tut-skip:hover{color:var(--ink)}
+.tut-body{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;min-height:290px;animation:tin .35s cubic-bezier(.2,.8,.3,1) both}
+.tut-art{width:136px;height:136px;border-radius:34px;display:grid;place-items:center;margin:4px 0 8px;background:var(--tc);color:#fff;box-shadow:0 12px 28px color-mix(in srgb,var(--tc) 45%,transparent);animation:tpop .45s .05s cubic-bezier(.3,1.5,.5,1) both}
+.tut-art.dark,:root[data-app-theme="dark"] .tut-art{color:#0E1217}
+.tut-body h2{margin:0;font-family:var(--f-display);font-stretch:75%;font-weight:800;font-size:32px;line-height:1;text-transform:uppercase;text-wrap:balance}
+.tut-body p{margin:0;max-width:30ch;font-size:16px;line-height:1.45;color:var(--muted)}
+.tut-dots{display:flex;justify-content:center;gap:8px}
+.tut-dots button{width:9px;height:9px;padding:0;border:0;border-radius:99px;background:var(--line);transition:width .25s,background .25s;cursor:pointer}
+.tut-dots button[aria-current]{width:26px;background:var(--tc)}
+.tut-nav{display:flex;gap:10px}
+.tut-nav .btn{flex:1;justify-content:center;padding:12px;font-size:16px;border-radius:10px}
+@keyframes tin{from{opacity:0;transform:translateX(var(--from))}to{opacity:1;transform:none}}
+@keyframes tpop{from{transform:scale(.6) rotate(-8deg)}to{transform:none}}
+@media (prefers-reduced-motion:reduce){.tut-body,.tut-art{animation:none}}
 /* All packed celebration */
 .celeb{position:fixed;inset:0;z-index:40;display:grid;place-items:center;cursor:pointer;overflow:hidden;
   background:radial-gradient(circle at 50% 46%,color-mix(in srgb,var(--ok) 38%,transparent),transparent 62%),color-mix(in srgb,var(--bg) 60%,transparent);
@@ -481,6 +507,7 @@ html{overflow-x:clip}
   </div>
 </div>
 <div class="celeb" id="celeb" hidden role="status" aria-live="polite"></div>
+<div class="tut" id="tut" hidden role="dialog" aria-modal="true"></div>
 <div class="sheet" id="help" hidden role="dialog" aria-modal="true" aria-labelledby="helpTitle"><div class="sheet-bg" data-act="help-close"></div><div class="sheet-card" id="helpCard"></div></div>
 
 <datalist id="catlist"></datalist>
@@ -518,7 +545,9 @@ const L={
   newThing:'Nová věc',newThingPh:'např. Lyžařské brýle',category:'Kategorie',addBoth:'Přidat do inventáře i dne',
   wholeTrip:'celá cesta',everyDay:'každý den',
   noPicks:'Zatím nemáš vybrané žádné věci. Přepni na „Sbírání“ a poskládej si, co bereš.',
-  allPacked:'Všechno sbaleno. Šťastnou cestu!',celebTitle:'Sbaleno!',celebSub:'Šťastnou cestu!',packedOf:'věcí sbaleno',resetPack:'Zrušit odškrtnutí',
+  allPacked:'Všechno sbaleno. Šťastnou cestu!',celebTitle:'Sbaleno!',celebSub:'Šťastnou cestu!',
+  tut:[['Vítej v Packed','Balicí seznam na cesty. Už nikdy nic nezapomeneš.'],['Inventář','Sepiš si věci, které běžně bereš, roztříděné do barevných kategorií.'],['Sbírání','Vytvoř cestu, vyber den nebo Celou cestu a přidej věci z inventáře.'],['Balení','Jeden seznam pro celou cestu. Odškrtej, co je v kufru.']],
+  tutSkip:'Přeskočit',tutNext:'Další',tutBack:'Zpět',tutGo:'Jdeme na to!',tutAgain:'Zobrazit průvodce',tutLabel:'Průvodce aplikací',packedOf:'věcí sbaleno',resetPack:'Zrušit odškrtnutí',
   inv:'Inventář',thing:'Věc',thingPh:'např. Čelovka',add:'Přidat',
   invNote:'Kategorii vyber v nabídce vedle názvu. Název věci přepíšeš klepnutím, klepnutím na kategorii u věci ji přesuneš jinam. Barvu kategorie změníš kliknutím na barevné kolečko.',
   invEmpty:'Inventář je prázdný. Přidej první věc výše.',name:'Název',
@@ -566,7 +595,9 @@ const L={
   newThing:'New item',newThingPh:'e.g. Ski goggles',category:'Category',addBoth:'Add to inventory and this day',
   wholeTrip:'whole trip',everyDay:'every day',
   noPicks:'You haven’t picked anything yet. Switch to “Collecting” and choose what you’re taking.',
-  allPacked:'All packed. Have a good trip!',celebTitle:'All packed!',celebSub:'Have a good trip!',packedOf:'items packed',resetPack:'Uncheck all',
+  allPacked:'All packed. Have a good trip!',celebTitle:'All packed!',celebSub:'Have a good trip!',
+  tut:[['Welcome to Packed','Your travel packing list. Never forget anything again.'],['Inventory','Keep a list of the things you usually take, sorted into coloured categories.'],['Collecting','Create a trip, pick a day or Whole trip and add items from your inventory.'],['Packing','One checklist for the whole trip. Tick off what’s in your bag.']],
+  tutSkip:'Skip',tutNext:'Next',tutBack:'Back',tutGo:'Let’s go!',tutAgain:'Show the tutorial',tutLabel:'App tutorial',packedOf:'items packed',resetPack:'Uncheck all',
   inv:'Inventory',thing:'Item',thingPh:'e.g. Headlamp',add:'Add',
   invNote:'Pick a category from the menu next to the name. Tap an item’s name to rename it; tap its category to move it to another one. Click a category’s colour dot to change its colour.',
   invEmpty:'Your inventory is empty. Add the first item above.',name:'Name',
@@ -644,7 +675,7 @@ function starter(lg){
 }
 function sanitize(d){
   if(!d||typeof d!=='object')return starter();
-  return {v:1,wholeOpen:!!d.wholeOpen,dayOpen:!!d.dayOpen,open:(d.open&&typeof d.open==='object')?JSON.parse(JSON.stringify(d.open)):{},theme:d.theme==='light'?'light':'dark',lang:d.lang==='en'?'en':'cs',catColors:(d.catColors&&typeof d.catColors==='object')?{...d.catColors}:{},cats:Array.isArray(d.cats)?d.cats.slice():[],items:Array.isArray(d.items)?d.items.map(x=>({...x})):[],
+  return {v:1,tutorialDone:!!d.tutorialDone,wholeOpen:!!d.wholeOpen,dayOpen:!!d.dayOpen,open:(d.open&&typeof d.open==='object')?JSON.parse(JSON.stringify(d.open)):{},theme:d.theme==='light'?'light':'dark',lang:d.lang==='en'?'en':'cs',catColors:(d.catColors&&typeof d.catColors==='object')?{...d.catColors}:{},cats:Array.isArray(d.cats)?d.cats.slice():[],items:Array.isArray(d.items)?d.items.map(x=>({...x})):[],
     trips:Array.isArray(d.trips)?d.trips.map(t=>({...t,picks:JSON.parse(JSON.stringify(t.picks||{})),packed:{...(t.packed||{})}})):[]};
 }
 function loadLocal(){try{const s=localStorage.getItem(KEY);return s?sanitize(JSON.parse(s)):null}catch(e){return null}}
@@ -794,7 +825,7 @@ function render(){
     <p class="help-about">${esc(T.about)}</p>
     <p class="help-links"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V11m0-1.5a1.5 1.5 0 0 1 3 0V11m0-.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1-6 6h-1a6 6 0 0 1-4.6-2.2L4 16a1.6 1.6 0 0 1 2.4-2.1L9 16"/></svg>${esc(T.helpLinks)}</p>
     <ol class="help-steps">${T.help.map(([h,t],i)=>`<li><button type="button" class="help-go" data-act="help-go" data-v="${HELP_GO[i]}"><div><b>${esc(h)}</b><span>${esc(t)}</span></div><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button></li>`).join('')}</ol>
-    <p class="note">${esc(T.helpTip)}</p>
+    <p class="note help-foot"><span>${esc(T.helpTip)}</span><button type="button" class="linkbtn" data-act="tut-again">${esc(T.tutAgain)}</button></p>
     <button class="btn primary" data-act="help-close" id="helpClose" style="justify-content:center">${esc(T.close)}</button>
     <p class="help-credit">${credit()}</p>
     <p class="help-credit" style="font-size:13px"><a href="${PRIVACY}" target="_blank" rel="noopener noreferrer" style="font-weight:500;border-bottom-width:1px">${esc(T.privacy)}</a></p>`;
@@ -1162,7 +1193,33 @@ function celebrate(splash){
     <div class="celeb-title">${splash?'Packed':esc(T.celebTitle)}</div>${splash?'':`<div class="celeb-sub">${esc(T.celebSub)}</div>`}</div>`;
   el.classList.toggle('splash',!!splash);el.classList.remove('out');el.hidden=false;
   celebTimer=setTimeout(endCeleb,splash?2000:3200)}
-function endCeleb(){const el=document.getElementById('celeb');if(!el||el.hidden)return;clearTimeout(celebTimer);el.classList.add('out');celebTimer=setTimeout(()=>{el.hidden=true;el.innerHTML='';el.classList.remove('out')},380)}
+function endCeleb(){const el=document.getElementById('celeb');if(!el||el.hidden)return;clearTimeout(celebTimer);const wasSplash=el.classList.contains('splash');el.classList.add('out');
+  celebTimer=setTimeout(()=>{el.hidden=true;el.innerHTML='';el.classList.remove('out');if(wasSplash&&!state.tutorialDone)openTut()},380)}
+
+/* first-run tutorial: four short steps, can be skipped, replay from the help */
+const TUT_ART=[
+  {c:'var(--sign)',dark:1,svg:'<path d="M24 14v-3a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v3" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><rect x="8" y="14" width="48" height="40" rx="8" fill="none" stroke="currentColor" stroke-width="4"/><path d="M22 34l7 7 14-15" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>'},
+  {c:'var(--c-purple)',svg:'<g fill="currentColor"><circle cx="14" cy="18" r="5"/><circle cx="14" cy="32" r="5"/><circle cx="14" cy="46" r="5"/></g><path d="M26 18h26M26 32h26M26 46h18" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>'},
+  {c:'var(--c-blue)',svg:'<rect x="9" y="13" width="46" height="42" rx="7" fill="none" stroke="currentColor" stroke-width="4.5"/><path d="M9 26h46M21 7v11M43 7v11" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/><path d="M24 40h16M32 32v16" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>'},
+  {c:'var(--ok)',svg:'<path d="M8 18l5 5 9-9M8 42l5 5 9-9" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M32 19h24M32 43h24" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>'}];
+function openTut(){ui.tut=0;renderTut(0);const n=document.querySelector('#tut [data-act="tut-next"]');if(n)n.focus({preventScroll:true})}
+function closeTut(){const el=document.getElementById('tut');if(!el||el.hidden)return;state.tutorialDone=true;save();ui.tut=null;el.classList.add('out');setTimeout(()=>{el.hidden=true;el.innerHTML='';el.classList.remove('out')},260)}
+function renderTut(dir){
+  const el=document.getElementById('tut'),i=ui.tut,a=TUT_ART[i],[h,txt]=T.tut[i],last=i===T.tut.length-1;
+  el.setAttribute('aria-label',T.tutLabel);
+  el.innerHTML=`<div class="tut-card" style="--tc:${a.c}">
+    <div class="tut-top"><div class="tut-lang" role="group" aria-label="Language"><button type="button" data-act="tut-lang" data-v="cs" aria-pressed="${lang()==='cs'}">CS</button><button type="button" data-act="tut-lang" data-v="en" aria-pressed="${lang()==='en'}">EN</button></div>
+      ${last?'':`<button type="button" class="tut-skip" data-act="tut-skip">${esc(T.tutSkip)}</button>`}</div>
+    <div class="tut-body" style="--from:${dir>0?'40px':dir<0?'-40px':'0px'}">
+      <div class="tut-art${a.dark?' dark':''}"><svg width="76" height="76" viewBox="0 0 64 64" aria-hidden="true">${a.svg}</svg></div>
+      <h2>${esc(h).replace('Packed','<span class="help-brand">Packed</span>')}</h2><p>${esc(txt)}</p></div>
+    <div class="tut-dots">${T.tut.map((_,k)=>`<button type="button" data-act="tut-dot" data-v="${k}" aria-label="${k+1} / ${T.tut.length}" ${k===i?'aria-current="step"':''}></button>`).join('')}</div>
+    <div class="tut-nav">${i>0?`<button type="button" class="btn" data-act="tut-back">${esc(T.tutBack)}</button>`:''}<button type="button" class="btn primary" data-act="tut-next">${esc(last?T.tutGo:T.tutNext)}</button></div></div>`;
+  el.hidden=false}
+function tutGo(k){if(ui.tut==null)return;k=Math.max(0,Math.min(T.tut.length-1,k));if(k===ui.tut)return;const d=k>ui.tut?1:-1;ui.tut=k;renderTut(d);const n=document.querySelector('#tut [data-act="tut-next"]');if(n)n.focus({preventScroll:true})}
+{let sx=null;document.addEventListener('pointerdown',e=>{sx=e.target.closest('#tut .tut-card')?e.clientX:null});
+  document.addEventListener('pointerup',e=>{if(sx==null||ui.tut==null)return;const dx=e.clientX-sx;sx=null;if(Math.abs(dx)>50)tutGo(ui.tut+(dx<0?1:-1))})}
+document.addEventListener('keydown',e=>{if(ui.tut==null)return;if(e.key==='Escape')closeTut();else if(e.key==='ArrowRight')tutGo(ui.tut+1);else if(e.key==='ArrowLeft')tutGo(ui.tut-1)});
 document.addEventListener('pointerdown',e=>{if(e.target.closest('#celeb'))endCeleb()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')endCeleb()});
 
@@ -1211,6 +1268,12 @@ document.addEventListener('click',e=>{
     case 'info':ui.help=true;render();{const c=document.getElementById('helpClose');if(c)c.focus()}return;
     case 'help-close':ui.help=false;render();document.getElementById('infoBtn').focus();return;
     case 'help-go':helpGo(b.dataset.v);return;
+    case 'tut-next':if(ui.tut===T.tut.length-1)closeTut();else tutGo(ui.tut+1);return;
+    case 'tut-back':tutGo(ui.tut-1);return;
+    case 'tut-dot':tutGo(+b.dataset.v);return;
+    case 'tut-skip':closeTut();return;
+    case 'tut-lang':{const to=b.dataset.v;if(to!==lang()){translateStarter(to);state.lang=to;save();render();renderTut(0)}return}
+    case 'tut-again':ui.help=false;render();openTut();return;
     case 'export':exportBackup(false);return;
     case 'export-inv':exportBackup(true);return;
     case 'inv-yes':if(pendingInv){mergeInv(pendingInv);pendingInv=null;ui.importMsg='invImported';save()}break;
