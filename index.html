@@ -331,6 +331,11 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 :root[data-mode="days"]{--mcol:var(--c-blue)}
 :root[data-mode="pack"]{--mcol:var(--ok)}
 .modebar .seg{padding-bottom:12px;border-bottom:3px solid var(--mcol,var(--line));border-radius:0}
+/* the mode line continues down both sides and round the bottom, framing everything in that mode */
+main .modebar{padding-bottom:0;margin-bottom:0}
+.modebox{border:3px solid var(--mcol,var(--line));border-top:0;border-radius:0 0 16px 16px;padding:14px 10px 14px;margin-top:-20px}
+.modebox>*:first-child{margin-top:0}
+.modebox>*:last-child{margin-bottom:0}
 .modebar .seg button{position:relative}
 .modebar .seg button[aria-pressed="true"]::after{content:"";position:absolute;left:50%;top:100%;width:4px;margin-left:-2px;height:17px;background:var(--mc);border-radius:2px 2px 0 0}
 .modebar .seg button[aria-pressed="false"]{font-weight:500;color:var(--muted);border-color:color-mix(in srgb,var(--mc) 35%,transparent);background:transparent}
@@ -710,7 +715,7 @@ function loadLocal(){try{const s=localStorage.getItem(KEY);return s?sanitize(JSO
 
 let state=loadLocal();
 const FRESH=!state;
-if(!state){state=starter();try{const nl=(navigator.languages&&navigator.languages[0])||navigator.language||'';if(!/^(cs|sk)\b/i.test(nl)){translateStarter('en');state.lang='en'}}catch(e){}}
+if(!state){state=starter();state.trips.forEach(t=>{t.picks=mergeDays(t.picks)});try{const nl=(navigator.languages&&navigator.languages[0])||navigator.language||'';if(!/^(cs|sk)\b/i.test(nl)){translateStarter('en');state.lang='en'}}catch(e){}}
 const ui={tab:'trips',tripId:null,mode:'days',day:'all',newTrip:false,tripErr:'',delTrip:false,delItem:null,importMsg:''};
 let statusKey='load';
 
@@ -929,7 +934,7 @@ function viewTrip(){
       <button data-act="mode" data-v="days" aria-pressed="${ui.mode==='days'}"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>${T.byDay}</button>
       <button class="packbtn${p.total&&p.done===p.total?' done':''}" data-act="mode" data-v="pack" aria-pressed="${ui.mode==='pack'}"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7l2 2 3.5-3.5M4 15l2 2 3.5-3.5M13 7.5h7M13 15.5h7"/></svg>${T.packing}<span class="seg-badge">${p.total&&p.done===p.total?'✓ ':''}${p.done}/${p.total}</span></button>
     </div></div>`;
-  return head+(ui.mode==='pack'?viewPack(t):viewDays(t,days));
+  return head+`<div class="modebox">${ui.mode==='pack'?viewPack(t):viewDays(t,days)}</div>`;
 }
 
 function viewDays(t,days){
