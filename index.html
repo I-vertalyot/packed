@@ -158,6 +158,10 @@ button.ig{appearance:none;-webkit-appearance:none;background:none;border:0;borde
 .help-steps li::before{content:counter(s);width:28px;height:28px;border-radius:5px;background:var(--sign);color:var(--sign-ink);font-family:var(--f-display);font-weight:800;display:grid;place-items:center}
 .help-steps b{display:block;font-weight:700;margin-bottom:2px}
 .help-steps span{color:var(--muted);font-size:14px}
+.help-brand{color:var(--sign)}
+.help-links{display:flex;align-items:center;gap:8px;margin:0;padding:8px 12px;border-radius:8px;background:color-mix(in srgb,var(--sign) 16%,transparent);color:var(--ink);font-size:14px;font-weight:600}
+.help-links svg{flex:none;color:var(--sign)}
+:root:not([data-app-theme="dark"]) .help-links svg{color:#9A6B00}
 .help-go{display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px;width:calc(100% + 16px);margin:-6px -8px;padding:6px 8px;border:0;border-radius:8px;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
 .help-go svg{color:var(--muted)}
 .help-go:hover,.help-go:focus-visible{background:var(--chip)}
@@ -496,7 +500,7 @@ const L={
   imported:'Záloha nahrána.',noDl:'Stahování souborů tady není dostupné.',dlDone:'Záloha stažena.',dlFail:'Zálohu se nepodařilo stáhnout.',
   badFile:'Tenhle soubor není záloha z aplikace Packed.',fileName:'packed-zaloha-',appName:'Packed',piecesPacked:'Sbalené kusy',showMore:'Zobrazit více',showLess:'Zobrazit méně',edit:'Upravit',saveChanges:'Uložit změny',saveAnyway:'Přesto uložit',editNote:'Věci se při změně termínu přesunou podle pořadí dnů: 1. den zůstane 1. dnem.',shortenWarn:n=>`Cesta se zkrátí a ${n} ${csPl(n,'den','dny','dní')} na konci se smaže i s vybranými věcmi. Klikni na „Přesto uložit“.`,moveTo:'Přesunout do kategorie',newCat:'Nová kategorie',newCatOpt:'+ Nová kategorie…',newCatPh:'Název nové kategorie',ok:'OK',collapseAll:'Sbalit vše',expandAll:'Rozbalit vše',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Přepnout na světlý vzhled',toDark:'Přepnout na tmavý vzhled',madeBy:'Made by',
   pdfBtn:'Stáhnout PDF',pdfLabel:'BALICÍ SEZNAM',pdfPacked:(d,t)=>`sbaleno ${d} z ${t}`,pdfList:'Co zabalit',pdfByDay:'Po dnech',pdfDone:'PDF staženo.',pdfFail:'PDF se nepodařilo vytvořit.',coffee:'Buy me a coffee',
-  info:'Nápověda',helpTitle:'Jak používat Packed',close:'Rozumím',
+  info:'Nápověda',helpTitle:'Jak používat Packed',close:'Rozumím',helpLinks:'Ťukni na krok a jsi rovnou tam.',
   help:[['Inventář','Přidej do inventáře věci, které běžně bereš.'],
     ['Nová cesta','Cesty → „+ Nová cesta“: kam a kdy.'],
     ['Sbírání','Vyber den nebo Celou cestu, přidej věci z inventáře níže.'],
@@ -544,7 +548,7 @@ const L={
   imported:'Backup uploaded.',noDl:'File downloads aren’t available here.',dlDone:'Backup downloaded.',dlFail:'Couldn’t download the backup.',
   badFile:'This file isn’t a Packed backup.',fileName:'packed-backup-',appName:'Packed',piecesPacked:'Pieces packed',showMore:'Show more',showLess:'Show less',edit:'Edit',saveChanges:'Save changes',saveAnyway:'Save anyway',editNote:'If you change the dates, your plan moves with the day order: day 1 stays day 1.',shortenWarn:n=>`The trip gets shorter: ${n} ${enPl(n,'day','days')} at the end will be removed with their items. Tap “Save anyway” to continue.`,moveTo:'Move to category',newCat:'New category',newCatOpt:'+ New category…',newCatPh:'New category name',ok:'OK',collapseAll:'Collapse all',expandAll:'Expand all',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Switch to light mode',toDark:'Switch to dark mode',madeBy:'Made by',
   pdfBtn:'Download PDF',pdfLabel:'PACKING LIST',pdfPacked:(d,t)=>`${d} of ${t} packed`,pdfList:'What to pack',pdfByDay:'Day by day',pdfDone:'PDF downloaded.',pdfFail:'Couldn’t create the PDF.',coffee:'Buy me a coffee',
-  info:'Help',helpTitle:'How to use Packed',close:'Got it',
+  info:'Help',helpTitle:'How to use Packed',close:'Got it',helpLinks:'Tap any step to go straight there.',
   help:[['Inventory','Add to inventory things you usually take.'],
     ['New trip','Trips → “+ New trip”: where and when.'],
     ['Collecting','Pick a day or Whole trip, add items from inventory below.'],
@@ -753,8 +757,9 @@ function render(){
   main.querySelectorAll('input[data-partial]').forEach(c=>{c.indeterminate=true});
   const ib=document.getElementById('infoBtn');ib.setAttribute('aria-label',T.info);ib.title=T.info;
   const hp=document.getElementById('help');hp.hidden=!ui.help;
-  if(ui.help)document.getElementById('helpCard').innerHTML=`<h1 id="helpTitle" style="font-size:24px">${esc(T.helpTitle)}</h1>
+  if(ui.help)document.getElementById('helpCard').innerHTML=`<h1 id="helpTitle" style="font-size:24px">${esc(T.helpTitle).replace('Packed','<span class="help-brand">Packed</span>')}</h1>
     <p class="help-about">${esc(T.about)}</p>
+    <p class="help-links"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V11m0-1.5a1.5 1.5 0 0 1 3 0V11m0-.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1-6 6h-1a6 6 0 0 1-4.6-2.2L4 16a1.6 1.6 0 0 1 2.4-2.1L9 16"/></svg>${esc(T.helpLinks)}</p>
     <ol class="help-steps">${T.help.map(([h,t],i)=>`<li><button type="button" class="help-go" data-act="help-go" data-v="${HELP_GO[i]}"><div><b>${esc(h)}</b><span>${esc(t)}</span></div><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button></li>`).join('')}</ol>
     <p class="note">${esc(T.helpTip)}</p>
     <button class="btn primary" data-act="help-close" id="helpClose" style="justify-content:center">${esc(T.close)}</button>
