@@ -325,6 +325,12 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 .modal-head{margin-bottom:6px}
 .modal-head h2{font-size:22px;color:var(--ink);letter-spacing:.01em}
 .modal .panel{border:0;padding:0;background:none;box-shadow:none;margin:0}
+/* picker header: heading on its own line, then search + Expand all */
+.pickhead{flex-wrap:wrap}
+.pickhead h2{flex:1 1 100%}
+.pickhead .spacer{display:none}
+.pickhead #search{order:2;flex:1 1 0;width:auto;max-width:none!important;min-width:0}
+.pickhead>*:not(h2):not(#search):not(.spacer){order:3;flex:none}
 .trip-w{position:relative}
 .trip-w .trip{padding-right:62px}
 .trip-edit{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--chip);color:var(--ink);display:grid;place-items:center;padding:0;cursor:pointer}
@@ -582,7 +588,7 @@ const L={
   emptyWhole:'Sem patří věci, které potřebuješ po celou dobu: doklady, nabíječka, kartáček… Klepni na kategorii níže a vyber věci.',emptyDay:'Vyber věci z inventáře níže. Klikni na kategorii a vyber věci.',
   less:'Méně',more:'Více',remove:'Odebrat',
   copyPrev:'Zkopírovat z předchozího dne',toAll:'Tento den do všech dnů',clear:'Vyčistit',
-  addFromInv:'Přidat z inventáře',search:'Hledat…',invEmptyPick:'Inventář je prázdný. Přidej věci níže nebo na kartě Inventář.',
+  addFromInv:'Ťukni na kategorii, vyber věci',search:'Hledat…',invEmptyPick:'Inventář je prázdný. Přidej věci níže nebo na kartě Inventář.',
   newThing:'Nová věc',newThingPh:'např. Lyžařské brýle',category:'Kategorie',addBoth:'Přidat do inventáře i dne',
   wholeTrip:'celá cesta',everyDay:'každý den',
   noPicks:'Zatím nemáš vybrané žádné věci. Přepni na „Sbírání“ a poskládej si, co bereš.',
@@ -632,7 +638,7 @@ const L={
   emptyWhole:'Put things you need the whole time here: documents, charger, toothbrush… Tap a category below and choose the items.',emptyDay:'Pick items from the inventory below. Click a category and choose the items.',
   less:'Less',more:'More',remove:'Remove',
   copyPrev:'Copy from previous day',toAll:'Use this day for all days',clear:'Clear',
-  addFromInv:'Add from inventory',search:'Search…',invEmptyPick:'Your inventory is empty. Add items below or on the Inventory tab.',
+  addFromInv:'Tap a category, select items',search:'Search…',invEmptyPick:'Your inventory is empty. Add items below or on the Inventory tab.',
   newThing:'New item',newThingPh:'e.g. Ski goggles',category:'Category',addBoth:'Add to inventory and this day',
   wholeTrip:'whole trip',everyDay:'every day',
   noPicks:'You haven’t picked anything yet. Switch to “Collecting” and choose what you’re taking.',
@@ -977,7 +983,7 @@ function viewDays(t,days){
   return `${(()=>{const isAll=k==='all',can=grouped.length>WHOLE_FOLD_MIN,fold=can&&!(isAll?state.wholeOpen:state.dayOpen);
       return `<section class="panel wholepanel${fold?' folded':''}">${can?`<h2 class="wholehead"><button class="fold" type="button" data-act="fold-whole" data-k="${isAll?'all':'day'}" data-folded="${fold?1:''}" aria-expanded="${!fold}"><span class="fold-l">${title}</span><span class="fold-n">${esc(T.things(grouped.reduce((s,x)=>s+(+x.q||1),0)))}</span>${CHEV}</button></h2>`:`<div class="row"><h2>${title}</h2></div>`}<div class="wholebody">${list}${actions}</div>${can?`<button class="showmore" type="button" data-act="fold-whole" data-k="${isAll?'all':'day'}" data-folded="${fold?1:''}" aria-expanded="${!fold}">${fold?T.showMore:T.showLess}${CHEV}</button>`:''}</section>`})()}
     <section class="panel">
-      <div class="row"><h2>${T.addFromInv}</h2><span class="spacer"></span>${foldAll('pick',byCat(state.items).map(g=>g[0]))}
+      <div class="row pickhead"><h2>${T.addFromInv}</h2><span class="spacer"></span>${foldAll('pick',byCat(state.items).map(g=>g[0]))}
         <input class="inp" id="search" type="search" placeholder="${T.search}" style="max-width:200px" autocomplete="off"></div>
       <form id="addToDay" class="addform" style="border-bottom:1px solid var(--line);padding-bottom:14px">
         <div class="addrow" style="width:100%">
