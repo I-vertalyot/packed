@@ -1,9 +1,9 @@
 # Packed
 
-A travel packing app. Keep an inventory of the things you usually take, plan what you need for each day of a trip, then tick items off while you pack.
+A travel packing app. Keep an inventory of the things you usually take, choose what you need for a trip, then tick items off while you pack.
 
 - **Inventory:** items grouped into categories, each with its own colour
-- **Trips:** a list for each day plus "Whole trip" for documents, chargers and so on; copy a day or use it for every day
+- **Trips:** one list per trip, picked from your inventory, with how many of each you need
 - **Packing:** one combined checklist with quantities added up
 - **PDF export:** download a printable packing list for any trip
 - **Czech / English:** switch with CS / EN

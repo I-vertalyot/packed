@@ -26,10 +26,10 @@ Packed – Travel Packing List
 Plan, pack & never forget
 
 **Google short description** (≤ 80)
-Plan what to pack for each day of your trip and tick it off as you pack.
+Make a packing list for every trip and tick it off as you pack.
 
 **Apple promotional text** (≤ 170)
-Plan what you need for every day of your trip, tick things off as you pack and print your list as a PDF. Simple, offline and private.
+Make a packing list for every trip, tick things off as you pack and print your list as a PDF. Simple, offline and private.
 
 **Apple keywords** (≤ 100, comma separated, no spaces)
 packing list,travel,checklist,trip planner,luggage,vacation,suitcase,holiday,pack,pdf
@@ -38,24 +38,23 @@ packing list,travel,checklist,trip planner,luggage,vacation,suitcase,holiday,pac
 
 Never forget anything on a trip again.
 
-Packed is a simple packing list for your travels. Keep one inventory of the things you usually take, choose what you need for each day of a trip, then tick everything off as it goes into your bag.
+Packed is a simple packing list for your travels. Keep one inventory of the things you usually take, choose what you need for a trip, then tick everything off as it goes into your bag.
 
-PLAN DAY BY DAY
-• Every trip gets its own list for each day, plus a "Whole trip" list for documents, chargers and other essentials
+PLAN EVERY TRIP
+• Every trip gets its own list, picked from your inventory in a few taps
 • Set how many you need (3 T-shirts, 2 pairs of socks…)
-• Copy a day, or use one day's list for the whole trip
 
 PACK WITH ONE CHECKLIST
-• All days are combined into one list with the totals added up
 • Tick items off as you pack and see your progress
-• Each item shows which days it's for
+• Every piece counts, so nothing gets left behind
+• A little celebration when everything is packed
 
 YOUR OWN INVENTORY
 • Starts with 30+ common travel items you can rename, delete or extend
 • Sort items into categories and give each category its own colour
 
 PRINT AS PDF
-• Download a printable packing list with checkboxes, grouped by category, plus a day-by-day overview
+• Download a printable packing list with checkboxes, grouped by category
 
 PRIVATE AND OFFLINE
 • No account, no ads, no tracking
@@ -76,10 +75,10 @@ Packed – balicí seznam
 Plánuj, balej, nic nezapomeň
 
 **Krátký popis Google** (≤ 80)
-Naplánuj, co si vzít na každý den cesty, a při balení to odškrtávej.
+Sestav si seznam na každou cestu a při balení ho odškrtávej.
 
 **Propagační text Apple** (≤ 170)
-Naplánuj si věci na každý den cesty, při balení je odškrtávej a seznam si vytiskni jako PDF. Jednoduše, offline a bez sledování.
+Sestav si seznam na každou cestu, při balení ho odškrtávej a vytiskni si ho jako PDF. Jednoduše, offline a bez sledování.
 
 **Klíčová slova Apple** (≤ 100)
 balicí seznam,cestování,dovolená,kufr,checklist,výlet,plánovač,zavazadla,balení,pdf
@@ -88,24 +87,23 @@ balicí seznam,cestování,dovolená,kufr,checklist,výlet,plánovač,zavazadla,
 
 Už nikdy nic nezapomeneš.
 
-Packed je jednoduchý balicí seznam na cesty. Sepíšeš si věci, které běžně bereš, na každý den cesty vybereš, co potřebuješ, a při balení jen odškrtáváš.
+Packed je jednoduchý balicí seznam na cesty. Sepíšeš si věci, které běžně bereš, na cestu vybereš, co potřebuješ, a při balení jen odškrtáváš.
 
-PLÁN PO DNECH
-• Každá cesta má seznam pro každý den a navíc „Celou cestu“ pro doklady, nabíječky a další nezbytnosti
+PLÁN KAŽDÉ CESTY
+• Každá cesta má vlastní seznam, který poskládáš z inventáře pár ťuknutími
 • Nastavíš si počet kusů (3 trička, 2 páry ponožek…)
-• Zkopíruješ předchozí den, nebo jeden den použiješ pro celou cestu
 
 BALENÍ PODLE JEDNOHO SEZNAMU
-• Všechny dny se spojí do jednoho seznamu se sečtenými kusy
 • Odškrtáváš, co už máš v kufru, a vidíš, kolik zbývá
-• U každé věci vidíš, na které dny je
+• Počítá se každý kus, takže nic nezůstane doma
+• Když máš sbaleno, čeká tě malá oslava
 
 VLASTNÍ INVENTÁŘ
 • Začínáš s víc než 30 běžnými věcmi, které můžeš přejmenovat, smazat nebo doplnit
 • Věci třídíš do kategorií a každé dáš vlastní barvu
 
 TISK DO PDF
-• Stáhneš si seznam k vytištění se zaškrtávacími políčky podle kategorií a s přehledem po dnech
+• Stáhneš si seznam k vytištění se zaškrtávacími políčky podle kategorií
 
 SOUKROMĚ A OFFLINE
 • Žádný účet, reklamy ani sledování

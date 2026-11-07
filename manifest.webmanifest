@@ -2,7 +2,7 @@
   "id": "/packed/",
   "name": "Packed – Travel Packing List",
   "short_name": "Packed",
-  "description": "A travel packing list. Keep an inventory of the things you take, plan what you need for each day of a trip, tick items off as you pack and print the list as a PDF. Czech and English.",
+  "description": "A travel packing list. Keep an inventory of the things you take, choose what you need for a trip, tick items off as you pack and print the list as a PDF. Czech and English.",
   "lang": "en",
   "dir": "ltr",
   "start_url": "./?source=pwa",
@@ -55,7 +55,7 @@
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Plan what to take each day"
+      "label": "Choose what to take on a trip"
     },
     {
       "src": "screenshots/screen-3.png",
