@@ -572,7 +572,7 @@ const L={
   wholeTrip:'celá cesta',everyDay:'každý den',
   noPicks:'Zatím nemáš vybrané žádné věci. Přepni na „Sbírání“ a poskládej si, co bereš.',
   allPacked:'Všechno sbaleno. Šťastnou cestu!',celebTitle:'Sbaleno!',celebSub:'Šťastnou cestu!',
-  tut:[['Vítej v Packed','Balicí seznam na cesty. Už nikdy nic nezapomeneš.'],['Inventář','Sepiš si věci, které běžně bereš, roztříděné do barevných kategorií.'],['Sbírání','Vytvoř cestu, vyber den nebo Celou cestu a přidej věci z inventáře.'],['Balení','Jeden seznam pro celou cestu. Odškrtej, co je v kufru.']],
+  tut:[['Vítej v Packed','Balicí seznam na cesty. Už nikdy nic nezapomeneš.'],['Inventář','Sepiš si věci, které běžně bereš, roztříděné do barevných kategorií.'],['Sbírání','Vytvoř cestu a přidej do ní věci z inventáře.'],['Balení','Jeden seznam pro celou cestu. Odškrtej, co je v kufru.']],
   tutSkip:'Přeskočit',tutNext:'Další',tutBack:'Zpět',tutGo:'Jdeme na to!',tutAgain:'Zobrazit průvodce',tutLabel:'Průvodce aplikací',packedOf:'věcí sbaleno',resetPack:'Zrušit odškrtnutí',
   inv:'Inventář',thing:'Věc',thingPh:'např. Čelovka',add:'Přidat',
   invNote:'Kategorii vyber v nabídce vedle názvu. Název věci přepíšeš klepnutím, klepnutím na kategorii u věci ji přesuneš jinam. Barvu kategorie změníš kliknutím na barevné kolečko.',
@@ -587,7 +587,7 @@ const L={
   info:'Nápověda',helpTitle:'Jak používat Packed',close:'Rozumím',helpLinks:'Ťukni na krok a jsi rovnou tam.',
   help:[['Inventář','Přidej do inventáře věci, které běžně bereš.'],
     ['Nová cesta','Cesty → „+ Nová cesta“: kam a kdy.'],
-    ['Sbírání','Vyber den nebo Celou cestu, přidej věci z inventáře níže.'],
+    ['Sbírání','Přidej věci z inventáře níže.'],
     ['Balení','Jeden seznam pro celou cestu. Odškrtej, co je v kufru.'],
     ['PDF','„Stáhnout PDF“ = seznam k tisku.'],
     ['Jiné zařízení','Inventář → Export a záloha → „Exportovat inventář“, pak „Nahrát soubor…“.']],
@@ -622,7 +622,7 @@ const L={
   wholeTrip:'whole trip',everyDay:'every day',
   noPicks:'You haven’t picked anything yet. Switch to “Collecting” and choose what you’re taking.',
   allPacked:'All packed. Have a good trip!',celebTitle:'All packed!',celebSub:'Have a good trip!',
-  tut:[['Welcome to Packed','Your travel packing list. Never forget anything again.'],['Inventory','Keep a list of the things you usually take, sorted into coloured categories.'],['Collecting','Create a trip, pick a day or Whole trip and add items from your inventory.'],['Packing','One checklist for the whole trip. Tick off what’s in your bag.']],
+  tut:[['Welcome to Packed','Your travel packing list. Never forget anything again.'],['Inventory','Keep a list of the things you usually take, sorted into coloured categories.'],['Collecting','Create a trip and add items from your inventory.'],['Packing','One checklist for the whole trip. Tick off what’s in your bag.']],
   tutSkip:'Skip',tutNext:'Next',tutBack:'Back',tutGo:'Let’s go!',tutAgain:'Show the tutorial',tutLabel:'App tutorial',packedOf:'items packed',resetPack:'Uncheck all',
   inv:'Inventory',thing:'Item',thingPh:'e.g. Headlamp',add:'Add',
   invNote:'Pick a category from the menu next to the name. Tap an item’s name to rename it; tap its category to move it to another one. Click a category’s colour dot to change its colour.',
@@ -637,7 +637,7 @@ const L={
   info:'Help',helpTitle:'How to use Packed',close:'Got it',helpLinks:'Tap any step to go straight there.',
   help:[['Inventory','Add to inventory things you usually take.'],
     ['New trip','Trips → “+ New trip”: where and when.'],
-    ['Collecting','Pick a day or Whole trip, add items from inventory below.'],
+    ['Collecting','Add items from inventory below.'],
     ['Packing','One list for the whole trip. Tick off what’s in your bag.'],
     ['PDF','“Download PDF” = printable checklist.'],
     ['Another device','Inventory → Export & backup → “Export inventory”, then “Upload file…”.']],
@@ -699,10 +699,12 @@ function starter(lg){
     packed:{[by['Pas']]:true,[by['Telefon']]:true}
   }]};
 }
+/* collecting is for the whole trip only: per-day lists are merged into it, quantities added up */
+function mergeDays(p){const all={};Object.values(p&&typeof p==='object'?p:{}).forEach(o=>{if(o&&typeof o==='object')Object.entries(o).forEach(([id,q])=>{if(q)all[id]=Math.min(99,(all[id]||0)+(+q||1))})});return {all}}
 function sanitize(d){
   if(!d||typeof d!=='object')return starter();
   return {v:1,tutorialDone:!!d.tutorialDone,wholeOpen:!!d.wholeOpen,dayOpen:!!d.dayOpen,open:(d.open&&typeof d.open==='object')?JSON.parse(JSON.stringify(d.open)):{},theme:d.theme==='light'?'light':'dark',lang:d.lang==='en'?'en':'cs',catColors:(d.catColors&&typeof d.catColors==='object')?{...d.catColors}:{},cats:Array.isArray(d.cats)?d.cats.slice():[],items:Array.isArray(d.items)?d.items.map(x=>({...x})):[],
-    trips:Array.isArray(d.trips)?d.trips.map(t=>({...t,picks:JSON.parse(JSON.stringify(t.picks||{})),packed:{...(t.packed||{})}})):[]};
+    trips:Array.isArray(d.trips)?d.trips.map(t=>({...t,picks:mergeDays(t.picks),packed:{...(t.packed||{})}})):[]};
 }
 function loadLocal(){try{const s=localStorage.getItem(KEY);return s?sanitize(JSON.parse(s)):null}catch(e){return null}}
 
@@ -910,7 +912,7 @@ function droppedDays(t,start,end){const oldDays=tripDays(t),nn=tripDays({start,e
   return oldDays.slice(nn).filter(d=>Object.values(t.picks[d]||{}).some(Boolean)).length}
 function viewTrip(){
   const t=trip();const days=tripDays(t);const n=days.length;const p=progress(t);
-  if(ui.day!=='all'&&!days.includes(ui.day))ui.day='all';
+  ui.day='all';
   const head=`<div class="head">
       <div class="row"><button class="btn back" data-act="back"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 8H3.5M7.5 3.5 3 8l4.5 4.5"/></svg>${esc(T.back.replace(/^←\s*/,''))}</button><span class="spacer"></span>
         <div class="tr-actions"><div class="tr-top">${ui.delTrip?`<div class="tr-confirm" role="group" aria-label="${esc(T.delTripQ(t.name))}"><span>${T.delTripAsk}</span><button class="btn small" data-act="del-trip-no">${T.no}</button><button class="btn small danger" data-act="del-trip-yes">${T.del}</button></div>`:ui.editTrip?'':`<div class="tr-menu">
@@ -934,10 +936,6 @@ function viewDays(t,days){
   const keys=['all',...days];const k=ui.day;
   /* counts every piece: 3 T-shirts count as 3 */
   const cnt=key=>Object.entries(t.picks[key]||{}).reduce((s,[id,q])=>s+(q&&item(id)?(+q||1):0),0);
-  const gates=keys.map(key=>{
-    const lbl=key==='all'?T.whole:WD(key);
-    const sub=key==='all'?T.things(cnt(key)):`${dm(key)} · ${cnt(key)}`;
-    return `<button class="gate" data-act="day" data-k="${key}" aria-pressed="${key===k}"><span class="g1">${lbl}</span><span class="g2">${sub}</span></button>`}).join('');
   const picks=t.picks[k]||{};
   const chosen=Object.entries(picks).filter(([id,q])=>q&&item(id)).map(([id,q])=>({it:item(id),q}));
   const grouped=byCat(chosen).flatMap(([c,l])=>l.sort((a,b)=>cmp(a.it.name,b.it.name)));
@@ -958,8 +956,7 @@ function viewDays(t,days){
       ${grouped.length?`<button class="btn ghost" data-act="clear-day">${T.clear}</button>`:''}</div>`;
   const picker=byCat(state.items).map(([c,l])=>`<div class="cat${fold('pick',c)}" data-cat><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pick',c,dot(c)+esc(c),T.nPicked(l.filter(it=>picks[it.id]).length,l.length))}</h3><div class="chips pick-box" style="--cc:var(--c-${catColor(c)})">${
       l.slice().sort((a,b)=>cmp(a.name,b.name)).map(it=>`<button class="chip ${picks[it.id]?'on':''}" style="--cc:var(--c-${catColor(it.cat||OTHER())})" data-act="toggle-pick" data-id="${it.id}" data-name="${esc(it.name.toLowerCase())}">${esc(it.name)}</button>`).join('')}</div></div>`).join('');
-  return `<div class="gates" role="group" aria-label="${T.tripDays}">${gates}</div>
-    ${(()=>{const isAll=k==='all',can=grouped.length>WHOLE_FOLD_MIN,fold=can&&!(isAll?state.wholeOpen:state.dayOpen);
+  return `${(()=>{const isAll=k==='all',can=grouped.length>WHOLE_FOLD_MIN,fold=can&&!(isAll?state.wholeOpen:state.dayOpen);
       return `<section class="panel wholepanel${fold?' folded':''}">${can?`<h2 class="wholehead"><button class="fold" type="button" data-act="fold-whole" data-k="${isAll?'all':'day'}" data-folded="${fold?1:''}" aria-expanded="${!fold}"><span class="fold-l">${title}</span><span class="fold-n">${esc(T.things(grouped.reduce((s,x)=>s+(+x.q||1),0)))}</span>${CHEV}</button></h2>`:`<div class="row"><h2>${title}</h2></div>`}<div class="wholebody">${list}${actions}</div>${can?`<button class="showmore" type="button" data-act="fold-whole" data-k="${isAll?'all':'day'}" data-folded="${fold?1:''}" aria-expanded="${!fold}">${fold?T.showMore:T.showLess}${CHEV}</button>`:''}</section>`})()}
     <section class="panel">
       <div class="row"><h2>${T.addFromInv}</h2><span class="spacer"></span>${foldAll('pick',byCat(state.items).map(g=>g[0]))}
@@ -1132,7 +1129,7 @@ const cap1=s=>s.charAt(0).toUpperCase()+s.slice(1);
 function tripPDF(t){
   const d=pdfDoc(),M=48,W=d.W,H=d.H,CW=W-2*M,BOT=H-60;
   const INK='#16202B',MUT='#5B6878',LINE='#D8DEE5',SOFT='#E7EBF0',SIGN='#FFC62B',OK='#1C8556';
-  const days=tripDays(t),n=days.length,a=aggregate(t),done=a.filter(x=>isDone(t,x)).length;
+  const days=tripDays(t),n=days.length,a=aggregate(t),pc=pieces(t,a),done=pc.done;
   const wrap=(s,k,size,maxW)=>{const out=[];let line='';String(s).split(/\s+/).forEach(w=>{const tr=line?line+' '+w:w;if(!line||d.width(tr,k,size)<=maxW)line=tr;else{out.push(line);line=w}});if(line)out.push(line);return out};
   const fit=(s,k,size,maxW)=>{s=String(s);if(d.width(s,k,size)<=maxW)return s;while(s.length>1&&d.width(s+'…',k,size)>maxW)s=s.slice(0,-1);return s+'…'};
   let y=0;
@@ -1142,12 +1139,12 @@ function tripPDF(t){
     if(!first){d.text(fit(t.name,'B',8,CW/2),M+CW-d.width(fit(t.name,'B',8,CW/2),'B',8),M,{font:'B',size:8,color:MUT});y=M+30;return}
     const tl=wrap(t.name,'B',24,CW);tl.forEach((l,i)=>d.text(l,M,M+38+i*28,{font:'B',size:24}));
     y=M+38+(tl.length-1)*28+20;
-    d.text(`${cap1(WDL(t.start))} ${dm(t.start)} – ${WDL(t.end)} ${dm(t.end)}   ·   ${T.days(n)}   ·   ${T.pdfPacked(done,a.length)}`,M,y,{size:10,color:MUT});
+    d.text(`${cap1(WDL(t.start))} ${dm(t.start)} – ${WDL(t.end)} ${dm(t.end)}   ·   ${T.days(n)}   ·   ${T.pdfPacked(done,pc.total)}`,M,y,{size:10,color:MUT});
     y+=16;d.line(M,y,M+CW,y,{color:INK,lw:1.2});y+=28};
   header(true);
   // 1) packing checklist, two columns
   d.text(T.pdfList.toUpperCase(),M,y,{font:'B',size:8.5,color:MUT,cs:0.9});y+=20;
-  const GAP=26,colW=(CW-GAP)/2,ROW=25,HEAD=22;let col=0,top=y,cy=y,leftEnd=y;
+  const GAP=26,colW=(CW-GAP)/2,ROW=20,HEAD=22;let col=0,top=y,cy=y,leftEnd=y;
   const ensure=h=>{if(cy+h<=BOT)return;if(col===0){leftEnd=cy;col=1;cy=top}else{header(false);col=0;top=y;cy=y;leftEnd=y}};
   const blocks=byCat(a),bh=blocks.map(([c,l])=>HEAD-12+l.length*ROW+20),sum=bh.reduce((p,v)=>p+v,0),avail=BOT-top;
   let splitAt=-1;
@@ -1163,26 +1160,11 @@ function tripPDF(t){
       const q=(pn>0&&!packed?pn+'/':'×')+x.qty,qw=d.width(q,'B',10);
       d.text(fit(x.it.name,'R',10,colW-18-qw-8),x0+17,cy+12,{size:10,color:packed?MUT:INK});
       d.text(q,x0+colW-qw,cy+12,{font:'B',size:10,color:packed?MUT:INK});
-      d.text(fit(itemDays(t,x),'R',7.5,colW-17-qw-8),x0+17,cy+21,{size:7.5,color:MUT});
       cy+=ROW;d.line(x0+17,cy,x0+colW,cy,{color:SOFT,lw:0.6});
     });
     cy+=20;
   });
   y=col===1?Math.max(leftEnd,cy):cy;
-  // 2) day by day overview, full width
-  const LW=118,need=h=>{if(y+h>BOT)header(false)};
-  y+=6;need(70);
-  d.text(T.pdfByDay.toUpperCase(),M,y,{font:'B',size:8.5,color:MUT,cs:0.9});y+=10;
-  ['all',...days].forEach(k=>{
-    const list=Object.entries(t.picks[k]||{}).filter(([id,q])=>q&&item(id)).map(([id,q])=>({it:item(id),q})).sort((p,r)=>cmp(p.it.name,r.it.name));
-    const label=k==='all'?T.whole:`${cap1(WDL(k))} ${dm(k)}`;
-    const lines=wrap(list.length?list.map(o=>o.it.name+(o.q>1?' ×'+o.q:'')).join(', '):'–','R',9.5,CW-LW);
-    const h=Math.max(1,lines.length)*13.5+12;need(h);
-    d.line(M,y,M+CW,y,{color:LINE,lw:0.6});
-    d.text(fit(label,'B',9.5,LW-10),M,y+15,{font:'B',size:9.5});
-    lines.forEach((l,i)=>d.text(l,M+LW,y+15+i*13.5,{size:9.5,color:list.length?INK:MUT}));
-    y+=h;
-  });
   // footers
   const total=d.pages.length,stamp=new Date().toLocaleDateString(T.locale);
   d.pages.forEach((_,i)=>{d.at(i);d.line(M,H-40,M+CW,H-40,{color:LINE,lw:0.6});
