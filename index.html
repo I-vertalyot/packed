@@ -707,7 +707,10 @@ function render(){
   setStatus(statusKey);
   if(ui.tripId&&!trip())ui.tripId=null;
   refreshCatList();
+  const oldPP=main.querySelector('.progpanel'),ppStuck=!!oldPP&&oldPP.classList.contains('stuck'),ppMB=oldPP?oldPP.style.marginBottom:'';
   main.innerHTML=ui.tab==='inv'?viewInv():(ui.tripId?viewTrip():viewTrips());
+  /* keep the progress box slim through the re-render, so it does not grow and shrink again */
+  if(ppStuck){const n=main.querySelector('.progpanel');if(n){n.classList.add('stuck');n.style.marginBottom=ppMB}}
   setBarH();
   main.querySelectorAll('input[data-partial]').forEach(c=>{c.indeterminate=true});
   const ib=document.getElementById('infoBtn');ib.setAttribute('aria-label',T.info);ib.title=T.info;
