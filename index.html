@@ -247,8 +247,10 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 .picked{display:flex;flex-direction:column}
 .pick{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
 .pick:first-child{border-top:0}
-.picked{gap:14px}
-.pgroup{display:flex;flex-direction:column}
+.picked{gap:10px}
+.pgroup{display:flex;flex-direction:column;border:1.5px solid color-mix(in srgb,var(--cc) 45%,transparent);border-radius:12px;background:color-mix(in srgb,var(--cc) 5%,var(--surface));overflow:hidden}
+.pgroup>.pg-h{margin:0;padding:9px 12px;background:color-mix(in srgb,var(--cc) 10%,var(--surface));border-bottom:1px solid color-mix(in srgb,var(--cc) 25%,transparent)}
+.pgroup>.pick{padding-left:12px;padding-right:12px}
 .pg-h{margin:0 0 2px;display:flex;align-items:center;gap:7px;font-family:var(--f-display);font-stretch:85%;font-size:13px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:color-mix(in srgb,var(--cc) 80%,var(--ink))}
 .pg-h[style*="--c-yellow"]{color:var(--c-yellow)}
 .pg-h .dot{width:9px;height:9px}
@@ -789,7 +791,7 @@ function viewDays(t,days){
   let rowNo=0;
   const list=grouped.length?`<div class="picked">${byCat(chosen).map(([c,l])=>{const rows=l.slice().sort((a,b)=>cmp(a.it.name,b.it.name)).map(x=>{const extra=rowNo++>=WHOLE_FOLD_MIN;return pickRow(x).replace('<div class="pick">',`<div class="pick${extra?' extra':''}">`)});
       const allExtra=rows.every(r=>r.startsWith('<div class="pick extra">'));
-      return `<div class="pgroup${allExtra?' extra':''}"><h4 class="pg-h" style="--cc:var(--c-${catColor(c)})">${dot(c)}<span>${esc(c)}</span><span class="pg-n">${l.length}</span></h4>${rows.join('')}</div>`}).join('')}</div>`
+      return `<div class="pgroup${allExtra?' extra':''}" style="--cc:var(--c-${catColor(c)})"><h4 class="pg-h" style="--cc:var(--c-${catColor(c)})">${dot(c)}<span>${esc(c)}</span><span class="pg-n">${l.length}</span></h4>${rows.join('')}</div>`}).join('')}</div>`
     :`<div class="empty">${esc(k==='all'?T.emptyWhole:T.emptyDay)}</div>`;
   const actions=`<div class="row">
       ${idx>0?`<button class="btn" data-act="copy-prev">${T.copyPrev}</button>`:''}
