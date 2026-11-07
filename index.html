@@ -657,7 +657,9 @@ function aggregate(t){
 function packedN(t,x){const v=t.packed[x.it.id];return v===true?x.qty:(typeof v==='number'?Math.max(0,Math.min(v,x.qty)):0)}
 function isDone(t,x){return packedN(t,x)>=x.qty}
 function setPacked(t,id,n,qty){if(n>=qty)t.packed[id]=true;else if(n<=0)delete t.packed[id];else t.packed[id]=n}
-function progress(t){const a=aggregate(t);const done=a.filter(x=>isDone(t,x)).length;return {done,total:a.length}}
+/* progress counts every piece: 3 T-shirts count as 3 */
+function pieces(t,list){let done=0,total=0;list.forEach(x=>{total+=x.qty;done+=packedN(t,x)});return {done,total}}
+function progress(t){return pieces(t,aggregate(t))}
 function addCat(c){if(c&&!state.cats.includes(c))state.cats.push(c)}
 function refreshCatList(){const all=[...new Set(catOrder().concat(state.cats))];document.getElementById('catlist').innerHTML=all.map(c=>`<option value="${esc(c)}">`).join('')}
 
@@ -854,7 +856,7 @@ function viewDays(t,days){
 }
 
 function viewPack(t){
-  const a=aggregate(t);const done=a.filter(x=>isDone(t,x)).length;const pct=a.length?Math.round(done/a.length*100):0;
+  const a=aggregate(t);const {done,total}=pieces(t,a);const pct=total?Math.round(done/total*100):0;
   const n=tripDays(t).length;
   /* which days an item is for; items for the whole trip get no label */
   const daysTxt=x=>{const d=x.keys.filter(k=>k!=='all');if(!d.length)return '';
@@ -862,11 +864,11 @@ function viewPack(t){
     return d.map(k=>WD(k)).join(', ')};
   if(!a.length)return `<div class="empty">${esc(T.noPicks)}</div>`;
   return `<div class="pp-sent" aria-hidden="true"></div><section class="panel progpanel">
-      <div class="progress"><span class="big">${done}<span class="muted">/${a.length}</span></span><span class="muted">${done===a.length?T.allPacked:T.packedOf}</span>
+      <div class="progress"><span class="big">${done}<span class="muted">/${total}</span></span><span class="muted">${done===total?T.allPacked:T.packedOf}</span>
         <span class="spacer"></span>${done?`<button class="btn ghost" data-act="reset-pack">${T.resetPack}</button>`:''}</div>
       <div class="meter"><i style="width:${pct}%"></i></div>
     </section>
-    <section class="panel"><div class="row" style="justify-content:flex-end">${foldAll('pack',byCat(a).map(g=>g[0]))}</div>${byCat(a).map(([c,l])=>`<div class="cat cardcat${fold('pack',c)}" style="--cc:var(--c-${catColor(c)})"><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pack',c,dot(c)+esc(c),T.nPacked(l.filter(x=>isDone(t,x)).length,l.length))}</h3>${l.map(x=>`
+    <section class="panel"><div class="row" style="justify-content:flex-end">${foldAll('pack',byCat(a).map(g=>g[0]))}</div>${byCat(a).map(([c,l])=>`<div class="cat cardcat${fold('pack',c)}" style="--cc:var(--c-${catColor(c)})"><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pack',c,dot(c)+esc(c),(p=>T.nPacked(p.done,p.total))(pieces(t,l)))}</h3>${l.map(x=>`
       ${(()=>{const pn=packedN(t,x),dn=pn>=x.qty,part=pn>0&&!dn;return `<div class="pk ${dn?'done':''}${part?' part':''}"><label class="pk-l"><input type="checkbox" id="pk-${x.it.id}" data-pack="${x.it.id}" ${dn?'checked':''} ${part?'data-partial="1"':''}>
         <span class="nm">${esc(x.it.name)}${daysTxt(x)?`<span class="days">${esc(daysTxt(x))}</span>`:''}</span></label>${x.qty>1?`<span class="pstep" aria-label="${esc(T.piecesPacked)}"><button type="button" data-act="pk-dec" data-id="${x.it.id}" aria-label="${T.less}" ${pn<=0?'disabled':''}>−</button><span class="pn">${pn}/${x.qty}</span><button type="button" data-act="pk-inc" data-id="${x.it.id}" aria-label="${T.more}" ${dn?'disabled':''}>+</button></span>`:`<span class="q">×1</span>`}</div>`})()}`).join('')}</div>`).join('')}
     </section>`;
