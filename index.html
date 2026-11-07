@@ -966,8 +966,7 @@ function viewDays(t,days){
     <section class="panel">
       <div class="row"><h2>${T.addFromInv}</h2><span class="spacer"></span>${foldAll('pick',byCat(state.items).map(g=>g[0]))}
         <input class="inp" id="search" type="search" placeholder="${T.search}" style="max-width:200px" autocomplete="off"></div>
-      ${picker||`<p class="note">${esc(T.invEmptyPick)}</p>`}
-      <form id="addToDay" class="addform" style="border-top:1px solid var(--line);padding-top:14px">
+      <form id="addToDay" class="addform" style="border-bottom:1px solid var(--line);padding-bottom:14px">
         <div class="addrow" style="width:100%">
           <input class="inp" id="ad-name" name="name" required placeholder="${esc(T.newThingPh)}" autocomplete="off" aria-label="${T.newThing}">
           ${catPick('ad')}
@@ -975,6 +974,7 @@ function viewDays(t,days){
         </div>
         <input class="inp newcat-in" id="ad-newcat" name="newcat" placeholder="${esc(T.newCatPh)}" autocomplete="off" aria-label="${esc(T.newCat)}" hidden>
       </form>
+      ${picker||`<p class="note">${esc(T.invEmptyPick)}</p>`}
     </section>`;
 }
 
