@@ -48,6 +48,7 @@ button{cursor:pointer}
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .bar-in{max-width:720px;margin:0 auto;display:flex;align-items:center;gap:10px;padding-block:12px 0;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:800;font-stretch:75%;font-size:26px;letter-spacing:.01em;text-transform:uppercase;line-height:1}
+.brand-icon{width:38px;height:38px;flex:none;border-radius:8px;box-shadow:0 0 0 1px rgba(255,255,255,.12)}
 .brand i{display:inline-grid;place-items:center;width:30px;height:30px;background:var(--sign);color:var(--sign-ink);border-radius:4px;font-style:normal;font-size:18px}
 .status{margin-left:auto;font-size:12px;color:var(--bar-muted);display:flex;align-items:center;gap:6px}
 .status b{width:7px;height:7px;border-radius:50%;background:var(--bar-muted);display:inline-block}
@@ -482,7 +483,7 @@ html{overflow-x:clip}
 
 <header class="bar">
   <div class="bar-in">
-    <div class="brand"><i aria-hidden="true">✓</i><span id="brandName">Packed</span></div>
+    <div class="brand"><svg class="brand-icon" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="96" fill="#16202B"/><rect x="96" y="96" width="320" height="320" rx="40" fill="#FFC62B"/><path d="M170 262l62 62 112-132" fill="none" stroke="#16202B" stroke-width="44" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="brandName">Packed</span></div>
     <div class="status" id="status"><b></b><span></span></div>
     <div class="lang" role="group" aria-label="Language">
       <button id="lang-cs" data-act="lang" data-v="cs" aria-pressed="true">CS</button>
