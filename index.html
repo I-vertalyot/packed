@@ -279,14 +279,15 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 .wholehead .fold{font:inherit;text-transform:inherit;letter-spacing:inherit;color:inherit}
 .wholehead .fold-n{text-transform:none}
 .wholebody{display:flex;flex-direction:column;gap:14px}
-.wholepanel.folded .wholebody{display:none}
-.showmore{align-self:center;display:inline-flex;align-items:center;gap:6px;background:none;border:0;padding:4px 10px;margin:-4px 0 -6px;color:var(--muted);font:inherit;font-size:14px;font-weight:600;cursor:pointer;border-radius:999px}
-.showmore:hover{color:var(--ink);background:var(--chip)}
+.wholepanel.folded .extra{display:none!important}
+.wholepanel.folded .wholebody>.row{display:none}
+.showmore{align-self:center;display:inline-flex;align-items:center;gap:6px;background:var(--sign);border:0;padding:7px 16px;margin:0;color:var(--sign-ink);font:inherit;font-size:14px;font-weight:700;cursor:pointer;border-radius:999px}
+.showmore:hover{filter:brightness(.95)}
 .showmore .chev{transition:transform .2s ease;transform:rotate(180deg)}
 .wholepanel.folded .showmore .chev{transform:none}
 .wholehead .chev{transform:rotate(180deg)}
 .wholepanel.folded .wholehead .chev{transform:none}
-.wholepanel.folded .showmore{margin-top:-6px}
+.wholepanel.folded .showmore{margin-top:0}
 .cat+.cat{margin-top:6px}
 .cat h3[style]{color:color-mix(in srgb,var(--cc) 80%,var(--ink))}
 .cat h3[style*="--c-yellow"]{color:var(--c-yellow)}
@@ -302,8 +303,8 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:14px;display:inline-flex;align-items:center;gap:6px}
 .chip:hover{border-color:var(--muted)}
-.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.chip.on::before{content:"✓";font-weight:700}
+.chip.on{background:var(--ok);color:#fff;border-color:var(--ok);font-weight:600}
+:root[data-app-theme="dark"] .chip.on{color:#06130C}
 
 .progress{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 .progress .big{font-family:var(--f-display);font-stretch:75%;font-weight:800;font-size:40px;line-height:1}
@@ -768,7 +769,10 @@ function viewDays(t,days){
       <span class="nm">${esc(it.name)}</span>
       <span class="step"><button data-act="qty" data-id="${it.id}" data-d="-1" aria-label="${T.less}">−</button><span>${q}</span><button data-act="qty" data-id="${it.id}" data-d="1" aria-label="${T.more}">+</button></span>
       <button class="x" data-act="rm-pick" data-id="${it.id}" aria-label="${T.remove} ${esc(it.name)}">×</button></div>`;
-  const list=grouped.length?`<div class="picked">${byCat(chosen).map(([c,l])=>`<div class="pgroup"><h4 class="pg-h" style="--cc:var(--c-${catColor(c)})">${dot(c)}<span>${esc(c)}</span><span class="pg-n">${l.length}</span></h4>${l.slice().sort((a,b)=>cmp(a.it.name,b.it.name)).map(pickRow).join('')}</div>`).join('')}</div>`
+  let rowNo=0;
+  const list=grouped.length?`<div class="picked">${byCat(chosen).map(([c,l])=>{const rows=l.slice().sort((a,b)=>cmp(a.it.name,b.it.name)).map(x=>{const extra=rowNo++>=WHOLE_FOLD_MIN;return pickRow(x).replace('<div class="pick">',`<div class="pick${extra?' extra':''}">`)});
+      const allExtra=rows.every(r=>r.startsWith('<div class="pick extra">'));
+      return `<div class="pgroup${allExtra?' extra':''}"><h4 class="pg-h" style="--cc:var(--c-${catColor(c)})">${dot(c)}<span>${esc(c)}</span><span class="pg-n">${l.length}</span></h4>${rows.join('')}</div>`}).join('')}</div>`
     :`<div class="empty">${esc(k==='all'?T.emptyWhole:T.emptyDay)}</div>`;
   const actions=`<div class="row">
       ${idx>0?`<button class="btn" data-act="copy-prev">${T.copyPrev}</button>`:''}
