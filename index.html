@@ -308,6 +308,15 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 .cat[data-cat]:not(.folded)>h3,.cat[data-cat].force>h3{border-radius:12px 12px 0 0;border-bottom-color:color-mix(in srgb,var(--cc) 25%,transparent)}
 .cat[data-cat]>.pick-box{border-top:0;border-radius:0 0 12px 12px}
 .cat[data-cat]+.cat[data-cat]{margin-top:10px}
+.cardcat{gap:0;border:1.5px solid color-mix(in srgb,var(--cc) 45%,transparent);border-radius:12px;background:color-mix(in srgb,var(--cc) 5%,var(--surface));overflow:hidden}
+.cardcat>h3{padding:10px 12px;background:color-mix(in srgb,var(--cc) 10%,var(--surface));transition:background .15s}
+.cardcat>h3:hover{background:color-mix(in srgb,var(--cc) 18%,var(--surface))}
+.cardcat:not(.folded)>h3{border-bottom:1px solid color-mix(in srgb,var(--cc) 25%,transparent)}
+.cardcat>.inv,.cardcat>.pk{padding-left:12px;padding-right:12px}
+.cardcat>.swatches{padding:10px 12px 4px}
+.cardcat>.confirm{margin:8px 12px}
+.cardcat>.newcat{padding-left:12px;padding-right:12px}
+.cardcat+.cardcat{margin-top:10px}
 .chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:14px;display:inline-flex;align-items:center;gap:6px}
 .chip:hover{border-color:var(--muted)}
 .chip.on{background:var(--cc);color:#fff;border-color:var(--cc);font-weight:600}
@@ -819,7 +828,7 @@ function viewPack(t){
         <span class="spacer"></span>${done?`<button class="btn ghost" data-act="reset-pack">${T.resetPack}</button>`:''}</div>
       <div class="meter"><i style="width:${pct}%"></i></div>
     </section>
-    <section class="panel"><div class="row" style="justify-content:flex-end">${foldAll('pack',byCat(a).map(g=>g[0]))}</div>${byCat(a).map(([c,l])=>`<div class="cat${fold('pack',c)}"><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pack',c,dot(c)+esc(c),T.nPacked(l.filter(x=>isDone(t,x)).length,l.length))}</h3>${l.map(x=>`
+    <section class="panel"><div class="row" style="justify-content:flex-end">${foldAll('pack',byCat(a).map(g=>g[0]))}</div>${byCat(a).map(([c,l])=>`<div class="cat cardcat${fold('pack',c)}" style="--cc:var(--c-${catColor(c)})"><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pack',c,dot(c)+esc(c),T.nPacked(l.filter(x=>isDone(t,x)).length,l.length))}</h3>${l.map(x=>`
       ${(()=>{const pn=packedN(t,x),dn=pn>=x.qty,part=pn>0&&!dn;return `<div class="pk ${dn?'done':''}${part?' part':''}"><label class="pk-l"><input type="checkbox" id="pk-${x.it.id}" data-pack="${x.it.id}" ${dn?'checked':''} ${part?'data-partial="1"':''}>
         <span class="nm">${esc(x.it.name)}${daysTxt(x)?`<span class="days">${esc(daysTxt(x))}</span>`:''}</span></label>${x.qty>1?`<span class="pstep" aria-label="${esc(T.piecesPacked)}"><button type="button" data-act="pk-dec" data-id="${x.it.id}" aria-label="${T.less}" ${pn<=0?'disabled':''}>−</button><span class="pn">${pn}/${x.qty}</span><button type="button" data-act="pk-inc" data-id="${x.it.id}" aria-label="${T.more}" ${dn?'disabled':''}>+</button></span>`:`<span class="q">×1</span>`}</div>`})()}`).join('')}</div>`).join('')}
     </section>`;
@@ -827,7 +836,7 @@ function viewPack(t){
 
 function viewInv(){
   const uses=id=>state.trips.filter(t=>Object.values(t.picks).some(p=>p&&p[id])).length;
-  const groups=byCat(state.items).map(([c,l])=>`<div class="cat${fold('inv',c)}"><h3 style="--cc:var(--c-${catColor(c)})"><button class="colorbtn" data-act="pick-color" data-c="${esc(c)}" aria-expanded="${ui.colorCat===c}" aria-label="${T.color}: ${esc(c)}" title="${T.color}">${dot(c)}</button>${foldBtn('inv',c,esc(c),T.nItems(l.length))}</h3>${ui.colorCat===c?swatches(c):''}${
+  const groups=byCat(state.items).map(([c,l])=>`<div class="cat cardcat${fold('inv',c)}" style="--cc:var(--c-${catColor(c)})"><h3 style="--cc:var(--c-${catColor(c)})"><button class="colorbtn" data-act="pick-color" data-c="${esc(c)}" aria-expanded="${ui.colorCat===c}" aria-label="${T.color}: ${esc(c)}" title="${T.color}">${dot(c)}</button>${foldBtn('inv',c,esc(c),T.nItems(l.length))}</h3>${ui.colorCat===c?swatches(c):''}${
     l.slice().sort((a,b)=>cmp(a.name,b.name)).map(it=>{const u=uses(it.id);
       if(ui.delItem===it.id)return `<div class="confirm" style="margin-block:6px">${esc(T.delItemQ(it.name,u))} <span class="spacer"></span><button class="btn" data-act="del-item-no">${T.no}</button><button class="btn danger" data-act="del-item-yes" data-id="${it.id}">${T.del}</button></div>`;
       return `<div class="inv"><input class="inp rename" id="nm-${it.id}" data-id="${it.id}" value="${esc(it.name)}" aria-label="${T.name}">
