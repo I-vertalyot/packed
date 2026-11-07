@@ -489,7 +489,6 @@ html{overflow-x:clip}
       <button id="lang-cs" data-act="lang" data-v="cs" aria-pressed="true">CS</button>
       <button id="lang-en" data-act="lang" data-v="en" aria-pressed="false">EN</button>
     </div>
-    <button class="savebtn" id="saveBtn" data-act="save-now"></button>
     <nav class="tabs" role="tablist">
       <button role="tab" id="tab-trips" data-act="tab" data-v="trips" aria-selected="true"></button>
       <button role="tab" id="tab-inv" data-act="tab" data-v="inv" aria-selected="false"></button>
@@ -806,7 +805,6 @@ function render(){
   document.getElementById('brandName').textContent=T.appName;document.title=T.appName;
   document.getElementById('lang-cs').setAttribute('aria-pressed',lang()==='cs');
   document.getElementById('lang-en').setAttribute('aria-pressed',lang()==='en');
-  const sb=document.getElementById('saveBtn');if(!sb.disabled)sb.textContent=T.save;
   const tt=document.getElementById('tab-trips'),ti=document.getElementById('tab-inv');
   tt.textContent=T.tabTrips;ti.textContent=T.tabInv;
   tt.setAttribute('aria-selected',ui.tab==='trips');ti.setAttribute('aria-selected',ui.tab==='inv');
@@ -1016,14 +1014,11 @@ function mergeInv(d){
   state.catColors=state.catColors||{};
   Object.entries(d.catColors&&typeof d.catColors==='object'?d.catColors:{}).forEach(([k,v])=>{if(!state.catColors[k]&&COLORS.includes(v))state.catColors[k]=v});
 }
-async function saveNow(){
-  const btn=document.getElementById('saveBtn');btn.disabled=true;btn.textContent=T.saving;
-  try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}
-  clearTimeout(timer);timer=null;
-  if(docRef){lastSaved='';await flush()}else setStatus('local');
-  btn.textContent=statusKey==='err'?T.retry:T.saved;btn.disabled=false;
-  setTimeout(()=>{btn.textContent=T.save},1800);
-}
+/* everything saves automatically: after each change, on first start, and when the app is closed or hidden */
+if(FRESH)try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}
+function saveOnLeave(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}if(timer){clearTimeout(timer);timer=null;flush()}}
+addEventListener('pagehide',saveOnLeave);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')saveOnLeave()});
 async function exportBackup(inv){
   const fname=(inv?T.invFileName:T.fileName)+iso(new Date())+'.json',data=JSON.stringify(inv?invPayload():state,null,2),okMsg=inv?'invDone':'dlDone';
   const dl=window.claude&&window.claude.use?await window.claude.use('downloads'):null;
@@ -1274,7 +1269,6 @@ document.addEventListener('click',e=>{
     case 'to-all-days':{const src={...(t.picks[ui.day]||{})};tripDays(t).forEach(d=>{t.picks[d]={...src}});save();break}
     case 'pk-inc':case 'pk-dec':{const x=aggregate(t).find(z=>z.it.id===id);if(!x)break;setPacked(t,id,packedN(t,x)+(a==='pk-inc'?1:-1),x.qty);save();ui.patch=true;break}
     case 'reset-pack':t.packed={};save();break;
-    case 'save-now':saveNow();return;
     case 'info':ui.help=true;render();{const c=document.getElementById('helpClose');if(c)c.focus()}return;
     case 'help-close':ui.help=false;render();document.getElementById('infoBtn').focus();return;
     case 'help-go':helpGo(b.dataset.v);return;
