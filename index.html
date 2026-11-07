@@ -303,8 +303,9 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:14px;display:inline-flex;align-items:center;gap:6px}
 .chip:hover{border-color:var(--muted)}
-.chip.on{background:var(--ok);color:#fff;border-color:var(--ok);font-weight:600}
-:root[data-app-theme="dark"] .chip.on{color:#06130C}
+.chip.on{background:var(--cc);color:#fff;border-color:var(--cc);font-weight:600}
+.chip.on[style*="--c-yellow"]{color:#16202B}
+:root[data-app-theme="dark"] .chip.on{color:#0E1217}
 
 .progress{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 .progress .big{font-family:var(--f-display);font-stretch:75%;font-weight:800;font-size:40px;line-height:1}
@@ -779,7 +780,7 @@ function viewDays(t,days){
       ${k!=='all'&&days.length>1?`<button class="btn" data-act="to-all-days">${T.toAll}</button>`:''}
       ${grouped.length?`<button class="btn ghost" data-act="clear-day">${T.clear}</button>`:''}</div>`;
   const picker=byCat(state.items).map(([c,l])=>`<div class="cat${fold('pick',c)}" data-cat><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pick',c,dot(c)+esc(c),T.nPicked(l.filter(it=>picks[it.id]).length,l.length))}</h3><div class="chips">${
-      l.slice().sort((a,b)=>cmp(a.name,b.name)).map(it=>`<button class="chip ${picks[it.id]?'on':''}" data-act="toggle-pick" data-id="${it.id}" data-name="${esc(it.name.toLowerCase())}">${esc(it.name)}</button>`).join('')}</div></div>`).join('');
+      l.slice().sort((a,b)=>cmp(a.name,b.name)).map(it=>`<button class="chip ${picks[it.id]?'on':''}" style="--cc:var(--c-${catColor(it.cat||OTHER())})" data-act="toggle-pick" data-id="${it.id}" data-name="${esc(it.name.toLowerCase())}">${esc(it.name)}</button>`).join('')}</div></div>`).join('');
   return `<div class="gates" role="group" aria-label="${T.tripDays}">${gates}</div>
     ${(()=>{const isAll=k==='all',can=grouped.length>WHOLE_FOLD_MIN,fold=can&&!(isAll?state.wholeOpen:state.dayOpen);
       return `<section class="panel wholepanel${fold?' folded':''}">${can?`<h2 class="wholehead"><button class="fold" type="button" data-act="fold-whole" data-k="${isAll?'all':'day'}" data-folded="${fold?1:''}" aria-expanded="${!fold}"><span class="fold-l">${title}</span><span class="fold-n">${esc(T.things(grouped.length))}</span>${CHEV}</button></h2>`:`<div class="row"><h2>${title}</h2></div>`}<div class="wholebody">${list}${actions}</div>${can?`<button class="showmore" type="button" data-act="fold-whole" data-k="${isAll?'all':'day'}" data-folded="${fold?1:''}" aria-expanded="${!fold}">${fold?T.showMore:T.showLess}${CHEV}</button>`:''}</section>`})()}
