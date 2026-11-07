@@ -159,6 +159,28 @@ button.ig{appearance:none;-webkit-appearance:none;background:none;border:0;borde
 .help-steps b{display:block;font-weight:700;margin-bottom:2px}
 .help-steps span{color:var(--muted);font-size:14px}
 .help-brand{color:var(--sign)}
+/* All packed celebration */
+.celeb{position:fixed;inset:0;z-index:40;display:grid;place-items:center;cursor:pointer;overflow:hidden;
+  background:radial-gradient(circle at 50% 46%,color-mix(in srgb,var(--ok) 38%,transparent),transparent 62%),color-mix(in srgb,var(--bg) 60%,transparent);
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);animation:cfade .3s ease-out both}
+.celeb[hidden]{display:none}
+.celeb.out{animation:cout .38s ease-in forwards}
+.celeb-card{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;padding:20px}
+.celeb-bag{color:var(--ink);filter:drop-shadow(0 8px 18px rgba(0,0,0,.25));animation:bagdrop .7s cubic-bezier(.3,1.55,.5,1) both,bagwob .5s .75s ease-in-out}
+.celeb-tick{stroke-dasharray:40;stroke-dashoffset:40;animation:tick .35s .5s ease-out forwards}
+.celeb-title{margin-top:14px;font-family:var(--f-display);font-stretch:75%;font-weight:800;font-size:clamp(44px,14vw,68px);line-height:.95;letter-spacing:.01em;text-transform:uppercase;color:var(--sign);
+  text-shadow:0 4px 0 #16202B,0 0 34px color-mix(in srgb,var(--sign) 65%,transparent);animation:stamp .55s .3s cubic-bezier(.2,1.6,.4,1) both}
+.celeb-sub{margin-top:12px;font-size:18px;font-weight:700;color:var(--ink);animation:crise .45s .7s ease-out both}
+.celeb-star{position:absolute;left:50%;top:42%;font-size:var(--s);color:var(--c);line-height:1;pointer-events:none;text-shadow:0 0 10px color-mix(in srgb,var(--c) 60%,transparent);animation:starfly 1.35s var(--d) cubic-bezier(.12,.75,.3,1) both}
+@keyframes cfade{from{opacity:0}to{opacity:1}}
+@keyframes cout{to{opacity:0}}
+@keyframes bagdrop{0%{transform:translateY(-70vh) rotate(-14deg)}100%{transform:none}}
+@keyframes bagwob{0%,100%{transform:none}30%{transform:rotate(-6deg) scale(1.06)}65%{transform:rotate(4deg)}}
+@keyframes tick{to{stroke-dashoffset:0}}
+@keyframes stamp{0%{opacity:0;transform:scale(2.4) rotate(-8deg)}60%{opacity:1}100%{opacity:1;transform:scale(1) rotate(-3deg)}}
+@keyframes crise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes starfly{0%{opacity:0;transform:translate(-50%,-50%) scale(.2) rotate(0)}12%{opacity:1}75%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1) rotate(var(--r))}}
+@media (prefers-reduced-motion:reduce){.celeb-star{display:none}.celeb-bag,.celeb-title,.celeb-sub,.celeb-tick{animation:none;stroke-dashoffset:0}.celeb-title{transform:rotate(-3deg)}}
 .help-links{display:flex;align-items:center;gap:8px;margin:0;padding:8px 12px;border-radius:8px;background:color-mix(in srgb,var(--sign) 16%,transparent);color:var(--ink);font-size:14px;font-weight:600}
 .help-links svg{flex:none;color:var(--sign)}
 :root:not([data-app-theme="dark"]) .help-links svg{color:#9A6B00}
@@ -456,6 +478,7 @@ html{overflow-x:clip}
     <a class="holo-btn" id="holoBtn" href="https://www.instagram.com/i.vertalyot/" target="_blank" rel="noopener noreferrer">Open Instagram <span aria-hidden="true">&#x2197;</span></a>
   </div>
 </div>
+<div class="celeb" id="celeb" hidden role="status" aria-live="polite"></div>
 <div class="sheet" id="help" hidden role="dialog" aria-modal="true" aria-labelledby="helpTitle"><div class="sheet-bg" data-act="help-close"></div><div class="sheet-card" id="helpCard"></div></div>
 
 <datalist id="catlist"></datalist>
@@ -493,7 +516,7 @@ const L={
   newThing:'Nová věc',newThingPh:'např. Lyžařské brýle',category:'Kategorie',addBoth:'Přidat do inventáře i dne',
   wholeTrip:'celá cesta',everyDay:'každý den',
   noPicks:'Zatím nemáš vybrané žádné věci. Přepni na „Sbírání“ a poskládej si, co bereš.',
-  allPacked:'Všechno sbaleno. Šťastnou cestu!',packedOf:'věcí sbaleno',resetPack:'Zrušit odškrtnutí',
+  allPacked:'Všechno sbaleno. Šťastnou cestu!',celebTitle:'Sbaleno!',celebSub:'Šťastnou cestu!',packedOf:'věcí sbaleno',resetPack:'Zrušit odškrtnutí',
   inv:'Inventář',thing:'Věc',thingPh:'např. Čelovka',add:'Přidat',
   invNote:'Kategorii vyber v nabídce vedle názvu. Název věci přepíšeš klepnutím, klepnutím na kategorii u věci ji přesuneš jinam. Barvu kategorie změníš kliknutím na barevné kolečko.',
   invEmpty:'Inventář je prázdný. Přidej první věc výše.',name:'Název',
@@ -541,7 +564,7 @@ const L={
   newThing:'New item',newThingPh:'e.g. Ski goggles',category:'Category',addBoth:'Add to inventory and this day',
   wholeTrip:'whole trip',everyDay:'every day',
   noPicks:'You haven’t picked anything yet. Switch to “Collecting” and choose what you’re taking.',
-  allPacked:'All packed. Have a good trip!',packedOf:'items packed',resetPack:'Uncheck all',
+  allPacked:'All packed. Have a good trip!',celebTitle:'All packed!',celebSub:'Have a good trip!',packedOf:'items packed',resetPack:'Uncheck all',
   inv:'Inventory',thing:'Item',thingPh:'e.g. Headlamp',add:'Add',
   invNote:'Pick a category from the menu next to the name. Tap an item’s name to rename it; tap its category to move it to another one. Click a category’s colour dot to change its colour.',
   invEmpty:'Your inventory is empty. Add the first item above.',name:'Name',
@@ -758,6 +781,10 @@ function render(){
   /* keep the progress box slim through the re-render, so it does not grow and shrink again */
   if(ppStuck){const n=main.querySelector('.progpanel');if(n){n.classList.add('stuck');n.style.marginBottom=ppMB}}
   setBarH();
+  /* celebrate the moment the last piece is packed */
+  if(ui.tab==='trips'&&ui.tripId&&ui.mode==='pack'&&trip()){const pr=progress(trip()),lp=ui.lastPack;
+    if(lp&&lp.id===ui.tripId&&lp.done<lp.total&&pr.total&&pr.done===pr.total)celebrate();
+    ui.lastPack={id:ui.tripId,done:pr.done,total:pr.total}}else ui.lastPack=null;
   main.querySelectorAll('input[data-partial]').forEach(c=>{c.indeterminate=true});
   const ib=document.getElementById('infoBtn');ib.setAttribute('aria-label',T.info);ib.title=T.info;
   const hp=document.getElementById('help');hp.hidden=!ui.help;
@@ -1120,6 +1147,22 @@ async function downloadTripPDF(){
 
 /* ---------- actions ---------- */
 function setPick(t,k,id,q){t.picks[k]=t.picks[k]||{};if(q>0)t.picks[k][id]=q;else delete t.picks[k][id]}
+
+/* "All packed!" celebration: a suitcase drops in, the title stamps on, stars fly out */
+let celebTimer=0;
+function celebrate(){
+  const el=document.getElementById('celeb');if(!el)return;clearTimeout(celebTimer);
+  const cols=['var(--sign)','var(--ok)','var(--c-blue)','var(--c-pink)','var(--c-orange)','var(--c-purple)','var(--c-teal)'];
+  const stars=(n,delay,dist)=>Array.from({length:n},(_,i)=>{const a=(i/n)*Math.PI*2+Math.random()*.5,d=dist*(0.55+Math.random()*.6);
+    return `<i class="celeb-star" style="--dx:${Math.round(Math.cos(a)*d)}px;--dy:${Math.round(Math.sin(a)*d)}px;--r:${Math.round(Math.random()*540-270)}deg;--s:${Math.round(14+Math.random()*20)}px;--c:${cols[i%cols.length]};--d:${(delay+Math.random()*.18).toFixed(2)}s">${Math.random()<.7?'★':'✦'}</i>`}).join('');
+  el.innerHTML=`<div class="celeb-card">${stars(26,.2,230)}${stars(18,.85,170)}
+    <svg class="celeb-bag" width="92" height="92" viewBox="0 0 64 64" aria-hidden="true"><path d="M24 14v-3a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v3" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><rect x="8" y="14" width="48" height="40" rx="8" fill="var(--ok)"/><path d="M20 14v40M44 14v40" stroke="rgba(0,0,0,.18)" stroke-width="3"/><path class="celeb-tick" d="M22 34l7 7 14-15" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div class="celeb-title">${esc(T.celebTitle)}</div><div class="celeb-sub">${esc(T.celebSub)}</div></div>`;
+  el.classList.remove('out');el.hidden=false;
+  celebTimer=setTimeout(endCeleb,3200)}
+function endCeleb(){const el=document.getElementById('celeb');if(!el||el.hidden)return;clearTimeout(celebTimer);el.classList.add('out');celebTimer=setTimeout(()=>{el.hidden=true;el.innerHTML='';el.classList.remove('out')},380)}
+document.addEventListener('pointerdown',e=>{if(e.target.closest('#celeb'))endCeleb()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')endCeleb()});
 
 /* help steps are links into the app */
 const HELP_GO=['inv','new','days','pack','pdf','device'];
