@@ -692,6 +692,16 @@ function updateStuck(){const pp=document.querySelector('.progpanel'),s=document.
   const top=parseFloat(getComputedStyle(pp).top)||0,want=s.getBoundingClientRect().top<top-2;if(want===pp.classList.contains('stuck'))return;
   if(want){const full=pp.offsetHeight;pp.classList.add('stuck');pp.style.marginBottom=(full-pp.offsetHeight)+'px'}else{pp.classList.remove('stuck');pp.style.marginBottom=''}}
 addEventListener('scroll',updateStuck,{passive:true});
+function morphKids(a,b){const ak=[...a.childNodes],bk=[...b.childNodes];if(ak.length!==bk.length){a.replaceChildren(...bk);return}ak.forEach((x,i)=>morphNode(x,bk[i]))}
+function morphNode(a,b){
+  if(a.nodeType!==b.nodeType||a.nodeName!==b.nodeName){a.replaceWith(b);return}
+  if(a.nodeType!==1){if(a.nodeValue!==b.nodeValue)a.nodeValue=b.nodeValue;return}
+  const keep=a.classList.contains('progpanel');
+  if(!keep&&a.isEqualNode(b)){if(a.type==='checkbox')a.indeterminate=false;return}
+  for(const {name} of [...a.attributes])if(!b.hasAttribute(name)&&!(keep&&(name==='class'||name==='style')))a.removeAttribute(name);
+  for(const {name,value} of [...b.attributes]){if(keep&&name==='class'){b.classList.forEach(c=>a.classList.add(c));continue}if(keep&&name==='style')continue;if(a.getAttribute(name)!==value)a.setAttribute(name,value)}
+  if(a.type==='checkbox'){a.checked=b.hasAttribute('checked');a.indeterminate=false}
+  morphKids(a,b)}
 function render(){
   T=L[lang()];
   document.documentElement.lang=lang();
@@ -708,7 +718,10 @@ function render(){
   if(ui.tripId&&!trip())ui.tripId=null;
   refreshCatList();
   const oldPP=main.querySelector('.progpanel'),ppStuck=!!oldPP&&oldPP.classList.contains('stuck'),ppMB=oldPP?oldPP.style.marginBottom:'';
-  main.innerHTML=ui.tab==='inv'?viewInv():(ui.tripId?viewTrip():viewTrips());
+  const html=ui.tab==='inv'?viewInv():(ui.tripId?viewTrip():viewTrips());
+  /* ticking in Packing updates only what changed, so the rest of the page stays still */
+  if(ui.patch&&main.firstChild){const tpl=document.createElement('div');tpl.innerHTML=html;morphKids(main,tpl)}else main.innerHTML=html;
+  ui.patch=false;
   /* keep the progress box slim through the re-render, so it does not grow and shrink again */
   if(ppStuck){const n=main.querySelector('.progpanel');if(n){n.classList.add('stuck');n.style.marginBottom=ppMB}}
   setBarH();
@@ -1096,7 +1109,7 @@ document.addEventListener('click',e=>{
     case 'clear-day':t.picks[ui.day]={};save();break;
     case 'copy-prev':{const days=tripDays(t);const i=days.indexOf(ui.day);if(i>0){t.picks[ui.day]={...(t.picks[days[i-1]]||{})};save()}break}
     case 'to-all-days':{const src={...(t.picks[ui.day]||{})};tripDays(t).forEach(d=>{t.picks[d]={...src}});save();break}
-    case 'pk-inc':case 'pk-dec':{const x=aggregate(t).find(z=>z.it.id===id);if(!x)break;setPacked(t,id,packedN(t,x)+(a==='pk-inc'?1:-1),x.qty);save();break}
+    case 'pk-inc':case 'pk-dec':{const x=aggregate(t).find(z=>z.it.id===id);if(!x)break;setPacked(t,id,packedN(t,x)+(a==='pk-inc'?1:-1),x.qty);save();ui.patch=true;break}
     case 'reset-pack':t.packed={};save();break;
     case 'save-now':saveNow();return;
     case 'info':ui.help=true;render();{const c=document.getElementById('helpClose');if(c)c.focus()}return;
@@ -1173,7 +1186,7 @@ document.addEventListener('change',e=>{
     if(n){n.hidden=el.value!=='__new';n.required=el.value==='__new';if(el.value==='__new')n.focus()}
     if(el.value!=='__new'){ui.lastCat=el.value;el.closest('.catpick').style.setProperty('--cc',`var(--c-${catColor(el.value)})`)}return}
   if(el.id==='importFile'){if(el.files&&el.files[0])readImport(el.files[0]);el.value='';return}
-  if(el.dataset&&el.dataset.pack){const t=trip();if(el.checked||el.dataset.partial)t.packed[el.dataset.pack]=true;else delete t.packed[el.dataset.pack];save();const y=window.scrollY;render();window.scrollTo(0,y);return}
+  if(el.dataset&&el.dataset.pack){const t=trip();if(el.checked||el.dataset.partial)t.packed[el.dataset.pack]=true;else delete t.packed[el.dataset.pack];save();const y=window.scrollY;ui.patch=true;render();window.scrollTo(0,y);return}
   if(el.classList.contains('rename')){const it=item(el.dataset.id);const v=el.value.trim();if(it&&v&&v!==it.name){it.name=v;save()}else if(it)el.value=it.name;return}
   if(el.classList.contains('recat')){const it=item(el.dataset.id);const v=el.value.trim()||OTHER();if(it&&v!==it.cat){it.cat=v;addCat(v);save();const y=window.scrollY;render();window.scrollTo(0,y)}return}
 });
