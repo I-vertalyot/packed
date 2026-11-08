@@ -378,14 +378,6 @@ main .modebar{padding-bottom:0;margin-bottom:0}
 .modebar{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--barh,108px));z-index:4;padding-block:8px;margin-block:-8px}
 /* full-width background drawn behind the bar, so a glow on the buttons is not cut off */
 .modebar::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:100vw;margin-left:-50vw;background:var(--page,var(--bg));z-index:-1}
-/* frosted glass: bars that stay on screen are see-through and blurred, and their edges fade out */
-.bar{background:color-mix(in srgb,var(--bar) 90%,transparent);-webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4)}
-.bar::after{content:"";position:absolute;left:0;right:0;top:100%;height:16px;pointer-events:none;background:linear-gradient(color-mix(in srgb,var(--bar) 35%,transparent),transparent)}
-.modebar::before{bottom:-18px;background:color-mix(in srgb,var(--page,var(--bg)) 88%,transparent);-webkit-backdrop-filter:blur(14px) saturate(1.3);backdrop-filter:blur(14px) saturate(1.3);
-  -webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 18px),transparent);mask-image:linear-gradient(to bottom,#000 calc(100% - 18px),transparent)}
-.progpanel.stuck{background:color-mix(in srgb,var(--surface) 80%,transparent);-webkit-backdrop-filter:blur(14px) saturate(1.3);backdrop-filter:blur(14px) saturate(1.3)}
-.credit .credit-box{background:color-mix(in srgb,var(--surface) 72%,transparent);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4)}
-.credit::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:22px;pointer-events:none;background:linear-gradient(transparent,color-mix(in srgb,var(--bg) 70%,transparent))}
 html{overflow-x:clip}
 .seg button{border:0;background:none;padding:7px 14px;border-radius:6px;font-weight:600;font-size:14px;color:var(--muted)}
 .seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
