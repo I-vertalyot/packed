@@ -1,5 +1,5 @@
 // Offline support: keeps the app files cached so it opens without internet.
-const CACHE = 'sbaleno-v2';
+const CACHE = 'sbaleno-v3';
 const FILES = ['./', './index.html', './privacy.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png', './icon-maskable-512.png'];
 
 self.addEventListener('install', e => {
