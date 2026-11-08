@@ -85,6 +85,11 @@ button{cursor:pointer}
 .credit .credit-box a.coffee:hover{filter:brightness(.95)}
 main#main{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
 .credit .ig,.help-credit .ig{display:inline-block}
+.undo-toast{position:fixed;left:50%;bottom:84px;z-index:18;display:flex;align-items:center;gap:14px;max-width:calc(100% - 32px);padding:8px 8px 8px 16px;border-radius:12px;background:var(--ink);color:var(--bg);box-shadow:0 10px 28px rgba(0,0,0,.35);font-weight:600;font-size:14.5px;transform:translate(-50%,16px);opacity:0;transition:opacity .2s,transform .2s}
+.undo-toast.show{opacity:1;transform:translate(-50%,0)}
+.undo-toast span{white-space:nowrap}
+.undo-toast[hidden]{display:none}
+.undo-toast button{border:0;border-radius:var(--rbtn,10px);background:var(--sign);color:var(--sign-ink);font:inherit;font-weight:800;padding:8px 14px;cursor:pointer}
 .totop{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:84px;z-index:16;width:48px;height:48px;border-radius:50%;border:0;display:grid;place-items:center;background:var(--sign);color:var(--sign-ink);box-shadow:0 8px 22px rgba(0,0,0,.3);cursor:pointer;opacity:0;transform:translateY(12px) scale(.85);pointer-events:none;transition:opacity .2s,transform .2s}
 .totop.show{opacity:1;transform:none;pointer-events:auto}
 .totop:hover{filter:brightness(.95)}
@@ -647,6 +652,7 @@ html{overflow-x:clip}
 </header>
 <main id="main"></main>
 <footer class="credit" id="credit"></footer>
+<div class="undo-toast" id="undoToast" role="status" aria-live="polite" hidden><span></span><button type="button" id="undoBtn"></button></div>
 <button class="totop" id="toTop" type="button" aria-label="Back to top" title="Back to top"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg></button>
 <div class="holo" id="holo" hidden role="dialog" aria-modal="true" aria-label="i.vertalyot on Instagram">
   <div class="holo-bg"></div>
@@ -702,6 +708,7 @@ const L={
   noPicks:'Zatím nemáš vybrané žádné věci. Přepni na „Sbírání“ a poskládej si, co bereš.',
   allPacked:'Všechno sbaleno. Šťastnou cestu!',celebTitle:'Sbaleno!',celebSub:'Šťastnou cestu!',
   tut:[['Vítej v Packed','Balicí seznam na cesty. Už nikdy nic nezapomeneš.'],['Inventář','Sepiš si věci, které běžně bereš, roztříděné do barevných kategorií.'],['Sbírání','Vytvoř cestu a přidej do ní věci z inventáře.'],['Balení','Jeden seznam pro celou cestu. Odškrtej, co je v kufru.']],
+  undo:'Zpět',undoCleared:'Seznam vymazán',undoUnchecked:'Odškrtnuto vše',
   tutSkip:'Přeskočit',tutNext:'Další',tutBack:'Zpět',tutGo:'Jdeme na to!',tutAgain:'Zobrazit průvodce',tutLabel:'Průvodce aplikací',packedOf:'věcí sbaleno',resetPack:'Zrušit odškrtnutí',
   inv:'Inventář',thing:'Věc',thingPh:'např. Čelovka',add:'Přidat',
   invNote:'Kategorii vyber v nabídce vedle názvu. Název věci přepíšeš klepnutím, klepnutím na kategorii u věci ji přesuneš jinam. Barvu kategorie změníš kliknutím na barevné kolečko.',
@@ -752,6 +759,7 @@ const L={
   noPicks:'You haven’t picked anything yet. Switch to “Collecting” and choose what you’re taking.',
   allPacked:'All packed. Have a good trip!',celebTitle:'All packed!',celebSub:'Have a good trip!',
   tut:[['Welcome to Packed','Your travel packing list. Never forget anything again.'],['Inventory','Keep a list of the things you usually take, sorted into coloured categories.'],['Collecting','Create a trip and add items from your inventory.'],['Packing','One checklist for the whole trip. Tick off what’s in your bag.']],
+  undo:'Undo',undoCleared:'List cleared',undoUnchecked:'All unchecked',
   tutSkip:'Skip',tutNext:'Next',tutBack:'Back',tutGo:'Let’s go!',tutAgain:'Show the tutorial',tutLabel:'App tutorial',packedOf:'items packed',resetPack:'Uncheck all',
   inv:'Inventory',thing:'Item',thingPh:'e.g. Headlamp',add:'Add',
   invNote:'Pick a category from the menu next to the name. Tap an item’s name to rename it; tap its category to move it to another one. Click a category’s colour dot to change its colour.',
@@ -1453,6 +1461,15 @@ addEventListener('popstate',e=>{if(popSkip>0){popSkip--;return}
     break}
   closeCatPops();toggleTripMenu(false);render();window.scrollTo(0,0)});
 
+/* "Cleared · Undo": a few seconds to take back Clear all / Uncheck all */
+let undoFn=null,undoTimer=0;
+function showUndo(msg,fn){const el=document.getElementById('undoToast');if(!el)return;undoFn=fn;clearTimeout(undoTimer);
+  el.querySelector('span').textContent=msg;const bt=document.getElementById('undoBtn');bt.textContent=T.undo;
+  const c=document.querySelector('#credit .credit-box');el.style.bottom=((c?innerHeight-c.getBoundingClientRect().top:0)+12)+'px';
+  el.hidden=false;el.classList.remove('show');void el.offsetWidth;el.classList.add('show');undoTimer=setTimeout(hideUndo,6000)}
+function hideUndo(){const el=document.getElementById('undoToast');if(!el)return;el.classList.remove('show');undoFn=null;clearTimeout(undoTimer);setTimeout(()=>{if(!el.classList.contains('show'))el.hidden=true},220)}
+document.getElementById('undoBtn').addEventListener('click',()=>{const f=undoFn;hideUndo();if(f)f()});
+
 /* help steps are links into the app */
 const HELP_GO=['inv','new','days','pack','pdf','device'];
 function helpGo(k){
@@ -1499,11 +1516,13 @@ document.addEventListener('click',e=>{
     case 'toggle-pick':{if(ui.day==='all')ui.wholeKeep=true;const cur=(t.picks[ui.day]||{})[id];setPick(t,ui.day,id,cur?0:1);save();break}
     case 'qty':{if(ui.day==='all')ui.wholeKeep=true;const cur=(t.picks[ui.day]||{})[id]||0;setPick(t,ui.day,id,Math.max(0,Math.min(99,cur+Number(b.dataset.d))));save();break}
     case 'rm-pick':setPick(t,ui.day,id,0);save();break;
-    case 'clear-day':t.picks[ui.day]={};save();break;
+    case 'clear-day':{const prev=JSON.parse(JSON.stringify(t.picks[ui.day]||{})),day=ui.day,tid=t.id;t.picks[ui.day]={};save();
+      showUndo(T.undoCleared,()=>{const tr=state.trips.find(x=>x.id===tid);if(tr){tr.picks[day]=prev;save();render()}});break}
     case 'copy-prev':{const days=tripDays(t);const i=days.indexOf(ui.day);if(i>0){t.picks[ui.day]={...(t.picks[days[i-1]]||{})};save()}break}
     case 'to-all-days':{const src={...(t.picks[ui.day]||{})};tripDays(t).forEach(d=>{t.picks[d]={...src}});save();break}
     case 'pk-inc':case 'pk-dec':{const x=aggregate(t).find(z=>z.it.id===id);if(!x)break;setPacked(t,id,packedN(t,x)+(a==='pk-inc'?1:-1),x.qty);save();ui.patch=true;break}
-    case 'reset-pack':t.packed={};save();break;
+    case 'reset-pack':{const prev=JSON.parse(JSON.stringify(t.packed||{})),tid=t.id;t.packed={};save();
+      showUndo(T.undoUnchecked,()=>{const tr=state.trips.find(x=>x.id===tid);if(tr){tr.packed=prev;ui.lastPack=null;save();render()}});break}
     case 'info':ui.help=true;render();{const c=document.getElementById('helpClose');if(c)c.focus()}return;
     case 'help-close':ui.help=false;render();document.getElementById('infoBtn').focus();return;
     case 'help-go':helpGo(b.dataset.v);return;
