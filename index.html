@@ -421,7 +421,8 @@ html{overflow-x:clip}
 .cat.folded{gap:0}
 .or-sep{display:flex;align-items:center;gap:10px;margin:-4px 0;color:var(--muted);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
 .or-sep::before,.or-sep::after{content:"";flex:1;height:1px;background:var(--line)}
-.fold-row{display:flex;justify-content:flex-end;margin-bottom:-6px}
+.fold-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:-6px}
+.fold-row h2{margin:0}
 .btn.ghost.foldall{width:40px;height:40px;padding:0;display:inline-grid;place-items:center;border:1px solid var(--line);border-radius:10px;flex:none}
 .btn.ghost.foldall:hover{border-color:var(--ink)}
 .wholehead{margin:0;display:flex}
@@ -998,7 +999,7 @@ function viewDays(t,days){
       return `<section class="panel wholepanel${fold?' folded':''}">${can?`<h2 class="wholehead"><button class="fold" type="button" data-act="fold-whole" data-k="${isAll?'all':'day'}" data-folded="${fold?1:''}" aria-expanded="${!fold}"><span class="fold-l">${title}</span><span class="fold-n">${esc(T.things(grouped.reduce((s,x)=>s+(+x.q||1),0)))}</span>${CHEV}</button></h2>`:`<div class="row"><h2>${title}</h2></div>`}<div class="wholebody">${list}${actions}</div>${can?`<button class="showmore" type="button" data-act="fold-whole" data-k="${isAll?'all':'day'}" data-folded="${fold?1:''}" aria-expanded="${!fold}">${fold?T.showMore:T.showLess}${CHEV}</button>`:''}</section>`})()}
     <!--split-->
     <section class="panel">
-      <div class="row pickhead"><h2>${T.addFromInv}</h2><span class="spacer"></span>
+      <div class="row pickhead">
         <input class="inp" id="search" type="search" placeholder="${T.search}" style="max-width:200px" autocomplete="off"></div>
       <div class="or-sep" aria-hidden="true"><span>${T.or}</span></div>
       <form id="addToDay" class="addform" style="border-bottom:1px solid var(--line);padding-bottom:14px">
@@ -1009,7 +1010,7 @@ function viewDays(t,days){
         </div>
         <input class="inp newcat-in" id="ad-newcat" name="newcat" placeholder="${esc(T.newCatPh)}" autocomplete="off" aria-label="${esc(T.newCat)}" hidden>
       </form>
-      ${picker?`<div class="fold-row">${foldAll('pick',byCat(state.items).map(g=>g[0]))}</div>`:''}
+      ${picker?`<div class="fold-row"><h2>${T.addFromInv}</h2>${foldAll('pick',byCat(state.items).map(g=>g[0]))}</div>`:''}
       ${picker||`<p class="note">${esc(T.invEmptyPick)}</p>`}
     </section>`;
 }
