@@ -343,6 +343,8 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 .inv[hidden],.cat[hidden]{display:none!important}
 .pickhead #search{order:2;flex:1 1 0;width:auto;max-width:none!important;min-width:0}
 .pickhead>*:not(h2):not(#search):not(.spacer){order:3;flex:none}
+.edit-del{display:flex;justify-content:flex-start;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.btn.ghost.danger-link{color:var(--danger);display:inline-flex;align-items:center;gap:8px;padding-left:0}
 .trip-w{position:relative}
 .trip-w .trip{padding-right:62px}
 .trip-edit{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--chip);color:var(--ink);display:grid;place-items:center;padding:0;cursor:pointer}
@@ -996,6 +998,8 @@ function editForm(t){const v=ui.editVals||{name:t.name,start:t.start,end:t.end};
       ${ui.editErr?`<p class="err">${esc(T[ui.editErr])}</p>`:''}
       ${ui.editWarn?`<p class="err">${esc(T.shortenWarn(ui.editWarn))}</p>`:''}
       <div class="row"><button class="btn primary" type="submit">${ui.editWarn?T.saveAnyway:T.saveChanges}</button><button class="btn ghost" type="button" data-act="edit-cancel">${T.cancel}</button></div>
+      ${ui.editId?`<div class="edit-del">${ui.delTrip?`<div class="tr-confirm" role="group" aria-label="${esc(T.delTripQ(t.name))}"><span>${T.delTripAsk}</span><button type="button" class="btn small" data-act="del-trip-no">${T.no}</button><button type="button" class="btn small danger" data-act="del-trip-yes">${T.del}</button></div>`
+        :`<button type="button" class="btn ghost danger-link" data-act="del-trip"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>${esc(T.delTrip)}</button>`}</div>`:''}
     </form>`}
 /* Move a trip's per-day plan to new dates: day 1 stays day 1, and so on */
 function retime(t,start,end){const oldDays=tripDays(t),newDays=tripDays({start,end});
@@ -1012,7 +1016,6 @@ function viewTrip(){
           <button class="btn ghost menubtn" data-act="trip-menu" aria-haspopup="menu" aria-expanded="false" aria-label="${esc(T.menu)}" title="${esc(T.menu)}"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
           <div class="menu-pop" role="menu" hidden>
             <button role="menuitem" data-act="pdf" ${p.total?'':'disabled'}><svg width="17" height="17" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4.5 6.8 8 10.3l3.5-3.5M2.5 13.5h11"/></svg>${esc(T.pdfBtn)}</button>
-            <button role="menuitem" class="danger" data-act="del-trip"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>${esc(T.delTrip)}</button>
           </div></div>`}</div></div></div>
       ${ui.tripMsg?`<p class="note" style="text-align:right">${esc(T[ui.tripMsg])}</p>`:''}
       ${ui.editTrip?editForm(t):`<h1>${esc(t.name)}</h1>`}
@@ -1338,8 +1341,8 @@ document.addEventListener('pointerdown',e=>{if(e.target.closest('#celeb'))endCel
 document.addEventListener('keydown',e=>{if(e.key==='Escape')endCeleb()});
 
 /* edit-trip popup: tap outside or press Escape to close */
-document.addEventListener('click',e=>{if(e.target.id==='editModal'){ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;render()}});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ui.editId){ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;render()}});
+document.addEventListener('click',e=>{if(e.target.id==='editModal'){ui.delTrip=false;ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;render()}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ui.editId){ui.delTrip=false;ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;render()}});
 
 /* trip options menu (Download PDF, Delete trip) */
 function toggleTripMenu(open){const pop=document.querySelector('.menu-pop'),btn=document.querySelector('[data-act="trip-menu"]');if(!pop||!btn)return;
@@ -1377,7 +1380,7 @@ document.addEventListener('click',e=>{
     case 'tab':ui.tab=b.dataset.v;ui.delItem=null;break;
     case 'new-trip':ui.newTrip=!ui.newTrip;ui.tripErr='';break;
     case 'pdf':downloadTripPDF();return;
-    case 'edit-trip-open':ui.editId=id;ui.editVals=null;ui.editErr='';ui.editWarn=0;render();{const n=document.getElementById('et-name');if(n&&!matchMedia('(pointer:coarse)').matches)n.focus({preventScroll:true})}return;
+    case 'edit-trip-open':ui.delTrip=false;ui.editId=id;ui.editVals=null;ui.editErr='';ui.editWarn=0;render();{const n=document.getElementById('et-name');if(n&&!matchMedia('(pointer:coarse)').matches)n.focus({preventScroll:true})}return;
     case 'open-trip':ui.editFromHome=false;ui.wholeKeep=false;ui.tripMsg='';ui.editTrip=false;ui.editVals=null;ui.editWarn=0;ui.tripId=id;ui.mode='days';ui.day='all';ui.delTrip=false;break;
     case 'back':ui.editFromHome=false;ui.editTrip=false;ui.editVals=null;ui.editWarn=0;ui.tripId=null;ui.delTrip=false;break;
     case 'mode':{/* switch without shaking: the new content starts right under the switch, no jump or shrink animation */
@@ -1412,10 +1415,10 @@ document.addEventListener('click',e=>{
     case 'import-yes':if(pendingImport){state=pendingImport;pendingImport=null;ui.tripId=null;ui.importMsg='imported';save()}break;
     case 'import-no':pendingImport=null;ui.importMsg='';break;
     case 'edit-trip':ui.editFromHome=false;ui.editTrip=true;ui.editVals=null;ui.editErr='';ui.editWarn=0;ui.delTrip=false;break;
-    case 'edit-cancel':ui.editTrip=false;ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;break;
+    case 'edit-cancel':ui.delTrip=false;ui.editTrip=false;ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;break;
     case 'del-trip':ui.delTrip=true;break;
     case 'del-trip-no':ui.delTrip=false;break;
-    case 'del-trip-yes':state.trips=state.trips.filter(x=>x.id!==ui.tripId);ui.tripId=null;ui.delTrip=false;save();break;
+    case 'del-trip-yes':{const did=ui.editId||ui.tripId;state.trips=state.trips.filter(x=>x.id!==did);ui.tripId=null;ui.editId=null;ui.editVals=null;ui.delTrip=false;save();break}
     case 'pick-color':ui.colorCat=ui.colorCat===b.dataset.c?null:b.dataset.c;break;
     case 'set-color':state.catColors=state.catColors||{};state.catColors[b.dataset.c]=b.dataset.v;ui.colorCat=null;save();break;
     case 'newcat-cancel':ui.newCatFor=null;break;
