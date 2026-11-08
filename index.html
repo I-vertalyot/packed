@@ -585,6 +585,11 @@ html{overflow-x:clip}
 .addrow .catpick[style*="--c-yellow"]{color:#16202B}
 :root[data-app-theme="dark"] .addrow .catpick{color:#0E1217}
 .addrow .catpick:hover,.addrow .catpick:focus-within{border-color:var(--ink)}
+/* category and Add: same size, rounded squares */
+.addrow .catpick,.addrow>button[type=submit]{flex:1 1 0;min-width:0;max-width:none;height:44px;border-radius:10px;box-sizing:border-box}
+.addrow .catpick .cp-btn{width:100%;max-width:none;justify-content:space-between}
+.addrow>button[type=submit]{justify-content:center;padding:0 12px}
+.addrow .cp-pop{min-width:100%}
 .catpick .cp-native{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 .cp-pop{position:absolute;left:0;top:calc(100% + 6px);z-index:25;min-width:210px;max-height:min(340px,60vh);overflow:auto;display:flex;flex-direction:column;gap:6px;padding:8px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 14px 34px rgba(0,0,0,.3);animation:menuin .16s ease-out}
 .cp-pop[hidden]{display:none}
