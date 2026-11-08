@@ -487,14 +487,6 @@ html{overflow-x:clip}
 .chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:14px;display:inline-flex;align-items:center;gap:6px}
 .chip:hover{border-color:var(--muted)}
 .chip.on{background:var(--cc);color:#fff;border-color:var(--cc);font-weight:600}
-.chip.stepchip{padding:0;gap:0;overflow:hidden}
-.stepchip button{border:0;background:none;color:inherit;font:inherit;cursor:pointer}
-.stepchip .cs-btn{width:30px;align-self:stretch;font-size:17px;font-weight:700;line-height:1;display:grid;place-items:center}
-.stepchip .cs-btn:first-child{border-right:1px solid color-mix(in srgb,currentColor 30%,transparent)}
-.stepchip .cs-btn:last-child{border-left:1px solid color-mix(in srgb,currentColor 30%,transparent)}
-.stepchip .cs-btn:hover,.stepchip .cs-name:hover{background:color-mix(in srgb,currentColor 14%,transparent)}
-.stepchip .cs-name{padding:6px 10px;display:inline-flex;align-items:center;gap:5px}
-.stepchip .cs-q{font-family:var(--f-mono);font-size:12.5px;opacity:.9}
 .chip.on[style*="--c-yellow"]{color:#16202B}
 :root[data-app-theme="dark"] .chip.on{color:#0E1217}
 
@@ -1034,10 +1026,7 @@ function viewDays(t,days){
       ${k!=='all'&&days.length>1?`<button class="btn" data-act="to-all-days">${T.toAll}</button>`:''}
       ${grouped.length?`<button class="btn ghost" data-act="clear-day">${T.clear}</button>`:''}</div>`;
   const picker=byCat(state.items).map(([c,l])=>`<div class="cat${fold('pick',c)}" data-cat><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pick',c,dot(c)+esc(c),T.nPicked(l.filter(it=>picks[it.id]).length,l.length))}</h3><div class="chips pick-box" style="--cc:var(--c-${catColor(c)})">${
-      l.slice().sort((a,b)=>cmp(a.name,b.name)).map(it=>{const q=picks[it.id]||0,cc=`--cc:var(--c-${catColor(it.cat||OTHER())})`,nm=esc(it.name.toLowerCase());
-        /* a picked item becomes a stepper: − name + */
-        return q?`<span class="chip on stepchip" style="${cc}" data-name="${nm}"><button class="cs-btn" data-act="qty" data-id="${it.id}" data-d="-1" aria-label="− ${esc(it.name)}">−</button><button class="cs-name" data-act="toggle-pick" data-id="${it.id}">${esc(it.name)}${q>1?`<span class="cs-q">×${q}</span>`:''}</button><button class="cs-btn" data-act="qty" data-id="${it.id}" data-d="1" aria-label="+ ${esc(it.name)}">+</button></span>`
-          :`<button class="chip" style="${cc}" data-act="toggle-pick" data-id="${it.id}" data-name="${nm}">${esc(it.name)}</button>`}).join('')}</div></div>`).join('');
+      l.slice().sort((a,b)=>cmp(a.name,b.name)).map(it=>`<button class="chip ${picks[it.id]?'on':''}" style="--cc:var(--c-${catColor(it.cat||OTHER())})" data-act="toggle-pick" data-id="${it.id}" data-name="${esc(it.name.toLowerCase())}">${esc(it.name)}</button>`).join('')}</div></div>`).join('');
   return `${(()=>{const isAll=k==='all',can=grouped.length>WHOLE_FOLD_MIN,fold=can&&!(isAll?state.wholeOpen:state.dayOpen);
       return `<section class="panel wholepanel${fold?' folded':''}">${can?`<h2 class="wholehead"><button class="fold" type="button" data-act="fold-whole" data-k="${isAll?'all':'day'}" data-folded="${fold?1:''}" aria-expanded="${!fold}"><span class="fold-l">${title}</span><span class="fold-n">${esc(T.things(grouped.reduce((s,x)=>s+(+x.q||1),0)))}</span>${CHEV}</button></h2>`:`<div class="row"><h2>${title}</h2></div>`}<div class="wholebody">${list}${actions}</div>${can?`<button class="showmore" type="button" data-act="fold-whole" data-k="${isAll?'all':'day'}" data-folded="${fold?1:''}" aria-expanded="${!fold}">${fold?T.showMore:T.showLess}${CHEV}</button>`:''}</section>`})()}
     <!--split-->
