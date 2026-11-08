@@ -606,6 +606,16 @@ html{overflow-x:clip}
 .note{font-size:13px;color:var(--muted);margin:0}
 .confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--chip);border-radius:6px;padding:10px 12px;font-size:14px}
 @media (prefers-reduced-motion:no-preference){.meter i{transition:width .3s ease}}
+
+/* one look for every button: rounded squares */
+:root{--rbtn:10px}
+.btn,.btn.small,.btn.pdfbtn.small,.btn.ghost.foldall,.seg button,.savebtn,.x,.menubtn,.trip-edit,.share-opt,.cp-opt,.tr-confirm,.tut-nav .btn,.tut-skip,.linkbtn{border-radius:var(--rbtn)}
+.lang,.tut-lang{border-radius:var(--rbtn)}
+.themebtn,.infobtn{border-radius:9px}
+.totop{border-radius:14px}
+.credit .credit-box a.coffee{border-radius:var(--rbtn)}
+.pstep,.step{border-radius:var(--rbtn)}
+.catpick{border-radius:var(--rbtn)}
 </style>
 </head>
 <body>
