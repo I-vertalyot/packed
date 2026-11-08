@@ -576,6 +576,18 @@ html{overflow-x:clip}
 .catpick:hover,.catpick:focus-within{border-color:var(--muted)}
 .catpick select{appearance:none;-webkit-appearance:none;border:0;background:transparent;color:inherit;font:inherit;padding:0;margin:0;min-width:0;max-width:110px;text-overflow:ellipsis;cursor:pointer;outline:none}
 .catpick select option{color:#16202B;background:#fff}
+.catpick .cp-btn{display:inline-flex;align-items:center;gap:7px;height:100%;border:0;padding:0;background:none;color:inherit;font:inherit;font-weight:700;cursor:pointer;max-width:110px}
+.catpick .cp-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#ad-name,#ai-name{flex:1 1 100%}
+.catpick .cp-native{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.cp-pop{position:absolute;left:0;top:calc(100% + 6px);z-index:25;min-width:210px;max-height:min(340px,60vh);overflow:auto;display:flex;flex-direction:column;gap:6px;padding:8px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 14px 34px rgba(0,0,0,.3);animation:menuin .16s ease-out}
+.cp-pop[hidden]{display:none}
+.cp-opt{display:block;width:100%;text-align:left;padding:10px 12px;border-radius:10px;border:1px solid color-mix(in srgb,var(--cc) 50%,transparent);background:color-mix(in srgb,var(--cc) 14%,var(--surface));color:color-mix(in srgb,var(--cc) 75%,var(--ink));font:inherit;font-weight:700;font-size:15px;cursor:pointer}
+.cp-opt:hover,.cp-opt:focus-visible{border-color:var(--cc);outline:none}
+.cp-opt[aria-selected="true"]{background:var(--cc);border-color:var(--cc);color:#fff}
+.cp-opt[aria-selected="true"][style*="--c-yellow"]{color:#16202B}
+:root[data-app-theme="dark"] .cp-opt[aria-selected="true"]{color:#0E1217}
+.cp-opt.cp-new{--cc:var(--muted);border-style:dashed;background:none;color:var(--ink);font-weight:600}
 .catpick svg{flex:none;color:var(--muted)}
 .cat .inv:first-of-type{border-top:0}
 .inv .inp{padding:7px 9px}
@@ -888,7 +900,11 @@ const foldAll=(v,cats)=>{if(!cats.length)return '';const all=cats.every(c=>isFol
 const allCats=()=>{const l=[...new Set(catOrder().concat(state.cats))];if(!l.length)l.push(OTHER());return l};
 const catOptions=sel=>allCats().map(c=>`<option value="${esc(c)}"${c===sel?' selected':''}>${esc(c)}</option>`).join('')+`<option value="__new">${esc(T.newCatOpt)}</option>`;
 const catPick=pre=>{const cur=allCats().includes(ui.lastCat)?ui.lastCat:allCats()[0];
-  return `<label class="catpick" style="--cc:var(--c-${catColor(cur)})"><select id="${pre}-cat" name="cat" aria-label="${T.category}">${catOptions(cur)}</select><svg width="12" height="12" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg></label>`};
+  /* colourful category list: our own popup (phones show system pickers without colours); the hidden select keeps the form working */
+  return `<div class="catpick" style="--cc:var(--c-${catColor(cur)})">
+    <button type="button" class="cp-btn" data-act="cp-open" data-pre="${pre}" aria-haspopup="listbox" aria-expanded="false" aria-label="${T.category}"><span class="cp-label">${esc(cur)}</span><svg width="12" height="12" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg></button>
+    <select id="${pre}-cat" name="cat" class="cp-native" tabindex="-1" aria-hidden="true">${catOptions(cur)}</select>
+    <div class="cp-pop" role="listbox" hidden>${allCats().map(c=>`<button type="button" role="option" class="cp-opt" data-act="cp-pick" data-pre="${pre}" data-v="${esc(c)}" style="--cc:var(--c-${catColor(c)})" aria-selected="${c===cur}">${esc(c)}</button>`).join('')}<button type="button" role="option" class="cp-opt cp-new" data-act="cp-pick" data-pre="${pre}" data-v="__new" aria-selected="false">${esc(T.newCatOpt)}</button></div></div>`};
 function setBarH(){const b=document.querySelector('.bar');if(b)document.documentElement.style.setProperty('--barh',b.offsetHeight+'px');
   const m=document.querySelector('.modebar');if(m)document.documentElement.style.setProperty('--modeh',m.offsetHeight+'px');updateStuck();updateCap()}
 addEventListener('resize',setBarH);
@@ -1380,6 +1396,11 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')endCeleb()});
 document.addEventListener('click',e=>{if(e.target.id==='shareModal'){ui.share=false;render();return}if(e.target.id==='editModal'){ui.delTrip=false;ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;render()}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ui.share){ui.share=false;render();return}if(e.key==='Escape'&&ui.editId){ui.delTrip=false;ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;render()}});
 
+/* category popups close on an outside tap or Escape */
+function closeCatPops(){document.querySelectorAll('.cp-pop').forEach(p=>{if(!p.hidden){p.hidden=true;const bt=p.parentElement.querySelector('.cp-btn');if(bt)bt.setAttribute('aria-expanded','false')}})}
+document.addEventListener('click',e=>{if(!e.target.closest('.catpick'))closeCatPops()},true);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeCatPops()});
+
 /* trip options menu (Download PDF, Delete trip) */
 function toggleTripMenu(open){const pop=document.querySelector('.menu-pop'),btn=document.querySelector('[data-act="trip-menu"]');if(!pop||!btn)return;
   const o=open===undefined?pop.hidden:open;pop.hidden=!o;btn.setAttribute('aria-expanded',o);if(o){const f=pop.querySelector('button:not([disabled])');if(f)f.focus({preventScroll:true})}}
@@ -1441,6 +1462,8 @@ document.addEventListener('click',e=>{
     case 'help-close':ui.help=false;render();document.getElementById('infoBtn').focus();return;
     case 'help-go':helpGo(b.dataset.v);return;
     case 'trip-menu':toggleTripMenu();return;
+    case 'cp-open':{const pop=b.parentElement.querySelector('.cp-pop'),open=pop.hidden;closeCatPops();if(open){pop.hidden=false;b.setAttribute('aria-expanded','true');const s=pop.querySelector('[aria-selected="true"]')||pop.firstElementChild;s.focus({preventScroll:true})}return}
+    case 'cp-pick':{const sel=document.getElementById(b.dataset.pre+'-cat');closeCatPops();if(sel){sel.value=b.dataset.v;sel.dispatchEvent(new Event('change',{bubbles:true}))}const btn=b.closest('.catpick').querySelector('.cp-btn');if(btn&&b.dataset.v!=='__new')btn.focus({preventScroll:true});return}
     case 'tut-next':if(ui.tut===T.tut.length-1)closeTut();else tutGo(ui.tut+1);return;
     case 'tut-back':tutGo(ui.tut-1);return;
     case 'tut-dot':tutGo(+b.dataset.v);return;
@@ -1517,6 +1540,7 @@ document.addEventListener('change',e=>{
     it.cat=el.value;openCat('inv',el.value);save();const y=window.scrollY;render();window.scrollTo(0,y);return}
   if(el.id==='ai-cat'||el.id==='ad-cat'){const pre=el.id.slice(0,2);const n=document.getElementById(pre+'-newcat');
     if(n){n.hidden=el.value!=='__new';n.required=el.value==='__new';if(el.value==='__new')n.focus()}
+    {const cp=el.closest('.catpick');cp.querySelector('.cp-label').textContent=el.value==='__new'?T.newCatOpt:el.value;cp.querySelectorAll('.cp-opt').forEach(o=>o.setAttribute('aria-selected',o.dataset.v===el.value))}
     if(el.value!=='__new'){ui.lastCat=el.value;el.closest('.catpick').style.setProperty('--cc',`var(--c-${catColor(el.value)})`)}return}
   if(el.id==='importFile'){if(el.files&&el.files[0])readImport(el.files[0]);el.value='';return}
   if(el.dataset&&el.dataset.pack){const t=trip();if(el.checked||el.dataset.partial)t.packed[el.dataset.pack]=true;else delete t.packed[el.dataset.pack];save();const y=window.scrollY;ui.patch=true;render();window.scrollTo(0,y);return}
