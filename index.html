@@ -415,6 +415,15 @@ html{overflow-x:clip}
 .pgroup .pick:nth-child(2){border-top:0}
 .pick .nm{min-width:0;overflow-wrap:anywhere;font-weight:500}
 .pick .ct{display:block;font-size:12px;color:var(--muted);font-weight:400}
+/* collected items flow side by side as pills */
+.pflow{display:flex;flex-wrap:wrap;gap:6px;padding:10px}
+.pgroup .pflow>.pick{display:inline-flex;align-items:center;gap:2px;padding:2px 2px 2px 10px;border:1px solid color-mix(in srgb,var(--cc) 40%,var(--line));border-radius:999px;background:var(--surface);max-width:100%}
+.pflow .pick .nm{font-size:13.5px;font-weight:600;margin-right:4px;white-space:nowrap;line-height:1;display:inline-flex;align-items:center;align-self:center}
+.pflow .pick .nm .ct{display:none}
+.pflow .pick .step{border:0;border-radius:999px;background:color-mix(in srgb,var(--cc) 12%,transparent)}
+.pflow .pick .step button{width:22px;height:24px;padding:0;font-size:15px}
+.pflow .pick .step span{min-width:12px;text-align:center;font-size:12.5px}
+.pflow .pick .x{display:none}
 .step{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:6px;overflow:hidden}
 .step button{border:0;background:none;width:32px;height:32px;font-size:17px;line-height:1}
 .step button:hover{background:var(--chip)}
@@ -1019,7 +1028,7 @@ function viewDays(t,days){
   let rowNo=0;
   const list=grouped.length?`<div class="picked">${byCat(chosen).map(([c,l])=>{const rows=l.slice().sort((a,b)=>cmp(a.it.name,b.it.name)).map(x=>{const extra=rowNo++>=WHOLE_FOLD_MIN;return pickRow(x).replace('<div class="pick">',`<div class="pick${extra?' extra':''}">`)});
       const allExtra=rows.every(r=>r.startsWith('<div class="pick extra">'));
-      return `<div class="pgroup${allExtra?' extra':''}" style="--cc:var(--c-${catColor(c)})"><h4 class="pg-h" style="--cc:var(--c-${catColor(c)})">${dot(c)}<span>${esc(c)}</span><span class="pg-n">${l.length}</span></h4>${rows.join('')}</div>`}).join('')}</div>`
+      return `<div class="pgroup${allExtra?' extra':''}" style="--cc:var(--c-${catColor(c)})"><h4 class="pg-h" style="--cc:var(--c-${catColor(c)})">${dot(c)}<span>${esc(c)}</span><span class="pg-n">${l.length}</span></h4><div class="pflow">${rows.join('')}</div></div>`}).join('')}</div>`
     :`<div class="empty">${esc(k==='all'?T.emptyWhole:T.emptyDay)}</div>`;
   const actions=`<div class="row">
       ${idx>0?`<button class="btn" data-act="copy-prev">${T.copyPrev}</button>`:''}
