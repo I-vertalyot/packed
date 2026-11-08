@@ -1455,8 +1455,8 @@ document.addEventListener('input',e=>{
 });
 
 render();
-/* opening animation: the suitcase drops in and PACKED stamps on (same name in both languages) */
-celebrate(true);
+/* first start: show the tutorial (no opening animation) */
+setTimeout(()=>{if(!state.tutorialDone)openTut()},400);
 connect();
 if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')){navigator.serviceWorker.register('sw.js').catch(()=>{})}
 })();
