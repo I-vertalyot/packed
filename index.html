@@ -359,6 +359,7 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 :root[data-mode="days"]{--mcol:var(--c-blue)}
 :root[data-mode="pack"]{--mcol:var(--ok)}
 .modebar .seg{padding-bottom:12px;border-bottom:1px solid transparent;border-radius:0;position:relative}
+.modebar.nocap .seg::before,.modebar.nocap .seg::after,.modebar.nocap .seg button::after{display:none}
 /* solid strip behind the rounded top, so the frame sides and list never show through its corners while scrolling */
 .modebar .seg::before{content:"";position:absolute;left:-2px;right:-2px;top:100%;height:14px;background:var(--page,var(--bg));pointer-events:none}
 /* rounded top of the frame, kept under the switch while scrolling */
@@ -856,7 +857,7 @@ const catOptions=sel=>allCats().map(c=>`<option value="${esc(c)}"${c===sel?' sel
 const catPick=pre=>{const cur=allCats().includes(ui.lastCat)?ui.lastCat:allCats()[0];
   return `<label class="catpick" style="--cc:var(--c-${catColor(cur)})"><i class="dot" aria-hidden="true"></i><select id="${pre}-cat" name="cat" aria-label="${T.category}">${catOptions(cur)}</select><svg width="12" height="12" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg></label>`};
 function setBarH(){const b=document.querySelector('.bar');if(b)document.documentElement.style.setProperty('--barh',b.offsetHeight+'px');
-  const m=document.querySelector('.modebar');if(m)document.documentElement.style.setProperty('--modeh',m.offsetHeight+'px');updateStuck()}
+  const m=document.querySelector('.modebar');if(m)document.documentElement.style.setProperty('--modeh',m.offsetHeight+'px');updateStuck();updateCap()}
 addEventListener('resize',setBarH);
 /* the packing progress box shrinks while it is stuck under the switch */
 /* back-to-top button: appears after scrolling down, sits just above the credit bar */
@@ -869,6 +870,11 @@ function updateStuck(){const pp=document.querySelector('.progpanel'),s=document.
   const top=parseFloat(getComputedStyle(pp).top)||0,want=s.getBoundingClientRect().top<top-2;if(want===pp.classList.contains('stuck'))return;
   if(want){const full=pp.offsetHeight;pp.classList.add('stuck');pp.style.marginBottom=(full-pp.offsetHeight)+'px'}else{pp.classList.remove('stuck');pp.style.marginBottom=''}}
 addEventListener('scroll',updateStuck,{passive:true});
+/* the rounded strip under the switch only shows while a frame is passing beneath it */
+function updateCap(){const mb=document.querySelector('.modebar');if(!mb)return;const capTop=mb.getBoundingClientRect().bottom;
+  const on=[...document.querySelectorAll('.modebox,.modebox2')].some(x=>{const r=x.getBoundingClientRect();return r.top<=capTop+1&&r.bottom>=capTop+34});
+  mb.classList.toggle('nocap',!on)}
+addEventListener('scroll',updateCap,{passive:true});
 function morphKids(a,b){const ak=[...a.childNodes],bk=[...b.childNodes];if(ak.length!==bk.length){a.replaceChildren(...bk);return}ak.forEach((x,i)=>morphNode(x,bk[i]))}
 function morphNode(a,b){
   if(a.nodeType!==b.nodeType||a.nodeName!==b.nodeName){a.replaceWith(b);return}
