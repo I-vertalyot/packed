@@ -351,6 +351,7 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 .share-opt.wide svg{color:var(--sign-ink)}
 .share-opt.wide span{display:flex;flex-direction:column;gap:2px}
 .share-opt.wide small{font-size:12.5px;font-weight:500;opacity:.8}
+.clearbtn{display:inline-flex;align-items:center;gap:7px}
 .edit-del{display:flex;justify-content:flex-start;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
 .btn.ghost.danger-link{color:var(--danger);display:inline-flex;align-items:center;gap:8px;padding-left:0}
 .trip-w{position:relative}
@@ -653,7 +654,7 @@ const L={
   whole:'Celá cesta',wholeTitle:'Sesbírané věci',
   emptyWhole:'Tady se objeví věci, které vybereš. Ťukni na kategorii níže a přidej věci.',emptyDay:'Vyber věci z inventáře níže. Klikni na kategorii a vyber věci.',
   less:'Méně',more:'Více',remove:'Odebrat',
-  copyPrev:'Zkopírovat z předchozího dne',toAll:'Tento den do všech dnů',clear:'Vyčistit',
+  copyPrev:'Zkopírovat z předchozího dne',toAll:'Tento den do všech dnů',clear:'Vyčistit',clearAll:'Vymazat vše',
   addFromInv:'Ťukni na kategorii, vyber věci',search:'Hledat…',invEmptyPick:'Inventář je prázdný. Přidej věci níže nebo na kartě Inventář.',
   newThing:'Nová věc',newThingPh:'Přidej novou věc do kategorií…',or:'nebo',addOrSearch:'Hledej nebo přidej',toTop:'Nahoru',category:'Kategorie',addBoth:'Přidat do inventáře i dne',
   wholeTrip:'celá cesta',everyDay:'každý den',
@@ -703,7 +704,7 @@ const L={
   whole:'Whole trip',wholeTitle:'Collected items',
   emptyWhole:'Your selections will appear here. Tap a category below to add items.',emptyDay:'Pick items from the inventory below. Click a category and choose the items.',
   less:'Less',more:'More',remove:'Remove',
-  copyPrev:'Copy from previous day',toAll:'Use this day for all days',clear:'Clear',
+  copyPrev:'Copy from previous day',toAll:'Use this day for all days',clear:'Clear',clearAll:'Clear all',
   addFromInv:'Tap a category, select items',search:'Search…',invEmptyPick:'Your inventory is empty. Add items below or on the Inventory tab.',
   newThing:'New item',newThingPh:'Add new item to categories…',or:'or',addOrSearch:'Search or add',toTop:'Back to top',category:'Category',addBoth:'Add to inventory and this day',
   wholeTrip:'whole trip',everyDay:'every day',
@@ -1059,7 +1060,7 @@ function viewDays(t,days){
   const actions=`<div class="row">
       ${idx>0?`<button class="btn" data-act="copy-prev">${T.copyPrev}</button>`:''}
       ${k!=='all'&&days.length>1?`<button class="btn" data-act="to-all-days">${T.toAll}</button>`:''}
-      ${grouped.length?`<button class="btn ghost" data-act="clear-day">${T.clear}</button>`:''}</div>`;
+      ${grouped.length?`<button class="btn clearbtn" data-act="clear-day"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>${T.clearAll}</button>`:''}</div>`;
   const picker=byCat(state.items).map(([c,l])=>`<div class="cat${fold('pick',c)}" data-cat><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pick',c,dot(c)+esc(c),T.nPicked(l.filter(it=>picks[it.id]).length,l.length))}</h3><div class="chips pick-box" style="--cc:var(--c-${catColor(c)})">${
       l.slice().sort((a,b)=>cmp(a.name,b.name)).map(it=>`<button class="chip ${picks[it.id]?'on':''}" style="--cc:var(--c-${catColor(it.cat||OTHER())})" data-act="toggle-pick" data-id="${it.id}" data-name="${esc(it.name.toLowerCase())}">${esc(it.name)}</button>`).join('')}</div></div>`).join('');
   return `${(()=>{const isAll=k==='all',can=grouped.length>WHOLE_FOLD_MIN,fold=can&&!(isAll?state.wholeOpen:state.dayOpen);
