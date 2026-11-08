@@ -986,6 +986,7 @@ function render(){
   if(ppStuck){const n=main.querySelector('.progpanel');if(n){n.classList.add('stuck');n.style.marginBottom=ppMB}}
   setBarH();
   {const tb=document.getElementById('toTop');if(tb){tb.setAttribute('aria-label',T.toTop);tb.title=T.toTop}}
+  syncHistory();
   /* celebrate the moment the last piece is packed */
   if(ui.tab==='trips'&&ui.tripId&&ui.mode==='pack'&&trip()){const pr=progress(trip()),lp=ui.lastPack;
     if(lp&&lp.id===ui.tripId&&lp.done<lp.total&&pr.total&&pr.done===pr.total)celebrate();
@@ -1434,6 +1435,23 @@ function toggleTripMenu(open){const pop=document.querySelector('.menu-pop'),btn=
   const o=open===undefined?pop.hidden:open;pop.hidden=!o;btn.setAttribute('aria-expanded',o);if(o){const f=pop.querySelector('button:not([disabled])');if(f)f.focus({preventScroll:true})}}
 document.addEventListener('click',e=>{if(!e.target.closest('.tr-menu'))toggleTripMenu(false)},true);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){const pop=document.querySelector('.menu-pop');if(pop&&!pop.hidden){toggleTripMenu(false);document.querySelector('[data-act="trip-menu"]').focus()}}});
+
+/* phone Back / browser Back: close the top layer (share, edit popup, help), then leave the trip; only the trip list exits the app */
+let popSkip=0;
+const navDepth=()=>(ui.tab==='trips'&&ui.tripId?1:0)+(ui.help?1:0)+(ui.editId?1:0)+(ui.share?1:0);
+function syncHistory(){try{const w=navDepth(),cur=(history.state&&history.state.pk)||0;
+  if(w>cur){for(let i=cur+1;i<=w;i++)history.pushState({pk:i},'')}
+  else if(w<cur){popSkip++;history.go(w-cur)}}catch(e){}}
+try{if(!history.state||history.state.pk==null)history.replaceState({pk:0},'')}catch(e){}
+addEventListener('popstate',e=>{if(popSkip>0){popSkip--;return}
+  const target=(e.state&&e.state.pk)||0;let guard=8;
+  while(navDepth()>target&&guard--){
+    if(ui.share){ui.share=false;continue}
+    if(ui.editId){ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;ui.delTrip=false;continue}
+    if(ui.help){ui.help=false;continue}
+    if(ui.tripId){ui.tripId=null;ui.editTrip=false;ui.editVals=null;ui.delTrip=false;continue}
+    break}
+  closeCatPops();toggleTripMenu(false);render();window.scrollTo(0,0)});
 
 /* help steps are links into the app */
 const HELP_GO=['inv','new','days','pack','pdf','device'];
