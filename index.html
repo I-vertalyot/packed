@@ -359,6 +359,8 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 :root[data-mode="days"]{--mcol:var(--c-blue)}
 :root[data-mode="pack"]{--mcol:var(--ok)}
 .modebar .seg{padding-bottom:12px;border-bottom:1px solid transparent;border-radius:0;position:relative}
+/* solid strip behind the rounded top, so the frame sides and list never show through its corners while scrolling */
+.modebar .seg::before{content:"";position:absolute;left:-2px;right:-2px;top:100%;height:14px;background:var(--page,var(--bg));pointer-events:none}
 /* rounded top of the frame, kept under the switch while scrolling */
 .modebar .seg::after{content:"";position:absolute;left:0;right:0;top:100%;height:17px;border:1px solid var(--mcol,var(--line));border-bottom:0;border-radius:16px 16px 0 0;pointer-events:none}
 /* the mode line continues down both sides and round the bottom, framing everything in that mode */
