@@ -85,6 +85,9 @@ button{cursor:pointer}
 .credit .credit-box a.coffee:hover{filter:brightness(.95)}
 main#main{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
 .credit .ig,.help-credit .ig{display:inline-block}
+.totop{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:84px;z-index:16;width:48px;height:48px;border-radius:50%;border:0;display:grid;place-items:center;background:var(--sign);color:var(--sign-ink);box-shadow:0 8px 22px rgba(0,0,0,.3);cursor:pointer;opacity:0;transform:translateY(12px) scale(.85);pointer-events:none;transition:opacity .2s,transform .2s}
+.totop.show{opacity:1;transform:none;pointer-events:auto}
+.totop:hover{filter:brightness(.95)}
 .ig.pop{animation:igpop .55s cubic-bezier(.3,1.6,.5,1)}
 @keyframes igpop{0%{transform:scale(1)}30%{transform:scale(1.25) rotate(-5deg)}60%{transform:scale(.94) rotate(2deg)}100%{transform:scale(1)}}
 .spark{position:fixed;z-index:30;pointer-events:none;line-height:1;font-weight:700;transform:translate(-50%,-50%) scale(.3);animation:spark .85s cubic-bezier(.15,.75,.3,1) forwards}
@@ -555,6 +558,7 @@ html{overflow-x:clip}
 </header>
 <main id="main"></main>
 <footer class="credit" id="credit"></footer>
+<button class="totop" id="toTop" type="button" aria-label="Back to top" title="Back to top"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg></button>
 <div class="holo" id="holo" hidden role="dialog" aria-modal="true" aria-label="i.vertalyot on Instagram">
   <div class="holo-bg"></div>
   <button class="holo-x" type="button" aria-label="Close">&#x2715;</button>
@@ -604,7 +608,7 @@ const L={
   less:'Méně',more:'Více',remove:'Odebrat',
   copyPrev:'Zkopírovat z předchozího dne',toAll:'Tento den do všech dnů',clear:'Vyčistit',
   addFromInv:'Ťukni na kategorii, vyber věci',search:'Hledat…',invEmptyPick:'Inventář je prázdný. Přidej věci níže nebo na kartě Inventář.',
-  newThing:'Nová věc',newThingPh:'Přidej novou věc do kategorií…',or:'nebo',addOrSearch:'Přidej nebo hledej',category:'Kategorie',addBoth:'Přidat do inventáře i dne',
+  newThing:'Nová věc',newThingPh:'Přidej novou věc do kategorií…',or:'nebo',addOrSearch:'Přidej nebo hledej',toTop:'Nahoru',category:'Kategorie',addBoth:'Přidat do inventáře i dne',
   wholeTrip:'celá cesta',everyDay:'každý den',
   noPicks:'Zatím nemáš vybrané žádné věci. Přepni na „Sbírání“ a poskládej si, co bereš.',
   allPacked:'Všechno sbaleno. Šťastnou cestu!',celebTitle:'Sbaleno!',celebSub:'Šťastnou cestu!',
@@ -654,7 +658,7 @@ const L={
   less:'Less',more:'More',remove:'Remove',
   copyPrev:'Copy from previous day',toAll:'Use this day for all days',clear:'Clear',
   addFromInv:'Tap a category, select items',search:'Search…',invEmptyPick:'Your inventory is empty. Add items below or on the Inventory tab.',
-  newThing:'New item',newThingPh:'Add new item to categories…',or:'or',addOrSearch:'Add or search',category:'Category',addBoth:'Add to inventory and this day',
+  newThing:'New item',newThingPh:'Add new item to categories…',or:'or',addOrSearch:'Add or search',toTop:'Back to top',category:'Category',addBoth:'Add to inventory and this day',
   wholeTrip:'whole trip',everyDay:'every day',
   noPicks:'You haven’t picked anything yet. Switch to “Collecting” and choose what you’re taking.',
   allPacked:'All packed. Have a good trip!',celebTitle:'All packed!',celebSub:'Have a good trip!',
@@ -841,6 +845,12 @@ function setBarH(){const b=document.querySelector('.bar');if(b)document.document
   const m=document.querySelector('.modebar');if(m)document.documentElement.style.setProperty('--modeh',m.offsetHeight+'px');updateStuck()}
 addEventListener('resize',setBarH);
 /* the packing progress box shrinks while it is stuck under the switch */
+/* back-to-top button: appears after scrolling down, sits just above the credit bar */
+{const tb=document.getElementById('toTop');
+  const place=()=>{const c=document.querySelector('#credit .credit-box');tb.style.bottom=((c?innerHeight-c.getBoundingClientRect().top:0)+14)+'px'};
+  const upd=()=>{const on=scrollY>500;if(on!==tb.classList.contains('show')){if(on)place();tb.classList.toggle('show',on)}};
+  addEventListener('scroll',upd,{passive:true});addEventListener('resize',()=>{place();upd()});
+  tb.addEventListener('click',()=>{scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});tb.blur()})}
 function updateStuck(){const pp=document.querySelector('.progpanel'),s=document.querySelector('.pp-sent');if(!pp||!s)return;
   const top=parseFloat(getComputedStyle(pp).top)||0,want=s.getBoundingClientRect().top<top-2;if(want===pp.classList.contains('stuck'))return;
   if(want){const full=pp.offsetHeight;pp.classList.add('stuck');pp.style.marginBottom=(full-pp.offsetHeight)+'px'}else{pp.classList.remove('stuck');pp.style.marginBottom=''}}
@@ -877,6 +887,7 @@ function render(){
   /* keep the progress box slim through the re-render, so it does not grow and shrink again */
   if(ppStuck){const n=main.querySelector('.progpanel');if(n){n.classList.add('stuck');n.style.marginBottom=ppMB}}
   setBarH();
+  {const tb=document.getElementById('toTop');if(tb){tb.setAttribute('aria-label',T.toTop);tb.title=T.toTop}}
   /* celebrate the moment the last piece is packed */
   if(ui.tab==='trips'&&ui.tripId&&ui.mode==='pack'&&trip()){const pr=progress(trip()),lp=ui.lastPack;
     if(lp&&lp.id===ui.tripId&&lp.done<lp.total&&pr.total&&pr.done===pr.total)celebrate();
