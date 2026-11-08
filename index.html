@@ -415,7 +415,9 @@ html{overflow-x:clip}
 .fold:hover .chev{color:var(--ink)}
 .cat.folded:not(.force)>:not(h3){display:none!important}
 .cat.folded{gap:0}
-.foldall{font-size:13px;padding:5px 8px}
+.fold-row{display:flex;justify-content:flex-end;margin-bottom:-6px}
+.btn.ghost.foldall{width:40px;height:40px;padding:0;display:inline-grid;place-items:center;border:1px solid var(--line);border-radius:10px;flex:none}
+.btn.ghost.foldall:hover{border-color:var(--ink)}
 .wholehead{margin:0;display:flex}
 .wholehead .fold{font:inherit;text-transform:inherit;letter-spacing:inherit;color:inherit}
 .wholehead .fold-n{text-transform:none}
@@ -822,7 +824,7 @@ const isFolded=(v,c)=>!(state.open&&Array.isArray(state.open[v])&&state.open[v].
 function openCat(v,c){state.open=state.open||{};const l=new Set(state.open[v]||[]);l.add(c);state.open[v]=[...l]}
 const fold=(v,c)=>isFolded(v,c)?' folded':'';
 const foldBtn=(v,c,label,count)=>`<button class="fold" type="button" data-act="fold" data-v="${v}" data-c="${esc(c)}" aria-expanded="${!isFolded(v,c)}"><span class="fold-l">${label}</span><span class="fold-n">${esc(count)}</span>${CHEV}</button>`;
-const foldAll=(v,cats)=>{if(!cats.length)return '';const all=cats.every(c=>isFolded(v,c));return `<button class="btn ghost foldall" type="button" data-act="foldall" data-v="${v}" data-all="${all?'1':''}">${all?T.expandAll:T.collapseAll}</button>`};
+const foldAll=(v,cats)=>{if(!cats.length)return '';const all=cats.every(c=>isFolded(v,c));return `<button class="btn ghost foldall" type="button" data-act="foldall" data-v="${v}" data-all="${all?'1':''}" aria-label="${all?T.expandAll:T.collapseAll}" title="${all?T.expandAll:T.collapseAll}"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="${all?'M7 9.5l5-5 5 5M7 14.5l5 5 5-5':'M7 4.5l5 5 5-5M7 19.5l5-5 5 5'}"/></svg></button>`};
 const allCats=()=>{const l=[...new Set(catOrder().concat(state.cats))];if(!l.length)l.push(OTHER());return l};
 const catOptions=sel=>allCats().map(c=>`<option value="${esc(c)}"${c===sel?' selected':''}>${esc(c)}</option>`).join('')+`<option value="__new">${esc(T.newCatOpt)}</option>`;
 const catPick=pre=>{const cur=allCats().includes(ui.lastCat)?ui.lastCat:allCats()[0];
@@ -988,7 +990,7 @@ function viewDays(t,days){
   return `${(()=>{const isAll=k==='all',can=grouped.length>WHOLE_FOLD_MIN,fold=can&&!(isAll?state.wholeOpen:state.dayOpen);
       return `<section class="panel wholepanel${fold?' folded':''}">${can?`<h2 class="wholehead"><button class="fold" type="button" data-act="fold-whole" data-k="${isAll?'all':'day'}" data-folded="${fold?1:''}" aria-expanded="${!fold}"><span class="fold-l">${title}</span><span class="fold-n">${esc(T.things(grouped.reduce((s,x)=>s+(+x.q||1),0)))}</span>${CHEV}</button></h2>`:`<div class="row"><h2>${title}</h2></div>`}<div class="wholebody">${list}${actions}</div>${can?`<button class="showmore" type="button" data-act="fold-whole" data-k="${isAll?'all':'day'}" data-folded="${fold?1:''}" aria-expanded="${!fold}">${fold?T.showMore:T.showLess}${CHEV}</button>`:''}</section>`})()}
     <section class="panel">
-      <div class="row pickhead"><h2>${T.addFromInv}</h2><span class="spacer"></span>${foldAll('pick',byCat(state.items).map(g=>g[0]))}
+      <div class="row pickhead"><h2>${T.addFromInv}</h2><span class="spacer"></span>
         <input class="inp" id="search" type="search" placeholder="${T.search}" style="max-width:200px" autocomplete="off"></div>
       <form id="addToDay" class="addform" style="border-bottom:1px solid var(--line);padding-bottom:14px">
         <div class="addrow" style="width:100%">
@@ -998,6 +1000,7 @@ function viewDays(t,days){
         </div>
         <input class="inp newcat-in" id="ad-newcat" name="newcat" placeholder="${esc(T.newCatPh)}" autocomplete="off" aria-label="${esc(T.newCat)}" hidden>
       </form>
+      ${picker?`<div class="fold-row">${foldAll('pick',byCat(state.items).map(g=>g[0]))}</div>`:''}
       ${picker||`<p class="note">${esc(T.invEmptyPick)}</p>`}
     </section>`;
 }
