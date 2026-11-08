@@ -490,6 +490,8 @@ html{overflow-x:clip}
 .progress{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 .progress .big{font-family:var(--f-display);font-stretch:75%;font-weight:800;font-size:40px;line-height:1;transition:font-size .2s}
 .pp-sent{height:0;margin-bottom:-20px}
+.modebox,.modebox2{display:flex;flex-direction:column;gap:15px}
+.modebox .pp-sent{margin-bottom:-15px}
 .progpanel{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--barh,108px) + var(--modeh,58px));z-index:3;transition:padding .2s,box-shadow .2s}
 .progpanel.stuck{padding:7px 14px;gap:6px;box-shadow:0 8px 18px rgba(0,0,0,.16)}
 .progpanel.stuck .progress{gap:8px;align-items:center}
