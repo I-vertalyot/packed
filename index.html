@@ -343,6 +343,14 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 .inv[hidden],.cat[hidden]{display:none!important}
 .pickhead #search{order:2;flex:1 1 0;width:auto;max-width:none!important;min-width:0}
 .pickhead>*:not(h2):not(#search):not(.spacer){order:3;flex:none}
+.share-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.share-opt{display:flex;align-items:center;gap:10px;padding:14px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);text-decoration:none;font:inherit;font-size:15px;cursor:pointer;text-align:left}
+.share-opt svg{flex:none;color:var(--muted)}
+.share-opt:hover{border-color:var(--ink)}
+.share-opt.wide{grid-column:1/-1;background:var(--sign);border-color:var(--sign);color:var(--sign-ink)}
+.share-opt.wide svg{color:var(--sign-ink)}
+.share-opt.wide span{display:flex;flex-direction:column;gap:2px}
+.share-opt.wide small{font-size:12.5px;font-weight:500;opacity:.8}
 .edit-del{display:flex;justify-content:flex-start;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
 .btn.ghost.danger-link{color:var(--danger);display:inline-flex;align-items:center;gap:8px;padding-left:0}
 .trip-w{position:relative}
@@ -662,7 +670,7 @@ const L={
   importQ:(i,t)=>`Nahrát zálohu (${i} věcí, ${t} cest)? Současná data se přepíšou.`,upload:'Nahrát',
   imported:'Záloha nahrána.',noDl:'Stahování souborů tady není dostupné.',dlDone:'Záloha stažena.',dlFail:'Zálohu se nepodařilo stáhnout.',
   badFile:'Tenhle soubor není záloha z aplikace Packed.',fileName:'packed-zaloha-',appName:'Packed',piecesPacked:'Sbalené kusy',showMore:'Zobrazit více',showLess:'Zobrazit méně',edit:'Upravit',saveChanges:'Uložit změny',saveAnyway:'Přesto uložit',editNote:'Věci se při změně termínu přesunou podle pořadí dnů: 1. den zůstane 1. dnem.',shortenWarn:n=>`Cesta se zkrátí a ${n} ${csPl(n,'den','dny','dní')} na konci se smaže i s vybranými věcmi. Klikni na „Přesto uložit“.`,moveTo:'Přesunout do kategorie',newCat:'Nová kategorie',newCatOpt:'+ Nová kategorie…',newCatPh:'Název nové kategorie',ok:'OK',collapseAll:'Sbalit vše',expandAll:'Rozbalit vše',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Přepnout na světlý vzhled',toDark:'Přepnout na tmavý vzhled',madeBy:'Made by',
-  pdfBtn:'Stáhnout PDF',pdfLabel:'BALICÍ SEZNAM',pdfPacked:(d,t)=>`sbaleno ${d} z ${t}`,pdfList:'Co zabalit',pdfByDay:'Po dnech',pdfDone:'PDF staženo.',pdfFail:'PDF se nepodařilo vytvořit.',coffee:'Buy me a coffee',
+  pdfBtn:'Stáhnout PDF',share:'Sdílet seznam',shareTitle:'Sdílet balicí seznam',shareSys:'Sdílet…',shareSysSub:'AirDrop, Zprávy a další aplikace',email:'E-mail',copyText:'Kopírovat text',copied:'Zkopírováno ✓',shareMade:'Vytvořeno v aplikaci Packed',pdfLabel:'BALICÍ SEZNAM',pdfPacked:(d,t)=>`sbaleno ${d} z ${t}`,pdfList:'Co zabalit',pdfByDay:'Po dnech',pdfDone:'PDF staženo.',pdfFail:'PDF se nepodařilo vytvořit.',coffee:'Buy me a coffee',
   info:'Nápověda',helpTitle:'Jak používat Packed',close:'Rozumím',helpLinks:'Ťukni na krok a jsi rovnou tam.',
   help:[['Inventář','Přidej do inventáře věci, které běžně bereš.'],
     ['Nová cesta','Cesty → „+ Nová cesta“: kam a kdy.'],
@@ -712,7 +720,7 @@ const L={
   importQ:(i,t)=>`Upload backup (${i} items, ${t} trips)? Your current data will be replaced.`,upload:'Upload',
   imported:'Backup uploaded.',noDl:'File downloads aren’t available here.',dlDone:'Backup downloaded.',dlFail:'Couldn’t download the backup.',
   badFile:'This file isn’t a Packed backup.',fileName:'packed-backup-',appName:'Packed',piecesPacked:'Pieces packed',showMore:'Show more',showLess:'Show less',edit:'Edit',saveChanges:'Save changes',saveAnyway:'Save anyway',editNote:'If you change the dates, your plan moves with the day order: day 1 stays day 1.',shortenWarn:n=>`The trip gets shorter: ${n} ${enPl(n,'day','days')} at the end will be removed with their items. Tap “Save anyway” to continue.`,moveTo:'Move to category',newCat:'New category',newCatOpt:'+ New category…',newCatPh:'New category name',ok:'OK',collapseAll:'Collapse all',expandAll:'Expand all',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Switch to light mode',toDark:'Switch to dark mode',madeBy:'Made by',
-  pdfBtn:'Download PDF',pdfLabel:'PACKING LIST',pdfPacked:(d,t)=>`${d} of ${t} packed`,pdfList:'What to pack',pdfByDay:'Day by day',pdfDone:'PDF downloaded.',pdfFail:'Couldn’t create the PDF.',coffee:'Buy me a coffee',
+  pdfBtn:'Download PDF',share:'Share list',shareTitle:'Share packing list',shareSys:'Share…',shareSysSub:'AirDrop, Messages and other apps',email:'Email',copyText:'Copy text',copied:'Copied ✓',shareMade:'Made with Packed',pdfLabel:'PACKING LIST',pdfPacked:(d,t)=>`${d} of ${t} packed`,pdfList:'What to pack',pdfByDay:'Day by day',pdfDone:'PDF downloaded.',pdfFail:'Couldn’t create the PDF.',coffee:'Buy me a coffee',
   info:'Help',helpTitle:'How to use Packed',close:'Got it',helpLinks:'Tap any step to go straight there.',
   help:[['Inventory','Add to inventory things you usually take.'],
     ['New trip','Trips → “+ New trip”: where and when.'],
@@ -1015,6 +1023,7 @@ function viewTrip(){
         <div class="tr-actions"><div class="tr-top">${ui.delTrip?`<div class="tr-confirm" role="group" aria-label="${esc(T.delTripQ(t.name))}"><span>${T.delTripAsk}</span><button class="btn small" data-act="del-trip-no">${T.no}</button><button class="btn small danger" data-act="del-trip-yes">${T.del}</button></div>`:ui.editTrip?'':`<div class="tr-menu">
           <button class="btn ghost menubtn" data-act="trip-menu" aria-haspopup="menu" aria-expanded="false" aria-label="${esc(T.menu)}" title="${esc(T.menu)}"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
           <div class="menu-pop" role="menu" hidden>
+            <button role="menuitem" data-act="share-open"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.8l7.6-4.4M8.2 13.2l7.6 4.4"/></svg>${esc(T.share)}</button>
             <button role="menuitem" data-act="pdf" ${p.total?'':'disabled'}><svg width="17" height="17" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4.5 6.8 8 10.3l3.5-3.5M2.5 13.5h11"/></svg>${esc(T.pdfBtn)}</button>
           </div></div>`}</div></div></div>
       ${ui.tripMsg?`<p class="note" style="text-align:right">${esc(T[ui.tripMsg])}</p>`:''}
@@ -1025,7 +1034,7 @@ function viewTrip(){
       <button class="packbtn${p.total&&p.done===p.total?' done':''}" data-act="mode" data-v="pack" aria-pressed="${ui.mode==='pack'}"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7l2 2 3.5-3.5M4 15l2 2 3.5-3.5M13 7.5h7M13 15.5h7"/></svg>${T.packing}<span class="seg-badge">${p.total&&p.done===p.total?'✓ ':''}${p.done}/${p.total}</span></button>
     </div></div>`;
   const body=ui.mode==='pack'?viewPack(t):viewDays(t,days),[top,rest]=body.split('<!--split-->');
-  return head+`<div class="modebox">${top}</div>${rest!==undefined?`<div class="modebox2">${rest}</div>`:''}`;
+  return (ui.share?shareModal(t):'')+head+`<div class="modebox">${top}</div>${rest!==undefined?`<div class="modebox2">${rest}</div>`:''}`;
 }
 
 function viewDays(t,days){
@@ -1281,6 +1290,32 @@ async function saveBlob(fname,blob){
   try{if((INSTALLED||navigator.standalone===true)&&/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)&&navigator.canShare){const f=new File([blob],fname,{type:blob.type});if(navigator.canShare({files:[f]})){await navigator.share({files:[f],title:fname});return true}}}
   catch(e){if(e&&e.name==='AbortError')return false}
   const u=URL.createObjectURL(blob);const el=document.createElement('a');el.href=u;el.download=fname;document.body.appendChild(el);el.click();el.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);return true}
+/* ---------- share the packing list ---------- */
+const APP_URL='https://i-vertalyot.github.io/packed/';
+function shareText(t){const a=aggregate(t),p=pieces(t,a),groups={};
+  a.forEach(x=>{const c=x.it.cat||OTHER();(groups[c]=groups[c]||[]).push(x)});
+  const cats=[...state.cats.filter(c=>groups[c]),...Object.keys(groups).filter(c=>!state.cats.includes(c))];
+  const lines=[`🧳 ${t.name}`,`${dm(t.start)} – ${dm(t.end)} · ${T.pdfPacked(p.done,p.total)}`,''];
+  cats.forEach(c=>{lines.push(c.toUpperCase());groups[c].forEach(x=>lines.push(`${isDone(t,x)?'✅':'⬜'} ${x.it.name}${x.qty>1?' ×'+x.qty:''}`));lines.push('')});
+  lines.push(`${T.shareMade}: ${APP_URL}`);return lines.join('\n')}
+function shareModal(t){const txt=shareText(t),e=encodeURIComponent,sys=!!navigator.share;
+  const ic=d=>`<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+  return `<div class="modal" id="shareModal" role="dialog" aria-modal="true" aria-labelledby="shareTitle"><div class="modal-card">
+    <div class="row modal-head"><h2 id="shareTitle">${esc(T.shareTitle)}</h2><span class="spacer"></span><button type="button" class="x" data-act="share-close" aria-label="${esc(T.cancel)}">×</button></div>
+    <div class="share-grid">
+      ${sys?`<button type="button" class="share-opt wide" data-act="share-sys">${ic('<path d="M12 3v12M7.5 7.5L12 3l4.5 4.5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/>')}<span><b>${esc(T.shareSys)}</b><small>${esc(T.shareSysSub)}</small></span></button>`:''}
+      <a class="share-opt" href="mailto:?subject=${e(t.name)}&body=${e(txt)}">${ic('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5L12 13l8.5-6.5"/>')}<b>${esc(T.email)}</b></a>
+      <a class="share-opt" href="https://wa.me/?text=${e(txt)}" target="_blank" rel="noopener">${ic('<path d="M20 11.5a8 8 0 0 1-11.8 7L4 20l1.5-4A8 8 0 1 1 20 11.5z"/>')}<b>WhatsApp</b></a>
+      <a class="share-opt" href="https://t.me/share/url?url=${e(APP_URL)}&text=${e(txt)}" target="_blank" rel="noopener">${ic('<path d="M21 4L3 11l6 2.5L19 7l-8 8 6.5 5L21 4z"/>')}<b>Telegram</b></a>
+      <button type="button" class="share-opt" data-act="share-copy">${ic('<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/>')}<b>${esc(ui.copied?T.copied:T.copyText)}</b></button>
+    </div></div></div>`}
+async function shareSystem(t){const txt=shareText(t);
+  try{let files=null;try{const b=tripPDF(t);const f=new File([b],(t.name.replace(/[\\/:*?"<>|]+/g,'-')||'trip')+'.pdf',{type:'application/pdf'});if(navigator.canShare&&navigator.canShare({files:[f]}))files=[f]}catch(e){}
+    await navigator.share(files?{title:t.name,text:txt,files}:{title:t.name,text:txt})}catch(e){}}
+async function copyShare(t){const txt=shareText(t);
+  try{await navigator.clipboard.writeText(txt)}catch(e){const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(_){}ta.remove()}
+  ui.copied=true;render();setTimeout(()=>{if(ui.copied){ui.copied=false;if(ui.share)render()}},1800)}
+
 async function downloadTripPDF(){
   const t=trip();if(!t)return;
   let bytes;try{bytes=tripPDF(t)}catch(e){console.error(e);ui.tripMsg='pdfFail';render();return}
@@ -1341,8 +1376,8 @@ document.addEventListener('pointerdown',e=>{if(e.target.closest('#celeb'))endCel
 document.addEventListener('keydown',e=>{if(e.key==='Escape')endCeleb()});
 
 /* edit-trip popup: tap outside or press Escape to close */
-document.addEventListener('click',e=>{if(e.target.id==='editModal'){ui.delTrip=false;ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;render()}});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ui.editId){ui.delTrip=false;ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;render()}});
+document.addEventListener('click',e=>{if(e.target.id==='shareModal'){ui.share=false;render();return}if(e.target.id==='editModal'){ui.delTrip=false;ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;render()}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ui.share){ui.share=false;render();return}if(e.key==='Escape'&&ui.editId){ui.delTrip=false;ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;render()}});
 
 /* trip options menu (Download PDF, Delete trip) */
 function toggleTripMenu(open){const pop=document.querySelector('.menu-pop'),btn=document.querySelector('[data-act="trip-menu"]');if(!pop||!btn)return;
@@ -1380,9 +1415,13 @@ document.addEventListener('click',e=>{
     case 'tab':ui.tab=b.dataset.v;ui.delItem=null;break;
     case 'new-trip':ui.newTrip=!ui.newTrip;ui.tripErr='';break;
     case 'pdf':downloadTripPDF();return;
+    case 'share-open':ui.share=true;ui.copied=false;render();return;
+    case 'share-close':ui.share=false;render();return;
+    case 'share-sys':{const t2=trip();if(t2)shareSystem(t2);return}
+    case 'share-copy':{const t2=trip();if(t2)copyShare(t2);return}
     case 'edit-trip-open':ui.delTrip=false;ui.editId=id;ui.editVals=null;ui.editErr='';ui.editWarn=0;render();{const n=document.getElementById('et-name');if(n&&!matchMedia('(pointer:coarse)').matches)n.focus({preventScroll:true})}return;
     case 'open-trip':ui.editFromHome=false;ui.wholeKeep=false;ui.tripMsg='';ui.editTrip=false;ui.editVals=null;ui.editWarn=0;ui.tripId=id;ui.mode='days';ui.day='all';ui.delTrip=false;break;
-    case 'back':ui.editFromHome=false;ui.editTrip=false;ui.editVals=null;ui.editWarn=0;ui.tripId=null;ui.delTrip=false;break;
+    case 'back':ui.share=false;ui.editFromHome=false;ui.editTrip=false;ui.editVals=null;ui.editWarn=0;ui.tripId=null;ui.delTrip=false;break;
     case 'mode':{/* switch without shaking: the new content starts right under the switch, no jump or shrink animation */
       if(ui.mode===b.dataset.v)return;ui.mode=b.dataset.v;const y0=window.scrollY;render();
       const box=document.querySelector('.modebox'),mb=document.querySelector('.modebar'),bar=document.querySelector('.bar');
