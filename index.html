@@ -646,7 +646,10 @@ html{overflow-x:clip}
 :root:not([data-app-theme="dark"]) .modebar .seg button[aria-pressed="false"]{color:#3E4A58}
 /* soft glow along the mode frame, in the mode's own colour (blue = Collecting, green = Packing) */
 :root{--mglow:color-mix(in srgb,var(--mcol,transparent) 55%,transparent);--mglow2:color-mix(in srgb,var(--mcol,transparent) 22%,transparent)}
-.modebox,.modebox2{box-shadow:0 0 10px var(--mglow),0 0 26px var(--mglow2),inset 0 0 10px var(--mglow2)}
+.modebox2{box-shadow:0 0 10px var(--mglow),0 0 26px var(--mglow2),inset 0 0 10px var(--mglow2)}
+/* the big frame has an open top (the cap draws it), so its glow follows only the drawn line, not a box */
+.modebox{position:relative;isolation:isolate}
+.modebox::after{content:"";position:absolute;inset:-1px;border:1px solid var(--mcol,transparent);border-top-color:transparent;border-radius:16px;pointer-events:none;z-index:-1;filter:drop-shadow(0 0 4px var(--mglow)) drop-shadow(0 0 10px var(--mglow2))}
 .modebar .seg::after{filter:drop-shadow(0 0 4px var(--mglow)) drop-shadow(0 0 10px var(--mglow2))}
 .modebar .seg button[aria-pressed="true"]::after,.modebox2::before{box-shadow:0 0 6px var(--mglow),0 0 12px var(--mglow2)}
 /* glow around the Collecting / Packing buttons, each in its own colour */
