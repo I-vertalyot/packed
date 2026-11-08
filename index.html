@@ -1048,6 +1048,7 @@ function viewTrip(){
           <div class="menu-pop" role="menu" hidden>
             <button role="menuitem" data-act="share-open"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.8l7.6-4.4M8.2 13.2l7.6 4.4"/></svg>${esc(T.share)}</button>
             <button role="menuitem" data-act="pdf" ${p.total?'':'disabled'}><svg width="17" height="17" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4.5 6.8 8 10.3l3.5-3.5M2.5 13.5h11"/></svg>${esc(T.pdfBtn)}</button>
+            <button role="menuitem" class="danger" data-act="del-trip"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>${esc(T.delTrip)}</button>
           </div></div>`}</div></div></div>
       ${ui.tripMsg?`<p class="note" style="text-align:right">${esc(T[ui.tripMsg])}</p>`:''}
       ${ui.editTrip?editForm(t):`<h1>${esc(t.name)}</h1>`}
