@@ -360,7 +360,9 @@ main .modebar{padding-bottom:0;margin-bottom:0}
 .modebox{border:3px solid var(--mcol,var(--line));border-top-color:transparent;border-radius:16px;padding:14px 10px 14px;margin-top:-23px}
 .modebox>*:first-child{margin-top:0}
 /* the item picker sits in its own frame, a small gap below */
-.modebox2{border:3px solid var(--mcol,var(--line));border-radius:16px;padding:14px 10px;margin-top:-8px}
+.modebox2{position:relative;border:3px solid var(--mcol,var(--line));border-radius:16px;padding:14px 10px;margin-top:-8px}
+/* short connector joining the two frames, like the one under the mode button */
+.modebox2::before{content:"";position:absolute;left:50%;margin-left:-2px;bottom:100%;width:4px;height:18px;background:var(--mcol,var(--line))}
 .modebox2>*:first-child{margin-top:0}
 .modebox2>*:last-child{margin-bottom:0}
 .modebox>*:last-child{margin-bottom:0}
