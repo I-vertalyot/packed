@@ -649,6 +649,9 @@ html{overflow-x:clip}
 .modebox,.modebox2{box-shadow:0 0 10px var(--mglow),0 0 26px var(--mglow2),inset 0 0 10px var(--mglow2)}
 .modebar .seg::after{filter:drop-shadow(0 0 4px var(--mglow)) drop-shadow(0 0 10px var(--mglow2))}
 .modebar .seg button[aria-pressed="true"]::after,.modebox2::before{box-shadow:0 0 6px var(--mglow),0 0 12px var(--mglow2)}
+/* glow around the Collecting / Packing buttons, each in its own colour */
+.modebar .seg button[aria-pressed="true"]{box-shadow:0 0 12px color-mix(in srgb,var(--mc) 60%,transparent),0 0 28px color-mix(in srgb,var(--mc) 28%,transparent)}
+.modebar .seg button[aria-pressed="false"]{box-shadow:0 0 8px color-mix(in srgb,var(--mc) 22%,transparent),inset 0 0 8px color-mix(in srgb,var(--mc) 12%,transparent)}
 /* one look for every button: rounded squares */
 :root{--rbtn:10px}
 .btn,.btn.small,.btn.pdfbtn.small,.btn.ghost.foldall,.seg button,.savebtn,.x,.menubtn,.trip-edit,.share-opt,.cp-opt,.tr-confirm,.tut-nav .btn,.tut-skip,.linkbtn{border-radius:var(--rbtn)}
