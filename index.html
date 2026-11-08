@@ -356,8 +356,10 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 main .modebar{padding-bottom:0;margin-bottom:0}
 .modebox{border:3px solid var(--mcol,var(--line));border-top-color:transparent;border-radius:16px;padding:14px 10px 14px;margin-top:-23px}
 .modebox>*:first-child{margin-top:0}
-/* line across the frame between the collected list and the picker */
-.mode-split{height:3px;background:var(--mcol,var(--line));margin:14px -10px}
+/* the item picker sits in its own frame, a small gap below */
+.modebox2{border:3px solid var(--mcol,var(--line));border-radius:16px;padding:14px 10px;margin-top:-8px}
+.modebox2>*:first-child{margin-top:0}
+.modebox2>*:last-child{margin-bottom:0}
 .modebox>*:last-child{margin-bottom:0}
 .modebar .seg button{position:relative}
 .modebar .seg button[aria-pressed="true"]::after{content:"";position:absolute;left:50%;top:100%;width:4px;margin-left:-2px;height:17px;background:var(--mc);border-radius:2px 2px 0 0}
@@ -964,7 +966,8 @@ function viewTrip(){
       <button data-act="mode" data-v="days" aria-pressed="${ui.mode==='days'}"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>${T.byDay}</button>
       <button class="packbtn${p.total&&p.done===p.total?' done':''}" data-act="mode" data-v="pack" aria-pressed="${ui.mode==='pack'}"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7l2 2 3.5-3.5M4 15l2 2 3.5-3.5M13 7.5h7M13 15.5h7"/></svg>${T.packing}<span class="seg-badge">${p.total&&p.done===p.total?'✓ ':''}${p.done}/${p.total}</span></button>
     </div></div>`;
-  return head+`<div class="modebox">${ui.mode==='pack'?viewPack(t):viewDays(t,days)}</div>`;
+  const body=ui.mode==='pack'?viewPack(t):viewDays(t,days),[top,rest]=body.split('<!--split-->');
+  return head+`<div class="modebox">${top}</div>${rest!==undefined?`<div class="modebox2">${rest}</div>`:''}`;
 }
 
 function viewDays(t,days){
@@ -993,7 +996,7 @@ function viewDays(t,days){
       l.slice().sort((a,b)=>cmp(a.name,b.name)).map(it=>`<button class="chip ${picks[it.id]?'on':''}" style="--cc:var(--c-${catColor(it.cat||OTHER())})" data-act="toggle-pick" data-id="${it.id}" data-name="${esc(it.name.toLowerCase())}">${esc(it.name)}</button>`).join('')}</div></div>`).join('');
   return `${(()=>{const isAll=k==='all',can=grouped.length>WHOLE_FOLD_MIN,fold=can&&!(isAll?state.wholeOpen:state.dayOpen);
       return `<section class="panel wholepanel${fold?' folded':''}">${can?`<h2 class="wholehead"><button class="fold" type="button" data-act="fold-whole" data-k="${isAll?'all':'day'}" data-folded="${fold?1:''}" aria-expanded="${!fold}"><span class="fold-l">${title}</span><span class="fold-n">${esc(T.things(grouped.reduce((s,x)=>s+(+x.q||1),0)))}</span>${CHEV}</button></h2>`:`<div class="row"><h2>${title}</h2></div>`}<div class="wholebody">${list}${actions}</div>${can?`<button class="showmore" type="button" data-act="fold-whole" data-k="${isAll?'all':'day'}" data-folded="${fold?1:''}" aria-expanded="${!fold}">${fold?T.showMore:T.showLess}${CHEV}</button>`:''}</section>`})()}
-    <div class="mode-split" aria-hidden="true"></div>
+    <!--split-->
     <section class="panel">
       <div class="row pickhead"><h2>${T.addFromInv}</h2><span class="spacer"></span>
         <input class="inp" id="search" type="search" placeholder="${T.search}" style="max-width:200px" autocomplete="off"></div>
