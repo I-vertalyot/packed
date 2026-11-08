@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Packed</title>
 <meta name="description" content="Travel packing list: an inventory of your things and a day-by-day plan for every trip.">
-<meta name="theme-color" content="#16202B">
+<meta name="theme-color" content="#26271A">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -14,21 +14,21 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: airport-wayfinding app — dark sign bar on top, yellow "gate" chips for days, single column max 720px */
 :root{
-  --bg:#F2F4F6; --surface:#FFFFFF; --ink:#16202B; --muted:#5B6878; --line:#D8DEE5; --chip:#E7EBF0;
-  --bar:#16202B; --bar-fg:#F4F6F8; --bar-muted:#9AA7B5; --bar-line:#33404D;
-  --sign:#FFC62B; --sign-ink:#16202B; --ok:#1C8556; --danger:#C2412D; --gold:#FFC62B;
-  --c-blue:#2F6FD6; --c-green:#2E9550; --c-orange:#E07B1F; --c-purple:#8356D1; --c-red:#D4483A; --c-teal:#179C9C; --c-pink:#D2508E; --c-yellow:#FFC62B; --c-gray:#7D8896;
+  --bg:#F2F4F6; --surface:#FFFFFF; --ink:#3B2511; --muted:#5B6878; --line:#D8DEE5; --chip:#E7EBF0;
+  --bar:#3B2511; --bar-fg:#F4F6F8; --bar-muted:#9AA7B5; --bar-line:#33404D;
+  --sign:#E2802E; --sign-ink:#3B2511; --ok:#1C8556; --danger:#C2412D; --gold:#E2802E;
+  --c-blue:#2F6FD6; --c-green:#2E9550; --c-orange:#E07B1F; --c-purple:#8356D1; --c-red:#D4483A; --c-teal:#179C9C; --c-pink:#D2508E; --c-yellow:#E2802E; --c-gray:#7D8896;
   --f-display:"Archivo","Arial Narrow",Arial,sans-serif;
   --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
   color-scheme:light;
 }
 :root[data-app-theme="dark"]{
-  --bg:#0E1217; --surface:#171D24; --ink:#E8EDF2; --muted:#95A2B1; --line:#29323C; --chip:#212932;
+  --bg:#1A1A10; --surface:#171D24; --ink:#E8EDF2; --muted:#95A2B1; --line:#29323C; --chip:#212932;
   --bar:#1C242D; --bar-fg:#F4F6F8; --bar-muted:#8D9AA8; --bar-line:#36414D; --ok:#3DC48B; --danger:#F07560;
   --c-blue:#5B97F5; --c-green:#4CC077; --c-orange:#F59A45; --c-purple:#A783F0; --c-red:#F06F62; --c-teal:#3CC4C4; --c-pink:#EE7AB0; --c-gray:#9AA5B2; color-scheme:dark}
 
@@ -102,7 +102,8 @@ main#main{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
 .cat>h3{min-height:44px}
 .colorbtn{position:relative}
 .colorbtn::after{content:"";position:absolute;inset:-9px}
-.credit .credit-box .ig{padding-block:10px;margin-block:-10px}
+.credit .credit-box .ig{position:relative;padding-bottom:1px}
+.credit .credit-box .ig::after{content:"";position:absolute;left:0;right:0;top:-10px;bottom:-10px}
 .tut-dots{gap:4px}
 .tut-dots button{box-sizing:content-box;padding:10px 4px;background-clip:content-box}
 .undo-toast[hidden]{display:none}
@@ -200,11 +201,11 @@ button.ig{appearance:none;-webkit-appearance:none;background:none;border:0;borde
 .tut-skip:hover{color:var(--ink)}
 .tut-body{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;min-height:290px;animation:tin .35s cubic-bezier(.2,.8,.3,1) both}
 .tut-art{width:136px;height:136px;border-radius:34px;display:grid;place-items:center;margin:4px 0 8px;background:var(--tc);color:#fff;box-shadow:0 12px 28px color-mix(in srgb,var(--tc) 45%,transparent);animation:tpop .45s .05s cubic-bezier(.3,1.5,.5,1) both}
-:root[data-app-theme="dark"] .tut-art:not([style]){color:#0E1217}
+:root[data-app-theme="dark"] .tut-art:not([style]){color:#1A1A10}
 .tut-art.plain{border:2px solid var(--line);box-shadow:0 12px 28px rgba(0,0,0,.14)}
 /* Next takes the step's colour, like the Collecting / Packing buttons */
 .tut .tut-nav .btn.tut-next.tinted{background:var(--tc);border-color:var(--tc);color:#fff}
-:root[data-app-theme="dark"] .tut .tut-nav .btn.tut-next.tinted{color:#0E1217}
+:root[data-app-theme="dark"] .tut .tut-nav .btn.tut-next.tinted{color:#1A1A10}
 .tut .tut-dots button[aria-current]{background:var(--dc,var(--tc))}
 .tut .tut-body h2{color:var(--ink);font-size:32px;letter-spacing:.01em}
 .tut-body h2{margin:0;font-family:var(--f-display);font-stretch:75%;font-weight:800;font-size:32px;line-height:1;text-transform:uppercase;text-wrap:balance}
@@ -229,7 +230,7 @@ button.ig{appearance:none;-webkit-appearance:none;background:none;border:0;borde
 .celeb-bag{color:var(--ink);filter:drop-shadow(0 8px 18px rgba(0,0,0,.25));animation:bagdrop .7s cubic-bezier(.3,1.55,.5,1) both,bagwob .5s .75s ease-in-out}
 .celeb-tick{stroke-dasharray:40;stroke-dashoffset:40;animation:tick .35s .5s ease-out forwards}
 .celeb-title{margin-top:14px;font-family:var(--f-display);font-stretch:75%;font-weight:800;font-size:clamp(44px,14vw,68px);line-height:.95;letter-spacing:.01em;text-transform:uppercase;color:var(--sign);
-  text-shadow:0 4px 0 #16202B,0 0 34px color-mix(in srgb,var(--sign) 65%,transparent);animation:stamp .55s .3s cubic-bezier(.2,1.6,.4,1) both}
+  text-shadow:0 4px 0 #3B2511,0 0 34px color-mix(in srgb,var(--sign) 65%,transparent);animation:stamp .55s .3s cubic-bezier(.2,1.6,.4,1) both}
 .celeb-sub{margin-top:12px;font-size:18px;font-weight:700;color:var(--ink);animation:crise .45s .7s ease-out both}
 .celeb-star{position:absolute;left:50%;top:42%;font-size:var(--s);color:var(--c);line-height:1;pointer-events:none;text-shadow:0 0 10px color-mix(in srgb,var(--c) 60%,transparent);animation:starfly 1.35s var(--d) cubic-bezier(.12,.75,.3,1) both}
 @keyframes cfade{from{opacity:0}to{opacity:1}}
@@ -422,7 +423,7 @@ html{overflow-x:clip}
 .seg button{display:inline-flex;align-items:center;justify-content:center;gap:7px;color:var(--ink);padding:9px 10px;min-width:0;border:2px solid var(--mc);border-radius:10px;background:var(--surface)}
 .seg button:hover{background:color-mix(in srgb,var(--mc) 14%,var(--surface))}
 .seg button[aria-pressed="true"]{background:var(--mc);color:#fff;font-weight:700;box-shadow:0 2px 10px color-mix(in srgb,var(--mc) 40%,transparent)}
-:root[data-app-theme="dark"] .seg button[aria-pressed="true"]{color:#0E1217}
+:root[data-app-theme="dark"] .seg button[aria-pressed="true"]{color:#1A1A10}
 .seg-badge{font-family:var(--f-mono);font-size:12px;font-weight:700;padding:2px 7px;border-radius:999px;background:var(--line);color:var(--muted)}
 .seg button[aria-pressed="true"] .seg-badge{background:rgba(255,255,255,.22);color:inherit}
 :root[data-app-theme="dark"] .seg button[aria-pressed="true"] .seg-badge{background:rgba(0,0,0,.15)}
@@ -454,14 +455,14 @@ html{overflow-x:clip}
 .pflow .pick .nm{font-size:13.5px;font-weight:600;padding:0 5px 0 9px;white-space:nowrap;line-height:1;display:inline-flex;align-items:center}
 .pflow .pick .pq{font-family:var(--f-mono);font-size:12.5px;font-weight:700;padding-right:9px;display:inline-flex;align-items:center;color:var(--muted)}
 .pflow .pick .pm{width:28px;min-height:30px;border:0;padding:0;background:var(--cc);color:#fff;font:700 17px/1 var(--f-body,inherit);display:grid;place-items:center;cursor:pointer}
-.pflow .pick[style*="--c-yellow"] .pm,.pgroup[style*="--c-yellow"] .pm{color:#16202B}
-:root[data-app-theme="dark"] .pflow .pick .pm{color:#0E1217}
+.pflow .pick[style*="--c-yellow"] .pm,.pgroup[style*="--c-yellow"] .pm{color:#3B2511}
+:root[data-app-theme="dark"] .pflow .pick .pm{color:#1A1A10}
 .pflow .pick .pm:hover{filter:brightness(1.08)}
 .pflow .pick .pm:active{filter:brightness(.92)}
 /* the whole pill in the category colour, like a picked chip */
 .pgroup .pflow>.pick{background:var(--cc);border-color:var(--cc);color:#fff}
-.pgroup[style*="--c-yellow"] .pflow>.pick{color:#16202B}
-:root[data-app-theme="dark"] .pgroup .pflow>.pick{color:#0E1217}
+.pgroup[style*="--c-yellow"] .pflow>.pick{color:#3B2511}
+:root[data-app-theme="dark"] .pgroup .pflow>.pick{color:#1A1A10}
 .pflow .pick .pq{color:inherit;opacity:.75}
 .pflow .pick .pm{background:color-mix(in srgb,var(--cc) 82%,#000);color:inherit}
 :root[data-app-theme="dark"] .pflow .pick .pm{background:color-mix(in srgb,var(--cc) 80%,#fff);color:inherit}
@@ -542,8 +543,8 @@ html{overflow-x:clip}
 .chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:14px;display:inline-flex;align-items:center;gap:6px}
 .chip:hover{border-color:var(--muted)}
 .chip.on{background:var(--cc);color:#fff;border-color:var(--cc);font-weight:600}
-.chip.on[style*="--c-yellow"]{color:#16202B}
-:root[data-app-theme="dark"] .chip.on{color:#0E1217}
+.chip.on[style*="--c-yellow"]{color:#3B2511}
+:root[data-app-theme="dark"] .chip.on{color:#1A1A10}
 
 .progress{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 .progress .big{font-family:var(--f-display);font-stretch:75%;font-weight:800;font-size:40px;line-height:1;transition:font-size .2s}
@@ -597,15 +598,15 @@ html{overflow-x:clip}
 .catpick{position:relative;display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);font-size:14px;font-weight:600;cursor:pointer;max-width:170px}
 .catpick:hover,.catpick:focus-within{border-color:var(--muted)}
 .catpick select{appearance:none;-webkit-appearance:none;border:0;background:transparent;color:inherit;font:inherit;padding:0;margin:0;min-width:0;max-width:110px;text-overflow:ellipsis;cursor:pointer;outline:none}
-.catpick select option{color:#16202B;background:#fff}
+.catpick select option{color:#3B2511;background:#fff}
 .catpick .cp-btn{display:inline-flex;align-items:center;gap:7px;height:100%;border:0;padding:0;background:none;color:inherit;font:inherit;font-weight:700;cursor:pointer;max-width:110px}
 .catpick .cp-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #ad-name,#ai-name{flex:1 1 100%}
 /* the category button itself is filled with the chosen category's colour */
 .addrow .catpick{background:var(--cc);border-color:var(--cc);color:#fff}
 .addrow .catpick svg{color:currentColor}
-.addrow .catpick[style*="--c-yellow"]{color:#16202B}
-:root[data-app-theme="dark"] .addrow .catpick{color:#0E1217}
+.addrow .catpick[style*="--c-yellow"]{color:#3B2511}
+:root[data-app-theme="dark"] .addrow .catpick{color:#1A1A10}
 .addrow .catpick:hover,.addrow .catpick:focus-within{border-color:var(--ink)}
 /* category and Add: same size, rounded squares */
 .addrow .catpick,.addrow>button[type=submit]{flex:1 1 0;min-width:0;max-width:none;height:44px;border-radius:10px;box-sizing:border-box}
@@ -618,8 +619,8 @@ html{overflow-x:clip}
 .cp-opt{display:block;width:100%;text-align:left;padding:10px 12px;border-radius:10px;border:1px solid color-mix(in srgb,var(--cc) 50%,transparent);background:color-mix(in srgb,var(--cc) 14%,var(--surface));color:color-mix(in srgb,var(--cc) 75%,var(--ink));font:inherit;font-weight:700;font-size:15px;cursor:pointer}
 .cp-opt:hover,.cp-opt:focus-visible{border-color:var(--cc);outline:none}
 .cp-opt[aria-selected="true"]{background:var(--cc);border-color:var(--cc);color:#fff}
-.cp-opt[aria-selected="true"][style*="--c-yellow"]{color:#16202B}
-:root[data-app-theme="dark"] .cp-opt[aria-selected="true"]{color:#0E1217}
+.cp-opt[aria-selected="true"][style*="--c-yellow"]{color:#3B2511}
+:root[data-app-theme="dark"] .cp-opt[aria-selected="true"]{color:#1A1A10}
 .cp-opt.cp-new{--cc:var(--muted);border-style:dashed;background:none;color:var(--ink);font-weight:600}
 .catpick svg{flex:none;color:var(--muted)}
 .cat .inv:first-of-type{border-top:0}
@@ -643,7 +644,7 @@ html{overflow-x:clip}
 .help-brand,.modebox .wholehead,.modebox .wholepanel>.row>h2,.modebox2 .pick-title,.addpanel .pick-title{color:var(--sign-text)}
 .credit .ig,.help-credit .ig{color:var(--sign-text)}
 .help-links svg{color:var(--sign-text)}
-:root:not([data-app-theme="dark"]) .modebar .seg button[aria-pressed="false"]{color:#3E4A58}
+:root:not([data-app-theme="dark"]) .modebar .seg button[aria-pressed="false"]{color:#6B5643}
 /* soft glow along the mode frame, in the mode's own colour (blue = Collecting, green = Packing) */
 :root{--mglow:color-mix(in srgb,var(--mcol,transparent) 55%,transparent);--mglow2:color-mix(in srgb,var(--mcol,transparent) 22%,transparent)}
 .modebox2{box-shadow:0 0 10px var(--mglow),0 0 26px var(--mglow2),inset 0 0 10px var(--mglow2)}
@@ -669,6 +670,47 @@ main#main{padding-bottom:24px}
 .credit .credit-box{border-radius:var(--rbtn)}
 .pstep,.step{border-radius:var(--rbtn)}
 .catpick{border-radius:var(--rbtn)}
+
+/* ===== Courtyard Lantern design system ===== */
+:root{--f-display:"Fraunces",Georgia,serif;--f-body:"DM Sans",system-ui,sans-serif;--f-mono:"DM Mono",ui-monospace,monospace;
+  --rbtn:999px;--r-sm:8px;--r-md:14px;--r-lg:24px}
+:root:not([data-app-theme="dark"]){
+  --bg:#DEE0DB;--surface:#EFEDE6;--ink:#3B2511;--muted:#6B5643;--line:#C4BCAD;--chip:#C9D1CF;
+  --bar:#583617;--bar-fg:#F4F2EC;--bar-muted:#DCC6AE;--bar-line:#76573A;
+  --sign:#E2802E;--sign-ink:#2A1708;--gold:#E2802E;--sign-text:#93450F;--ok:#2A382A;--danger:#A3361B;
+  --mode-days:#89C4C5;--on-days:#1F3536;--on-pack:#F4F2EC;
+  --c-blue:#4F7FA3;--c-green:#5D7F4A;--c-orange:#C46F2A;--c-purple:#85678F;--c-red:#A8503A;--c-teal:#4C9294;--c-pink:#B05F7A;--c-yellow:#C99A3A;--c-gray:#857F73;
+  --shadow-card:0 1px 2px rgba(59,37,17,.08),0 8px 24px rgba(59,37,17,.08)}
+:root[data-app-theme="dark"]{
+  --bg:#1A1A10;--surface:#26271A;--ink:#ECE6DA;--muted:#B5AA96;--line:#45463A;--chip:#323424;
+  --bar:#26271A;--bar-fg:#ECE6DA;--bar-muted:#B5AA96;--bar-line:#45463A;
+  --sign:#E2802E;--sign-ink:#2A1708;--gold:#E2802E;--sign-text:#F0A35E;--ok:#4C664A;--danger:#F08A6A;
+  --mode-days:#5FA3A5;--on-days:#0E1D1E;--on-pack:#F4F2EC;
+  --c-blue:#7FA9C6;--c-green:#8DAA77;--c-orange:#E09A5C;--c-purple:#AE92B8;--c-red:#D07E66;--c-teal:#6FB5B6;--c-pink:#D08CA3;--c-yellow:#DDB866;--c-gray:#A39C8E;
+  --shadow-card:none}
+/* modes: Collecting = dusk teal, Packing = ivy */
+:root[data-mode="days"]{--mcol:var(--mode-days);--page:color-mix(in srgb,var(--mode-days) 12%,var(--bg))}
+:root[data-mode="pack"]{--page:color-mix(in srgb,var(--ok) 8%,var(--bg))}
+.seg button[data-v="days"]{--mc:var(--mode-days)}
+.seg button[data-v="days"][aria-pressed="true"],:root[data-app-theme="dark"] .seg button[data-v="days"][aria-pressed="true"]{color:var(--on-days)}
+.seg button[data-v="pack"][aria-pressed="true"],:root[data-app-theme="dark"] .seg button[data-v="pack"][aria-pressed="true"]{color:var(--on-pack)}
+/* type: Fraunces for titles and big numbers, DM Sans to read, DM Mono for small labels */
+h1,.brand,.tut-body h2,.celeb-title,.modal-head h2,.progress .big,.trip .when b{font-family:var(--f-display);font-stretch:normal;text-transform:none;letter-spacing:0;font-weight:600}
+h1{font-size:32px}
+.brand{font-size:26px}
+.tut-body h2{font-size:32px;line-height:1.05}
+h2,.tabs button,.gate .g1,.pg-h,.help-steps li::before{font-family:var(--f-mono);font-stretch:normal;font-weight:500;letter-spacing:.08em}
+h2{font-size:13px}
+.tabs button{font-size:13px}
+.cat h3{font-family:var(--f-body);font-stretch:normal;font-weight:600;font-size:15px;letter-spacing:.06em}
+.trip .when b{font-size:26px}
+/* shape: pill buttons, 14px cards, 8px inputs, soft brown shadows (outlines at night) */
+.trip,.cat,.addpanel,.modal-card,.wholepanel,.progress{border-radius:var(--r-md)}
+.inp,input[type=text],input[type=search],input[type=date],select{border-radius:var(--r-sm)}
+.trip,.progress{box-shadow:var(--shadow-card)}
+/* one lamp: the primary action glows */
+.btn.primary{box-shadow:0 0 0 4px rgba(226,128,46,.14),0 0 22px rgba(226,128,46,.38)}
+.credit .credit-box{border-radius:var(--r-md)}
 </style>
 </head>
 <body>
@@ -676,7 +718,7 @@ main#main{padding-bottom:24px}
 
 <header class="bar">
   <div class="bar-in">
-    <div class="brand"><svg class="brand-icon" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="96" fill="#16202B"/><rect x="96" y="96" width="320" height="320" rx="40" fill="#FFC62B"/><path d="M170 262l62 62 112-132" fill="none" stroke="#16202B" stroke-width="44" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="brandName">Packed</span></div>
+    <div class="brand"><svg class="brand-icon" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="96" fill="#3B2511"/><rect x="96" y="96" width="320" height="320" rx="40" fill="#E2802E"/><path d="M170 262l62 62 112-132" fill="none" stroke="#3B2511" stroke-width="44" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="brandName">Packed</span></div>
     <div class="status" id="status"><b></b><span></span></div>
     <div class="lang" role="group" aria-label="Language">
       <button id="lang-cs" data-act="lang" data-v="cs" aria-pressed="true">CS</button>
@@ -743,7 +785,7 @@ const L={
   less:'Méně',more:'Více',remove:'Odebrat',
   copyPrev:'Zkopírovat z předchozího dne',toAll:'Tento den do všech dnů',clear:'Vyčistit',clearAll:'Vymazat vše',
   addFromInv:'Ťukni na kategorii, vyber věci',search:'Hledat…',invEmptyPick:'Inventář je prázdný. Přidej věci níže nebo na kartě Inventář.',
-  newThing:'Nová věc',newThingPh:'Přidej novou věc do kategorií…',or:'nebo',addOrSearch:'Hledej nebo přidej',toTop:'Nahoru',category:'Kategorie',addBoth:'Přidat do inventáře i dne',
+  newThing:'Nová věc',newThingPh:'Přidej novou věc…',or:'nebo',addOrSearch:'Hledej nebo přidej',toTop:'Nahoru',category:'Kategorie',addBoth:'Přidat do inventáře i dne',
   wholeTrip:'celá cesta',everyDay:'každý den',
   noPicks:'Zatím nemáš vybrané žádné věci. Přepni na „Sbírání“ a poskládej si, co bereš.',
   allPacked:'Všechno sbaleno. Šťastnou cestu!',celebTitle:'Sbaleno!',celebSub:'Šťastnou cestu!',
@@ -794,7 +836,7 @@ const L={
   less:'Less',more:'More',remove:'Remove',
   copyPrev:'Copy from previous day',toAll:'Use this day for all days',clear:'Clear',clearAll:'Clear all',
   addFromInv:'Tap a category, select items',search:'Search…',invEmptyPick:'Your inventory is empty. Add items below or on the Inventory tab.',
-  newThing:'New item',newThingPh:'Add new item to categories…',or:'or',addOrSearch:'Search or add',toTop:'Back to top',category:'Category',addBoth:'Add to inventory and this day',
+  newThing:'New item',newThingPh:'Add new item…',or:'or',addOrSearch:'Search or add',toTop:'Back to top',category:'Category',addBoth:'Add to inventory and this day',
   wholeTrip:'whole trip',everyDay:'every day',
   noPicks:'You haven’t picked anything yet. Switch to “Collecting” and choose what you’re taking.',
   allPacked:'All packed. Have a good trip!',celebTitle:'All packed!',celebSub:'Have a good trip!',
@@ -966,7 +1008,7 @@ const INSTALLED=(()=>{ /* true only inside the Google Play / App Store apps, nev
 const credit=()=>`<span class="by">${esc(T.madeBy)} <button class="ig" type="button" aria-haspopup="dialog" title="@i.vertalyot">Vert Alyot</button></span>${INSTALLED?'':`<span class="sep" aria-hidden="true">·</span><a class="coffee" href="${BMC}" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">☕</span> ${esc(T.coffee)}</a>`}`;
 function applyTheme(){const t=state.theme==='light'?'light':'dark';document.documentElement.setAttribute('data-app-theme',t);
   try{localStorage.setItem('sbaleno-theme',t)}catch(e){}
-  const m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',t==='dark'?'#0E1217':'#16202B');
+  const m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',t==='dark'?'#26271A':'#583617');
   const b=document.getElementById('themeBtn');if(b){const l=t==='dark'?T.toLight:T.toDark;b.setAttribute('aria-label',l);b.title=l}}
 const CHEV='<svg class="chev" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>';
 const isFolded=(v,c)=>!(state.open&&Array.isArray(state.open[v])&&state.open[v].includes(c));
@@ -1283,10 +1325,10 @@ function pdfDoc(){
     at(i){cur=pages[i]},
     width(s,k,size){const f=pf(k);let w=0;for(const ch of String(s))w+=glyph(f,ch)[1][1];return w*size/1000},
     text(s,x,y,o={}){const k=o.font||'R',f=pf(k);let hex='';for(const ch of String(s)){const [cp,g]=glyph(f,ch);f.used.set(g[0],cp);hex+=g[0].toString(16).padStart(4,'0')}
-      cur.push(`BT /F${k} ${num(o.size||10)} Tf ${num(o.cs||0)} Tc ${rgb(o.color||'#16202B')} rg ${num(x)} ${num(H-y)} Td <${hex}> Tj ET`)},
+      cur.push(`BT /F${k} ${num(o.size||10)} Tf ${num(o.cs||0)} Tc ${rgb(o.color||'#3B2511')} rg ${num(x)} ${num(H-y)} Td <${hex}> Tj ET`)},
     rect(x,y,w,h,o={}){cur.push(`q ${num(o.lw||0.8)} w ${o.fill?rgb(o.fill)+' rg ':''}${o.stroke?rgb(o.stroke)+' RG ':''}${num(x)} ${num(H-y-h)} ${num(w)} ${num(h)} re ${o.fill&&o.stroke?'B':o.fill?'f':'S'} Q`)},
     line(x1,y1,x2,y2,o={}){cur.push(`q ${num(o.lw||0.5)} w ${rgb(o.color||'#D8DEE5')} RG ${num(x1)} ${num(H-y1)} m ${num(x2)} ${num(H-y2)} l S Q`)},
-    poly(pts,o={}){cur.push(`q ${num(o.lw||1)} w 1 J 1 j ${rgb(o.color||'#16202B')} RG ${pts.map((p,i)=>num(p[0])+' '+num(H-p[1])+(i?' l':' m')).join(' ')} S Q`)},
+    poly(pts,o={}){cur.push(`q ${num(o.lw||1)} w 1 J 1 j ${rgb(o.color||'#3B2511')} RG ${pts.map((p,i)=>num(p[0])+' '+num(H-p[1])+(i?' l':' m')).join(' ')} S Q`)},
     circle(cx,cy,r,fill){const k=0.5523*r,y=H-cy,P=(a,b)=>num(a)+' '+num(b);
       cur.push(`q ${rgb(fill)} rg ${P(cx+r,y)} m ${P(cx+r,y+k)} ${P(cx+k,y+r)} ${P(cx,y+r)} c ${P(cx-k,y+r)} ${P(cx-r,y+k)} ${P(cx-r,y)} c ${P(cx-r,y-k)} ${P(cx-k,y-r)} ${P(cx,y-r)} c ${P(cx+k,y-r)} ${P(cx+r,y-k)} ${P(cx+r,y)} c f Q`)},
     save(title){
@@ -1336,7 +1378,7 @@ function itemDays(t,x){const n=tripDays(t).length;
 const cap1=s=>s.charAt(0).toUpperCase()+s.slice(1);
 function tripPDF(t){
   const d=pdfDoc(),M=48,W=d.W,H=d.H,CW=W-2*M,BOT=H-60;
-  const INK='#16202B',MUT='#5B6878',LINE='#D8DEE5',SOFT='#E7EBF0',SIGN='#FFC62B',OK='#1C8556';
+  const INK='#3B2511',MUT='#5B6878',LINE='#D8DEE5',SOFT='#E7EBF0',SIGN='#E2802E',OK='#1C8556';
   const days=tripDays(t),n=days.length,a=aggregate(t),pc=pieces(t,a),done=pc.done;
   const wrap=(s,k,size,maxW)=>{const out=[];let line='';String(s).split(/\s+/).forEach(w=>{const tr=line?line+' '+w:w;if(!line||d.width(tr,k,size)<=maxW)line=tr;else{out.push(line);line=w}});if(line)out.push(line);return out};
   const fit=(s,k,size,maxW)=>{s=String(s);if(d.width(s,k,size)<=maxW)return s;while(s.length>1&&d.width(s+'…',k,size)>maxW)s=s.slice(0,-1);return s+'…'};
@@ -1432,7 +1474,7 @@ function celebrate(splash){
   const stars=(n,delay,dist)=>Array.from({length:n},(_,i)=>{const a=(i/n)*Math.PI*2+Math.random()*.5,d=dist*(0.55+Math.random()*.6);
     return `<i class="celeb-star" style="--dx:${Math.round(Math.cos(a)*d)}px;--dy:${Math.round(Math.sin(a)*d)}px;--r:${Math.round(Math.random()*540-270)}deg;--s:${Math.round(14+Math.random()*20)}px;--c:${cols[i%cols.length]};--d:${(delay+Math.random()*.18).toFixed(2)}s">${Math.random()<.7?'★':'✦'}</i>`}).join('');
   el.innerHTML=`<div class="celeb-card">${splash?'':stars(26,.2,230)+stars(18,.85,170)}
-    <svg class="celeb-bag" width="92" height="92" viewBox="0 0 64 64" aria-hidden="true"><path d="M24 14v-3a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v3" fill="none" stroke="${splash?'var(--sign)':'currentColor'}" stroke-width="4" stroke-linecap="round"/><rect x="8" y="14" width="48" height="40" rx="8" fill="${splash?'var(--sign)':'var(--ok)'}"/>${splash?'':'<path d="M20 14v40M44 14v40" stroke="rgba(0,0,0,.18)" stroke-width="3"/>'}<path class="celeb-tick" d="M22 34l7 7 14-15" fill="none" stroke="${splash?'#16202B':'#fff'}" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <svg class="celeb-bag" width="92" height="92" viewBox="0 0 64 64" aria-hidden="true"><path d="M24 14v-3a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v3" fill="none" stroke="${splash?'var(--sign)':'currentColor'}" stroke-width="4" stroke-linecap="round"/><rect x="8" y="14" width="48" height="40" rx="8" fill="${splash?'var(--sign)':'var(--ok)'}"/>${splash?'':'<path d="M20 14v40M44 14v40" stroke="rgba(0,0,0,.18)" stroke-width="3"/>'}<path class="celeb-tick" d="M22 34l7 7 14-15" fill="none" stroke="${splash?'#3B2511':'#fff'}" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     <div class="celeb-title">${splash?'Packed':esc(T.celebTitle)}</div>${splash?'':`<div class="celeb-sub">${esc(T.celebSub)}</div>`}</div>`;
   el.classList.toggle('splash',!!splash);el.classList.remove('out');el.hidden=false;
   celebTimer=setTimeout(endCeleb,splash?2000:3200)}
@@ -1442,7 +1484,7 @@ function endCeleb(){const el=document.getElementById('celeb');if(!el||el.hidden)
 /* first-run tutorial: four short steps, can be skipped, replay from the help */
 const TUT_ART=[
   /* the app logo */
-  {c:'var(--sign)',ink:'#16202B',vb:'0 0 24 24',svg:'<path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'},
+  {c:'var(--sign)',ink:'#3B2511',vb:'0 0 24 24',svg:'<path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>'},
   /* inventory: items in coloured categories */
   {c:'var(--surface)',ink:'var(--ink)',plain:1,vb:'0 0 64 64',svg:'<circle cx="14" cy="18" r="5" fill="var(--c-blue)"/><circle cx="14" cy="32" r="5" fill="var(--c-purple)"/><circle cx="14" cy="46" r="5" fill="var(--c-orange)"/><path d="M26 18h26M26 32h26M26 46h18" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>'},
   /* the same icons as the Collecting and Packing buttons */
