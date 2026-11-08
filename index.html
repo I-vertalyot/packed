@@ -661,6 +661,10 @@ html{overflow-x:clip}
 .lang,.tut-lang{border-radius:var(--rbtn)}
 .themebtn,.infobtn{border-radius:9px}
 .totop{border-radius:14px}
+/* credit footer sits at the very end of the page, not floating over it */
+.credit{position:static;z-index:auto;pointer-events:auto;padding-top:8px}
+main#main{padding-bottom:24px}
+.totop,.undo-toast{bottom:calc(20px + env(safe-area-inset-bottom,0px))}
 .credit .credit-box a.coffee{border-radius:var(--rbtn)}
 .pstep,.step{border-radius:var(--rbtn)}
 .catpick{border-radius:var(--rbtn)}
