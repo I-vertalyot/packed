@@ -888,7 +888,7 @@ const foldAll=(v,cats)=>{if(!cats.length)return '';const all=cats.every(c=>isFol
 const allCats=()=>{const l=[...new Set(catOrder().concat(state.cats))];if(!l.length)l.push(OTHER());return l};
 const catOptions=sel=>allCats().map(c=>`<option value="${esc(c)}"${c===sel?' selected':''}>${esc(c)}</option>`).join('')+`<option value="__new">${esc(T.newCatOpt)}</option>`;
 const catPick=pre=>{const cur=allCats().includes(ui.lastCat)?ui.lastCat:allCats()[0];
-  return `<label class="catpick" style="--cc:var(--c-${catColor(cur)})"><i class="dot" aria-hidden="true"></i><select id="${pre}-cat" name="cat" aria-label="${T.category}">${catOptions(cur)}</select><svg width="12" height="12" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg></label>`};
+  return `<label class="catpick" style="--cc:var(--c-${catColor(cur)})"><select id="${pre}-cat" name="cat" aria-label="${T.category}">${catOptions(cur)}</select><svg width="12" height="12" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg></label>`};
 function setBarH(){const b=document.querySelector('.bar');if(b)document.documentElement.style.setProperty('--barh',b.offsetHeight+'px');
   const m=document.querySelector('.modebar');if(m)document.documentElement.style.setProperty('--modeh',m.offsetHeight+'px');updateStuck();updateCap()}
 addEventListener('resize',setBarH);
@@ -1055,13 +1055,13 @@ function viewDays(t,days){
   let rowNo=0;
   const list=grouped.length?`<div class="picked">${byCat(chosen).map(([c,l])=>{const rows=l.slice().sort((a,b)=>cmp(a.it.name,b.it.name)).map(x=>{const extra=rowNo++>=WHOLE_FOLD_MIN;return pickRow(x).replace('<div class="pick">',`<div class="pick${extra?' extra':''}">`)});
       const allExtra=rows.every(r=>r.startsWith('<div class="pick extra">'));
-      return `<div class="pgroup${allExtra?' extra':''}" style="--cc:var(--c-${catColor(c)})"><h4 class="pg-h" style="--cc:var(--c-${catColor(c)})">${dot(c)}<span>${esc(c)}</span><span class="pg-n">${l.length}</span></h4><div class="pflow">${rows.join('')}</div></div>`}).join('')}</div>`
+      return `<div class="pgroup${allExtra?' extra':''}" style="--cc:var(--c-${catColor(c)})"><h4 class="pg-h" style="--cc:var(--c-${catColor(c)})"><span>${esc(c)}</span><span class="pg-n">${l.length}</span></h4><div class="pflow">${rows.join('')}</div></div>`}).join('')}</div>`
     :`<div class="empty">${esc(k==='all'?T.emptyWhole:T.emptyDay)}</div>`;
   const actions=`<div class="row">
       ${idx>0?`<button class="btn" data-act="copy-prev">${T.copyPrev}</button>`:''}
       ${k!=='all'&&days.length>1?`<button class="btn" data-act="to-all-days">${T.toAll}</button>`:''}
       ${grouped.length?`<button class="btn clearbtn" data-act="clear-day"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>${T.clearAll}</button>`:''}</div>`;
-  const picker=byCat(state.items).map(([c,l])=>`<div class="cat${fold('pick',c)}" data-cat><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pick',c,dot(c)+esc(c),T.nPicked(l.filter(it=>picks[it.id]).length,l.length))}</h3><div class="chips pick-box" style="--cc:var(--c-${catColor(c)})">${
+  const picker=byCat(state.items).map(([c,l])=>`<div class="cat${fold('pick',c)}" data-cat><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pick',c,esc(c),T.nPicked(l.filter(it=>picks[it.id]).length,l.length))}</h3><div class="chips pick-box" style="--cc:var(--c-${catColor(c)})">${
       l.slice().sort((a,b)=>cmp(a.name,b.name)).map(it=>`<button class="chip ${picks[it.id]?'on':''}" style="--cc:var(--c-${catColor(it.cat||OTHER())})" data-act="toggle-pick" data-id="${it.id}" data-name="${esc(it.name.toLowerCase())}">${esc(it.name)}</button>`).join('')}</div></div>`).join('');
   return `${(()=>{const isAll=k==='all',can=grouped.length>WHOLE_FOLD_MIN,fold=can&&!(isAll?state.wholeOpen:state.dayOpen);
       return `<section class="panel wholepanel${fold?' folded':''}">${can?`<h2 class="wholehead"><button class="fold" type="button" data-act="fold-whole" data-k="${isAll?'all':'day'}" data-folded="${fold?1:''}" aria-expanded="${!fold}"><span class="fold-l">${title}</span><span class="fold-n">${esc(T.things(grouped.reduce((s,x)=>s+(+x.q||1),0)))}</span>${CHEV}</button></h2>`:`<div class="row"><h2>${title}</h2></div>`}<div class="wholebody">${list}${actions}</div>${can?`<button class="showmore" type="button" data-act="fold-whole" data-k="${isAll?'all':'day'}" data-folded="${fold?1:''}" aria-expanded="${!fold}">${fold?T.showMore:T.showLess}${CHEV}</button>`:''}</section>`})()}
@@ -1097,7 +1097,7 @@ function viewPack(t){
         <span class="spacer"></span>${done?`<button class="btn ghost" data-act="reset-pack">${T.resetPack}</button>`:''}</div>
       <div class="meter"><i style="width:${pct}%"></i></div>
     </section>
-    <section class="panel"><div class="row" style="justify-content:flex-end">${foldAll('pack',byCat(a).map(g=>g[0]))}</div>${byCat(a).map(([c,l])=>`<div class="cat cardcat${fold('pack',c)}" style="--cc:var(--c-${catColor(c)})"><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pack',c,dot(c)+esc(c),(p=>T.nPacked(p.done,p.total))(pieces(t,l)))}</h3>${l.map(x=>`
+    <section class="panel"><div class="row" style="justify-content:flex-end">${foldAll('pack',byCat(a).map(g=>g[0]))}</div>${byCat(a).map(([c,l])=>`<div class="cat cardcat${fold('pack',c)}" style="--cc:var(--c-${catColor(c)})"><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pack',c,esc(c),(p=>T.nPacked(p.done,p.total))(pieces(t,l)))}</h3>${l.map(x=>`
       ${(()=>{const pn=packedN(t,x),dn=pn>=x.qty,part=pn>0&&!dn;return `<div class="pk ${dn?'done':''}${part?' part':''}"><label class="pk-l"><input type="checkbox" id="pk-${x.it.id}" data-pack="${x.it.id}" ${dn?'checked':''} ${part?'data-partial="1"':''}>
         <span class="nm">${esc(x.it.name)}${daysTxt(x)?`<span class="days">${esc(daysTxt(x))}</span>`:''}</span></label>${x.qty>1?`<span class="pstep" aria-label="${esc(T.piecesPacked)}"><button type="button" data-act="pk-dec" data-id="${x.it.id}" aria-label="${T.less}" ${pn<=0?'disabled':''}>−</button><span class="pn">${pn}/${x.qty}</span><button type="button" data-act="pk-inc" data-id="${x.it.id}" aria-label="${T.more}" ${dn?'disabled':''}>+</button></span>`:`<span class="q">×1</span>`}</div>`})()}`).join('')}</div>`).join('')}
     </section>`;
