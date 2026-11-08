@@ -330,11 +330,15 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 .modal .panel{border:0;padding:0;background:none;box-shadow:none;margin:0}
 /* picker header: heading on its own line, then search + Expand all */
 /* magnifier on the right of the search box (the clear × takes its place while typing) */
-#search{padding-right:40px;background:var(--surface) no-repeat right 12px center/18px 18px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238A97A6' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.5 15.5L21 21'/%3E%3C/svg%3E")}
-#search:not(:placeholder-shown){background-image:none}
+#search,#invsearch{padding-right:40px;background:var(--surface) no-repeat right 12px center/18px 18px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238A97A6' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.5 15.5L21 21'/%3E%3C/svg%3E")}
+#search:not(:placeholder-shown),#invsearch:not(:placeholder-shown){background-image:none}
 .pickhead{flex-wrap:wrap}
 .pickhead h2{flex:1 1 100%}
 .pickhead .spacer{display:none}
+.addpanel .pickhead{width:100%}
+.pickhead #invsearch{flex:1 1 100%;width:100%;min-width:0;max-width:none!important}
+.addpanel{display:flex;flex-direction:column;gap:14px}
+.inv[hidden],.cat[hidden]{display:none!important}
 .pickhead #search{order:2;flex:1 1 0;width:auto;max-width:none!important;min-width:0}
 .pickhead>*:not(h2):not(#search):not(.spacer){order:3;flex:none}
 .trip-w{position:relative}
@@ -433,7 +437,7 @@ html{overflow-x:clip}
 .btn.ghost.foldall:hover{border-color:var(--ink)}
 .wholehead{margin:0;display:flex}
 /* the two Collecting section titles in the app's yellow */
-.modebox .wholehead,.modebox .wholepanel>.row>h2,.modebox2 .pick-title{color:var(--sign)}
+.modebox .wholehead,.modebox .wholepanel>.row>h2,.modebox2 .pick-title,.addpanel .pick-title{color:var(--sign)}
 .wholehead .fold{font:inherit;text-transform:inherit;letter-spacing:inherit;color:inherit}
 .wholehead .fold-n{text-transform:none}
 .wholebody{display:flex;flex-direction:column;gap:14px}
@@ -1061,15 +1065,19 @@ function viewInv(){
         <button class="x" data-act="del-item" data-id="${it.id}" aria-label="${T.del} ${esc(it.name)}">×</button></div>
         ${ui.newCatFor===it.id?`<form class="newcat" data-id="${it.id}"><input class="inp" id="nc-${it.id}" name="newcat" required placeholder="${esc(T.newCatPh)}" autocomplete="off" aria-label="${esc(T.newCat)}"><button class="btn primary" type="submit">${T.ok}</button><button class="btn ghost" type="button" data-act="newcat-cancel">${T.cancel}</button></form>`:''}`}).join('')}</div>`).join('');
   return `<div class="row"><h1>${T.inv}</h1><span class="spacer"></span><span class="muted">${T.things(state.items.length)}</span></div>
-    <form class="panel" id="addItem">
-      <div class="addrow">
-        <input class="inp" id="ai-name" name="name" required placeholder="${esc(T.thingPh)}" autocomplete="off" aria-label="${T.thing}">
-        ${catPick('ai')}
-        <button class="btn primary" type="submit">${T.add}</button>
-      </div>
-      <input class="inp newcat-in" id="ai-newcat" name="newcat" placeholder="${esc(T.newCatPh)}" autocomplete="off" aria-label="${esc(T.newCat)}" hidden>
-      <p class="note">${esc(T.invNote)}</p>
-    </form>
+    <section class="panel addpanel">
+      <h2 class="pick-title">${T.addOrSearch}</h2>
+      <div class="row pickhead"><input class="inp" id="invsearch" type="search" placeholder="${T.search}" autocomplete="off" aria-label="${T.search}"></div>
+      <div class="or-sep" aria-hidden="true"><span>${T.or}</span></div>
+      <form id="addItem" class="addform">
+        <div class="addrow" style="width:100%">
+          <input class="inp" id="ai-name" name="name" required placeholder="${esc(T.newThingPh)}" autocomplete="off" aria-label="${T.thing}">
+          ${catPick('ai')}
+          <button class="btn" type="submit">${T.add}</button>
+        </div>
+        <input class="inp newcat-in" id="ai-newcat" name="newcat" placeholder="${esc(T.newCatPh)}" autocomplete="off" aria-label="${esc(T.newCat)}" hidden>
+      </form>
+    </section>
     <section class="panel">${groups?`<div class="row" style="justify-content:flex-end">${foldAll('inv',byCat(state.items).map(g=>g[0]))}</div>`+groups:`<div class="empty">${esc(T.invEmpty)}</div>`}</section>
     <section class="panel">
       <h2>${T.backup}</h2>
@@ -1449,6 +1457,8 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!holo.hidden){close
 
 document.addEventListener('input',e=>{
   if(e.target.id==='et-start'||e.target.id==='et-end'){ui.editWarn=0;return}
+  if(e.target.id==='invsearch'){const q=e.target.value.trim().toLowerCase();
+    main.querySelectorAll('.cat.cardcat').forEach(c=>{let any=false;c.querySelectorAll('.inv').forEach(r=>{const n=(r.querySelector('.rename')||{}).value||'';const m=!q||n.toLowerCase().includes(q);r.hidden=!m;if(m)any=true});c.hidden=!any;c.classList.toggle('force',!!q)});return}
   if(e.target.id!=='search')return;
   const q=e.target.value.trim().toLowerCase();
   main.querySelectorAll('[data-cat]').forEach(c=>{let any=false;c.querySelectorAll('.chip').forEach(ch=>{const m=!q||ch.dataset.name.includes(q);ch.hidden=!m;if(m)any=true});c.hidden=!any;c.classList.toggle('force',!!q)});
