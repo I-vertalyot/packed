@@ -352,22 +352,22 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 /* the chosen mode is joined to its section by a line; the other button steps back */
 :root[data-mode="days"]{--mcol:var(--c-blue)}
 :root[data-mode="pack"]{--mcol:var(--ok)}
-.modebar .seg{padding-bottom:12px;border-bottom:3px solid transparent;border-radius:0;position:relative}
+.modebar .seg{padding-bottom:12px;border-bottom:2px solid transparent;border-radius:0;position:relative}
 /* rounded top of the frame, kept under the switch while scrolling */
-.modebar .seg::after{content:"";position:absolute;left:0;right:0;top:100%;height:19px;border:3px solid var(--mcol,var(--line));border-bottom:0;border-radius:16px 16px 0 0;pointer-events:none}
+.modebar .seg::after{content:"";position:absolute;left:0;right:0;top:100%;height:18px;border:2px solid var(--mcol,var(--line));border-bottom:0;border-radius:16px 16px 0 0;pointer-events:none}
 /* the mode line continues down both sides and round the bottom, framing everything in that mode */
 main .modebar{padding-bottom:0;margin-bottom:0}
-.modebox{border:3px solid var(--mcol,var(--line));border-top-color:transparent;border-radius:16px;padding:14px 10px 14px;margin-top:-23px}
+.modebox{border:2px solid var(--mcol,var(--line));border-top-color:transparent;border-radius:16px;padding:14px 11px 14px;margin-top:-22px}
 .modebox>*:first-child{margin-top:0}
 /* the item picker sits in its own frame, a small gap below */
-.modebox2{position:relative;border:3px solid var(--mcol,var(--line));border-radius:16px;padding:14px 10px;margin-top:-8px}
+.modebox2{position:relative;border:2px solid var(--mcol,var(--line));border-radius:16px;padding:14px 11px;margin-top:-8px}
 /* short connector joining the two frames, like the one under the mode button */
-.modebox2::before{content:"";position:absolute;left:50%;margin-left:-2px;bottom:100%;width:4px;height:18px;background:var(--mcol,var(--line))}
+.modebox2::before{content:"";position:absolute;left:50%;margin-left:-1px;bottom:100%;width:2px;height:16px;background:var(--mcol,var(--line))}
 .modebox2>*:first-child{margin-top:0}
 .modebox2>*:last-child{margin-bottom:0}
 .modebox>*:last-child{margin-bottom:0}
 .modebar .seg button{position:relative}
-.modebar .seg button[aria-pressed="true"]::after{content:"";position:absolute;left:50%;top:100%;width:4px;margin-left:-2px;height:17px;background:var(--mc);border-radius:2px 2px 0 0}
+.modebar .seg button[aria-pressed="true"]::after{content:"";position:absolute;left:50%;top:100%;width:2px;margin-left:-1px;height:16px;background:var(--mc);border-radius:2px 2px 0 0}
 .modebar .seg button[aria-pressed="false"]{font-weight:500;color:var(--muted);border-color:color-mix(in srgb,var(--mc) 35%,transparent);background:transparent}
 .modebar .seg button[aria-pressed="false"]:hover{color:var(--ink);background:color-mix(in srgb,var(--mc) 10%,transparent)}
 .modebar .seg button[aria-pressed="false"] .seg-badge{opacity:.7}
