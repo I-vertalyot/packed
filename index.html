@@ -425,6 +425,13 @@ html{overflow-x:clip}
 :root[data-app-theme="dark"] .pflow .pick .pm{color:#0E1217}
 .pflow .pick .pm:hover{filter:brightness(1.08)}
 .pflow .pick .pm:active{filter:brightness(.92)}
+/* the whole pill in the category colour, like a picked chip */
+.pgroup .pflow>.pick{background:var(--cc);border-color:var(--cc);color:#fff}
+.pgroup[style*="--c-yellow"] .pflow>.pick{color:#16202B}
+:root[data-app-theme="dark"] .pgroup .pflow>.pick{color:#0E1217}
+.pflow .pick .pq{color:inherit;opacity:.75}
+.pflow .pick .pm{background:color-mix(in srgb,var(--cc) 82%,#000);color:inherit}
+:root[data-app-theme="dark"] .pflow .pick .pm{background:color-mix(in srgb,var(--cc) 80%,#fff);color:inherit}
 .pflow .pick .nm .ct{display:none}
 .pflow .pick .step{border:0;border-radius:999px;background:color-mix(in srgb,var(--cc) 12%,transparent)}
 .pflow .pick .step button{width:22px;height:24px;padding:0;font-size:15px}
