@@ -764,6 +764,21 @@ h2{font-size:13px}
 .trip .t-empty{display:block;margin-top:4px;font-size:12.5px;color:var(--muted);font-style:italic}
 /* empty Collected items: one short line instead of a big box */
 .empty.empty-slim{padding:10px 12px;font-size:14px;border-radius:8px}
+
+/* list titles next to the expand/collapse icon */
+.packhead .list-title{margin:0;font-size:17px}
+/* countdown on trip cards */
+.trip .t-count{display:inline-block;margin-top:4px;padding:1px 8px;border-radius:999px;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.04em;color:var(--sign-text);background:color-mix(in srgb,var(--sign) 14%,transparent)}
+.trip .t-count.now{color:var(--sign-ink);background:var(--sign)}
+/* Hide packed switch */
+.hp-sw{display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-size:13.5px;color:var(--muted);min-height:36px;user-select:none}
+.hp-sw input{position:absolute;opacity:0;width:1px;height:1px}
+.hp-track{position:relative;flex:none;width:36px;height:20px;border-radius:999px;background:var(--chip);border:1px solid var(--line);transition:background .15s}
+.hp-track i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--muted);transition:transform .15s,background .15s}
+.hp-sw input:checked+.hp-track{background:var(--ok);border-color:var(--ok)}
+.hp-sw input:checked+.hp-track i{transform:translateX(16px);background:#F4F2EC}
+.hp-sw input:focus-visible+.hp-track{outline:2px solid var(--sign-text);outline-offset:2px}
+.progpanel.stuck .hp-sw{min-height:28px;font-size:12.5px}
 </style>
 </head>
 <body>
@@ -834,7 +849,7 @@ const L={
   back:'← Zpět',menu:'Možnosti',editTrip:'Upravit cestu',delTrip:'Smazat cestu',delTripQ:n=>`Opravdu smazat „${n}“?`,delTripAsk:'Smazat cestu?',no:'Ne',del:'Smazat',
   byDay:'Sbírání',packing:'Balení',view:'Zobrazení',tripDays:'Dny cesty',
   whole:'Celá cesta',wholeTitle:'Sesbírané věci',
-  emptyWhole:'Zatím nic. Vyber věci níže.',pastTrips:'Proběhlé cesty',noItemsYet:'Zatím prázdné',emptyDay:'Vyber věci z inventáře níže. Klikni na kategorii a vyber věci.',
+  emptyWhole:'Zatím nic. Vyber věci níže.',pastTrips:'Proběhlé cesty',noItemsYet:'Zatím prázdné',yourList:'Tvůj seznam',yourCats:'Tvoje kategorie',hidePacked:'Skrýt sbalené',allHidden:'Všechno je sbalené. Vypni „Skrýt sbalené“, ať je vidíš.',dupTrip:'Duplikovat cestu',copySuffix:' (kopie)',cdToday:'dnes',cdTomorrow:'zítra',cdIn:n=>`za ${n} ${n<5?'dny':'dní'}`,cdNow:'probíhá',emptyDay:'Vyber věci z inventáře níže. Klikni na kategorii a vyber věci.',
   less:'Méně',more:'Více',remove:'Odebrat',
   copyPrev:'Zkopírovat z předchozího dne',toAll:'Tento den do všech dnů',clear:'Vyčistit',clearAll:'Vymazat vše',clearQ:'Vymazat všechny sesbírané věci?',clearSub:n=>`Ze seznamu zmizí ${n}. Hned potom to můžeš vrátit zpět.`,
   addFromInv:'Ťukni na kategorii, vyber věci',search:'Hledat…',qaPre:'Přidat',qaTo:'do kategorie',noFound:'Nic nenalezeno.',invEmptyPick:'Inventář je prázdný. Přidej věci níže nebo na kartě Inventář.',
@@ -885,7 +900,7 @@ const L={
   back:'← Back',menu:'Options',editTrip:'Edit trip',delTrip:'Delete trip',delTripQ:n=>`Delete “${n}”?`,delTripAsk:'Delete trip?',no:'No',del:'Delete',
   byDay:'Collecting',packing:'Packing',view:'View',tripDays:'Trip days',
   whole:'Whole trip',wholeTitle:'Collected items',
-  emptyWhole:'Nothing yet. Pick items below.',pastTrips:'Past trips',noItemsYet:'No items yet',emptyDay:'Pick items from the inventory below. Click a category and choose the items.',
+  emptyWhole:'Nothing yet. Pick items below.',pastTrips:'Past trips',noItemsYet:'No items yet',yourList:'Your list',yourCats:'Your categories',hidePacked:'Hide packed',allHidden:'Everything is packed. Turn off “Hide packed” to see it.',dupTrip:'Duplicate trip',copySuffix:' (copy)',cdToday:'today',cdTomorrow:'tomorrow',cdIn:n=>`in ${n} days`,cdNow:'happening now',emptyDay:'Pick items from the inventory below. Click a category and choose the items.',
   less:'Less',more:'More',remove:'Remove',
   copyPrev:'Copy from previous day',toAll:'Use this day for all days',clear:'Clear',clearAll:'Clear all',clearQ:'Clear all collected items?',clearSub:n=>`This removes ${n} from your list. You can undo it right after.`,
   addFromInv:'Tap a category, select items',search:'Search…',qaPre:'Add',qaTo:'to',noFound:'Nothing found.',invEmptyPick:'Your inventory is empty. Add items below or on the Inventory tab.',
@@ -975,7 +990,7 @@ function starter(lg){
 function mergeDays(p){const all={};Object.values(p&&typeof p==='object'?p:{}).forEach(o=>{if(o&&typeof o==='object')Object.entries(o).forEach(([id,q])=>{if(q)all[id]=Math.min(99,(all[id]||0)+(+q||1))})});return {all}}
 function sanitize(d){
   if(!d||typeof d!=='object')return starter();
-  return {v:1,tutorialDone:!!d.tutorialDone,wholeOpen:!!d.wholeOpen,dayOpen:!!d.dayOpen,open:(d.open&&typeof d.open==='object')?JSON.parse(JSON.stringify(d.open)):{},theme:d.theme==='light'?'light':'dark',lang:d.lang==='en'?'en':'cs',catColors:(d.catColors&&typeof d.catColors==='object')?{...d.catColors}:{},cats:Array.isArray(d.cats)?d.cats.slice():[],items:Array.isArray(d.items)?d.items.map(x=>({...x})):[],
+  return {v:1,tutorialDone:!!d.tutorialDone,hidePacked:!!d.hidePacked,wholeOpen:!!d.wholeOpen,dayOpen:!!d.dayOpen,open:(d.open&&typeof d.open==='object')?JSON.parse(JSON.stringify(d.open)):{},theme:d.theme==='light'?'light':'dark',lang:d.lang==='en'?'en':'cs',catColors:(d.catColors&&typeof d.catColors==='object')?{...d.catColors}:{},cats:Array.isArray(d.cats)?d.cats.slice():[],items:Array.isArray(d.items)?d.items.map(x=>({...x})):[],
     trips:Array.isArray(d.trips)?d.trips.map(t=>({...t,picks:mergeDays(t.picks),packed:{...(t.packed||{})}})):[]};
 }
 function loadLocal(){try{const s=localStorage.getItem(KEY);return s?sanitize(JSON.parse(s)):null}catch(e){return null}}
@@ -1176,6 +1191,7 @@ function viewTrips(){
       <span style="min-width:0">
         <span class="t-name">${fresh?`<span class="t-new">${esc(T.newBadge)}</span>`:''}${esc(t.name)}</span>
         <span class="t-meta mono" style="display:block">${dm(t.start)} – ${dm(t.end)} · ${T.days(n)}</span>
+        ${(()=>{if(past)return '';if(t.start<=today)return `<span class="t-count now">${esc(t.start===today?T.cdToday:T.cdNow)}</span>`;const dd=Math.round((parseD(t.start)-parseD(today))/864e5);return `<span class="t-count">${esc(dd===1?T.cdTomorrow:T.cdIn(dd))}</span>`})()}
         ${p.total?`<span class="meter" aria-hidden="true" style="display:block"><i style="width:${pct}%"></i></span>`:`<span class="t-empty">${esc(T.noItemsYet)}</span>`}
       </span>
       ${p.total?`<span class="pct">${p.done}/${p.total}</span>`:'<span class="pct" aria-hidden="true"></span>'}
@@ -1222,6 +1238,7 @@ function viewTrip(){
           <div class="menu-pop" role="menu" hidden>
             <button role="menuitem" data-act="share-open"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.8l7.6-4.4M8.2 13.2l7.6 4.4"/></svg>${esc(T.share)}</button>
             <button role="menuitem" data-act="pdf" ${p.total?'':'disabled'}><svg width="17" height="17" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4.5 6.8 8 10.3l3.5-3.5M2.5 13.5h11"/></svg>${esc(T.pdfBtn)}</button>
+            <button role="menuitem" data-act="dup-trip"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>${esc(T.dupTrip)}</button>
             <button role="menuitem" class="danger" data-act="del-trip"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>${esc(T.delTrip)}</button>
           </div></div>`}</div></div></div>
       ${ui.tripMsg?`<p class="note" style="text-align:right">${esc(T[ui.tripMsg])}</p>`:''}
@@ -1289,12 +1306,12 @@ function viewPack(t){
     if(d.length===n&&n>1)return T.everyDay;
     return d.map(k=>WD(k)).join(', ')};
   if(!a.length)return `<div class="empty">${esc(T.noPicks)}</div>`;
+  const hp=state.hidePacked&&done>0,vis=l=>hp?l.filter(x=>packedN(t,x)<x.qty):l;
   return `<div class="pp-sent" aria-hidden="true"></div><section class="panel progpanel">
-      <div class="progress"><span class="big">${done}<span class="muted">/${total}</span></span><span class="muted">${done===total?T.allPacked:T.packedOf}</span>
-</div>
+      <div class="progress"><span class="big">${done}<span class="muted">/${total}</span></span><span class="muted">${done===total?T.allPacked:T.packedOf}</span><span class="spacer"></span>${done?`<label class="hp-sw"><input type="checkbox" data-hidepacked ${state.hidePacked?'checked':''}><span class="hp-track" aria-hidden="true"><i></i></span><span class="hp-lbl">${esc(T.hidePacked)}</span></label>`:''}</div>
       <div class="meter"><i style="width:${pct}%"></i></div>
     </section>
-    <section class="panel"><div class="row packhead">${done?`<button class="btn clearbtn" data-act="reset-pack"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>${T.resetPack}</button>`:''}<span class="spacer"></span>${foldAll('pack',byCat(a).map(g=>g[0]))}</div>${byCat(a).map(([c,l])=>`<div class="cat cardcat${fold('pack',c)}" style="--cc:var(--c-${catColor(c)})"><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pack',c,esc(c),(p=>T.nPacked(p.done,p.total))(pieces(t,l)))}</h3>${l.map(x=>`
+    <section class="panel"><div class="row packhead">${done?'':`<h2 class="pick-title list-title">${esc(T.yourList)}</h2>`}${done?`<button class="btn clearbtn" data-act="reset-pack"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>${T.resetPack}</button>`:''}<span class="spacer"></span>${foldAll('pack',byCat(a).map(g=>g[0]))}</div>${(hp&&!byCat(a).some(([c,l])=>vis(l).length))?`<div class="empty empty-slim">${esc(T.allHidden)}</div>`:''}${byCat(a).filter(([c,l])=>vis(l).length).map(([c,l])=>`<div class="cat cardcat${fold('pack',c)}" style="--cc:var(--c-${catColor(c)})"><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pack',c,esc(c),(p=>T.nPacked(p.done,p.total))(pieces(t,l)))}</h3>${vis(l).map(x=>`
       ${(()=>{const pn=packedN(t,x),dn=pn>=x.qty,part=pn>0&&!dn;return `<div class="pk ${dn?'done':''}${part?' part':''}"><label class="pk-l"><input type="checkbox" id="pk-${x.it.id}" data-pack="${x.it.id}" ${dn?'checked':''} ${part?'data-partial="1"':''}>
         <span class="nm">${esc(x.it.name)}${daysTxt(x)?`<span class="days">${esc(daysTxt(x))}</span>`:''}</span></label>${x.qty>1?`<span class="pstep" aria-label="${esc(T.piecesPacked)}"><button type="button" data-act="pk-dec" data-id="${x.it.id}" aria-label="${T.less}" ${pn<=0?'disabled':''}>−</button><span class="pn">${pn}/${x.qty}</span><button type="button" data-act="pk-inc" data-id="${x.it.id}" aria-label="${T.more}" ${dn?'disabled':''}>+</button></span>`:`<span class="q">×1</span>`}</div>`})()}`).join('')}</div>`).join('')}
     </section>`;
@@ -1323,7 +1340,7 @@ function viewInv(){
         <input class="inp newcat-in" id="ai-newcat" name="newcat" placeholder="${esc(T.newCatPh)}" autocomplete="off" aria-label="${esc(T.newCat)}" hidden>
       </form>
     </section>
-    <section class="panel">${groups?`<div class="row" style="justify-content:flex-end">${foldAll('inv',byCat(state.items).map(g=>g[0]))}</div>`+groups:`<div class="empty">${esc(T.invEmpty)}</div>`}</section>
+    <section class="panel">${groups?`<div class="row packhead"><h2 class="pick-title list-title">${esc(T.yourCats)}</h2><span class="spacer"></span>${foldAll('inv',byCat(state.items).map(g=>g[0]))}</div>`+groups:`<div class="empty">${esc(T.invEmpty)}</div>`}</section>
     <section class="panel">
       <h2>${T.backup}</h2>
       <p class="note">${esc(T.invXNote)}</p>
@@ -1708,6 +1725,9 @@ document.addEventListener('click',e=>{
     case 'import-no':pendingImport=null;ui.importMsg='';break;
     case 'edit-trip':ui.editFromHome=false;ui.editTrip=true;ui.editVals=null;ui.editErr='';ui.editWarn=0;ui.delTrip=false;break;
     case 'edit-cancel':ui.delTrip=false;ui.editTrip=false;ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;break;
+    case 'dup-trip':{toggleTripMenu(false);const src=trip();if(!src)return;
+      const cp={...JSON.parse(JSON.stringify(src)),id:uid(),name:src.name+T.copySuffix,packed:{},created:Date.now()};
+      state.trips.push(cp);ui.tripId=null;ui.share=false;ui.mode='days';ui.editId=cp.id;ui.editVals=null;save();render();window.scrollTo(0,0);return}
     case 'del-trip':toggleTripMenu(false);ui.delTrip=true;render();requestAnimationFrame(()=>{const c=document.querySelector('#delModal [data-act="del-trip-no"]');if(c)c.focus({preventScroll:true})});return;
     case 'del-trip-no':ui.delTrip=false;break;
     case 'del-trip-yes':{const did=ui.editId||ui.tripId,idx=state.trips.findIndex(x=>x.id===did),gone=state.trips[idx];state.trips=state.trips.filter(x=>x.id!==did);ui.tripId=null;ui.editId=null;ui.editVals=null;ui.delTrip=false;ui.share=false;save();break}
@@ -1776,6 +1796,7 @@ document.addEventListener('change',e=>{
     {const cp=el.closest('.catpick');cp.querySelector('.cp-label').textContent=el.value==='__new'?T.newCatOpt:el.value;cp.querySelectorAll('.cp-opt').forEach(o=>o.setAttribute('aria-selected',o.dataset.v===el.value))}
     if(el.value!=='__new'){ui.lastCat=el.value;el.closest('.catpick').style.setProperty('--cc',`var(--c-${catColor(el.value)})`)}return}
   if(el.id==='importFile'){if(el.files&&el.files[0])readImport(el.files[0]);el.value='';return}
+  if(el.dataset&&'hidepacked' in el.dataset){state.hidePacked=el.checked;save();render();return}
   if(el.dataset&&el.dataset.pack){const t=trip();if(el.checked||el.dataset.partial)t.packed[el.dataset.pack]=true;else delete t.packed[el.dataset.pack];save();const y=window.scrollY;ui.patch=true;render();window.scrollTo(0,y);return}
   if(el.classList.contains('rename')){const it=item(el.dataset.id);const v=el.value.trim();if(it&&v&&v!==it.name){it.name=v;save()}else if(it)el.value=it.name;return}
   if(el.classList.contains('recat')){const it=item(el.dataset.id);const v=el.value.trim()||OTHER();if(it&&v!==it.cat){it.cat=v;addCat(v);save();const y=window.scrollY;render();window.scrollTo(0,y)}return}
