@@ -1031,6 +1031,13 @@ body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;bac
 .modebox::after,.modebox2::before,.modebox2::after{display:none!important}
 .modebar .seg::after,.modebar .seg button[aria-pressed="true"]::after,.modebar .seg button::after{display:none!important}
 
+/* the page button that is not chosen is neutral grey (no colour, no glow) */
+.modebar .seg button[aria-pressed="false"]{background:#E4E2DE!important;color:#5C5852!important;border-color:#C9C5BD!important;box-shadow:0 1px 3px rgba(0,0,0,.10)!important;background-image:none!important;animation:none!important}
+:root[data-app-theme="dark"] .modebar .seg button[aria-pressed="false"]{background:#2B2D30!important;color:#A8A6A1!important;border-color:#45484C!important;box-shadow:0 1px 3px rgba(0,0,0,.35)!important}
+.modebar .seg button[aria-pressed="false"] .seg-badge{background:rgba(0,0,0,.08)!important;color:inherit!important}
+:root[data-app-theme="dark"] .modebar .seg button[aria-pressed="false"] .seg-badge{background:rgba(255,255,255,.08)!important}
+.modebar .seg button[aria-pressed="false"] svg{color:inherit}
+
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
 :root[data-mode="days"]{--page:var(--bg)}
@@ -1732,7 +1739,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.09-2339';
+const APP_BUILD='2026.11.09-2342';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
