@@ -732,6 +732,10 @@ h2{font-size:13px}
 /* bigger section titles: Collected items, Search or add */
 .modebox h2.wholehead,.modebox .wholepanel>.row>h2,.modebox2 h2.pick-title,.addpanel h2.pick-title{font-size:17px;letter-spacing:.07em}
 .modebox h2.wholehead .fold-n{font-size:12px;letter-spacing:.02em}
+/* category picker in the add row: quiet, same look as the category headers below (soft tint, tinted outline, coloured text) */
+.addrow .addfield .catpick,:root[data-app-theme="dark"] .addrow .addfield .catpick,.addrow .addfield .catpick[style*="--c-yellow"]{background:color-mix(in srgb,var(--cc) 10%,var(--surface));border:1.5px solid color-mix(in srgb,var(--cc) 45%,transparent);color:color-mix(in srgb,var(--cc) 80%,var(--ink))}
+.addrow .addfield .catpick:hover,.addrow .addfield .catpick:focus-within{background:color-mix(in srgb,var(--cc) 18%,var(--surface));border-color:color-mix(in srgb,var(--cc) 70%,transparent)}
+.addrow .addfield .catpick .cp-btn{font-weight:600}
 /* confirm popup (Clear all) */
 .confirm-card h2{font-family:var(--f-display);font-stretch:normal;text-transform:none;letter-spacing:0;font-size:24px;line-height:1.15;font-weight:600;color:var(--ink);margin:4px 0 8px}
 .confirm-card p{margin:0 0 18px;font-size:15px;line-height:1.45}
