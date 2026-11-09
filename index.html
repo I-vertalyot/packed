@@ -948,11 +948,37 @@ body{transition:background-color .35s ease}
 :root[data-mode="days"] .credit .credit-box{box-shadow:none}
 
 /* ===== page background: soft gradient + fine film grain (background only, never over the content boxes) ===== */
-body{position:relative;isolation:isolate;background-image:linear-gradient(180deg,transparent 0,transparent 26%,color-mix(in srgb,#000 16%,transparent) 100%),radial-gradient(130% 70% at 85% 0%,color-mix(in srgb,#fff 6%,transparent),transparent 60%);background-attachment:fixed,fixed;background-repeat:no-repeat}
-:root:not([data-app-theme="dark"]) body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,color-mix(in srgb,#3B2511 9%,transparent) 100%),radial-gradient(130% 70% at 85% 0%,color-mix(in srgb,#fff 35%,transparent),transparent 60%)}
+body{position:relative;isolation:isolate;background-image:linear-gradient(180deg,transparent 0,transparent 26%,color-mix(in srgb,#000 16%,transparent) 100%),radial-gradient(130% 70% at 85% 0%,color-mix(in srgb,#fff var(--hl),transparent),transparent 60%);background-attachment:fixed,fixed;background-repeat:no-repeat}
+:root:not([data-app-theme="dark"]) body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,color-mix(in srgb,#3B2511 9%,transparent) 100%),radial-gradient(130% 70% at 85% 0%,color-mix(in srgb,#fff var(--hl),transparent),transparent 60%)}
 body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1.1 -0.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:180px 180px;opacity:.12;mix-blend-mode:overlay}
 :root:not([data-app-theme="dark"]) body::after{opacity:.26;mix-blend-mode:multiply}
 @media (prefers-reduced-transparency:reduce){body::after{display:none}}
+
+:root{--hl:6%}
+:root:not([data-app-theme="dark"]){--hl:35%}
+:root[data-mode="days"]{--hl:7%}
+/* ===== moving multi-colour background ("aurora") + shifting gradient on the main buttons ===== */
+:root{--au1:#E2802E;--au2:#5FA3A5;--au3:#8C1F25;--au-op:.30}
+:root:not([data-app-theme="dark"]){--au-op:.22}
+:root[data-palette="ocean"]{--au1:#0A9396;--au2:#EE9B00;--au3:#94D2BD}
+:root[data-mode="days"]{--au1:#E07A5F;--au2:#EE9B00;--au3:#3A0F14;--au-op:.34}
+:root[data-mode="pack"]{--au1:#0A9396;--au2:#94D2BD;--au3:#E2802E}
+body::before{content:"";position:fixed;left:-25%;top:-25%;width:150%;height:150%;z-index:-2;pointer-events:none;opacity:var(--au-op);
+  background:radial-gradient(38% 32% at 22% 62%,var(--au1),transparent 70%),radial-gradient(34% 30% at 78% 74%,var(--au2),transparent 70%),radial-gradient(40% 34% at 55% 92%,var(--au3),transparent 70%),radial-gradient(30% 26% at 85% 45%,var(--au1),transparent 70%);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,transparent 30%,#000 52%);mask-image:linear-gradient(180deg,transparent 0,transparent 30%,#000 52%);
+  animation:aurora 26s ease-in-out infinite alternate;will-change:transform;transition:opacity .4s}
+@keyframes aurora{0%{transform:translate3d(0,0,0) rotate(0deg) scale(1)}35%{transform:translate3d(6%,-4%,0) rotate(8deg) scale(1.06)}70%{transform:translate3d(-5%,3%,0) rotate(-6deg) scale(1.03)}100%{transform:translate3d(3%,-6%,0) rotate(5deg) scale(1.08)}}
+/* buttons: a slow sweep through shades of the action colour */
+.btn.primary{background-image:linear-gradient(115deg,var(--sign) 0%,color-mix(in srgb,var(--sign) 72%,#fff) 25%,var(--sign) 50%,color-mix(in srgb,var(--sign) 82%,#7a1a00) 75%,var(--sign) 100%);background-size:300% 100%;animation:btnflow 9s ease-in-out infinite alternate}
+.modebar .seg button[aria-pressed="true"]{background-image:linear-gradient(115deg,transparent 0%,rgba(255,255,255,.18) 30%,transparent 55%,rgba(0,0,0,.10) 80%,transparent 100%);background-size:300% 100%;animation:btnflow 11s ease-in-out infinite alternate}
+@keyframes btnflow{from{background-position:0% 50%}to{background-position:100% 50%}}
+@media (prefers-reduced-motion:reduce){body::before,.btn.primary,.modebar .seg button[aria-pressed="true"]{animation:none}}
+
+
+
+/* the sticky switch bar and the strip under the frame's top paint exactly the page background (gradient + grain, aligned to the screen) */
+.modebar::before,.modebar .seg::before{background-color:var(--page,var(--bg));background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.132 -0.012'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),linear-gradient(180deg,transparent 0,transparent 26%,color-mix(in srgb,#000 16%,transparent) 100%),radial-gradient(130% 70% at 85% 0%,color-mix(in srgb,#fff var(--hl),transparent),transparent 60%);background-size:180px 180px,100vw 100vh,100vw 100vh;background-repeat:repeat,no-repeat,no-repeat;background-attachment:fixed,fixed,fixed;background-blend-mode:overlay,normal,normal}
+:root:not([data-app-theme="dark"]) .modebar::before,:root:not([data-app-theme="dark"]) .modebar .seg::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.286 -0.026'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),linear-gradient(180deg,transparent 0,transparent 26%,color-mix(in srgb,#3B2511 9%,transparent) 100%),radial-gradient(130% 70% at 85% 0%,color-mix(in srgb,#fff var(--hl),transparent),transparent 60%);background-blend-mode:multiply,normal,normal}
 
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
@@ -1004,8 +1030,11 @@ body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;bac
 :root[data-mode="days"]{--page:var(--bg)}
 :root[data-mode="days"]{--mcol:var(--on-wine)}
 :root[data-mode="days"]:not([data-app-theme="dark"]) .modebar .seg button[data-v="days"][aria-pressed="true"] .seg-badge{background:transparent}
-body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,rgba(0,0,0,0.16) 100%),radial-gradient(130% 70% at 85% 0%,rgba(255,255,255,0.06),transparent 60%)}
-:root:not([data-app-theme="dark"]) body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,rgba(59,37,17,0.09) 100%),radial-gradient(130% 70% at 85% 0%,rgba(255,255,255,0.35),transparent 60%)}
+body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,rgba(0,0,0,0.16) 100%),radial-gradient(130% 70% at 85% 0%,color-mix(in srgb,#fff var(--hl),transparent),transparent 60%)}
+:root:not([data-app-theme="dark"]) body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,rgba(59,37,17,0.09) 100%),radial-gradient(130% 70% at 85% 0%,color-mix(in srgb,#fff var(--hl),transparent),transparent 60%)}
+.btn.primary{background-image:linear-gradient(115deg,var(--sign) 0%,var(--sign) 25%,var(--sign) 50%,var(--sign) 75%,var(--sign) 100%)}
+.modebar::before,.modebar .seg::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.132 -0.012'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),linear-gradient(180deg,transparent 0,transparent 26%,rgba(0,0,0,0.16) 100%),radial-gradient(130% 70% at 85% 0%,color-mix(in srgb,#fff var(--hl),transparent),transparent 60%)}
+:root:not([data-app-theme="dark"]) .modebar::before,:root:not([data-app-theme="dark"]) .modebar .seg::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.286 -0.026'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),linear-gradient(180deg,transparent 0,transparent 26%,rgba(59,37,17,0.09) 100%),radial-gradient(130% 70% at 85% 0%,color-mix(in srgb,#fff var(--hl),transparent),transparent 60%)}
 }
 </style>
 </head>
@@ -1640,7 +1669,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.09-2129';
+const APP_BUILD='2026.11.09-2134';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
