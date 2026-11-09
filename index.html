@@ -395,7 +395,7 @@ h2{font-size:15px;font-weight:700;letter-spacing:.07em;color:var(--muted)}
 .modebar .seg{padding-bottom:12px;border-bottom:1px solid transparent;border-radius:0;position:relative}
 .modebar.nocap .seg::before,.modebar.nocap .seg::after,.modebar.nocap .seg button::after{display:none}
 /* solid strip behind the rounded top, so the frame sides and list never show through its corners while scrolling */
-.modebar .seg::before{content:"";position:absolute;left:-2px;right:-2px;top:100%;height:14px;background:var(--page,var(--bg));pointer-events:none}
+.modebar .seg::before{content:"";position:absolute;left:-28px;right:-28px;top:100%;height:14px;background:var(--page,var(--bg));pointer-events:none}
 /* rounded top of the frame, kept under the switch while scrolling */
 .modebar .seg::after{content:"";position:absolute;left:0;right:0;top:100%;height:17px;border:1px solid var(--mcol,var(--line));border-bottom:0;border-radius:16px 16px 0 0;pointer-events:none}
 /* the mode line continues down both sides and round the bottom, framing everything in that mode */
@@ -1615,7 +1615,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.09-2014';
+const APP_BUILD='2026.11.09-2020';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
