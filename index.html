@@ -742,7 +742,7 @@ h2{font-size:13px}
 .addrow .addfield .cp-pop .cp-opt.cp-new{padding:0 8px;font-size:13.5px}
 /* stuck progress box sits fully below the frame's rounded top, never half-hidden under it */
 .progpanel{top:calc(env(safe-area-inset-top,0px) + var(--barh,108px) + var(--modeh,58px) + 18px)}
-.progpanel.stuck{box-shadow:0 -8px 0 0 var(--page,var(--bg)),0 8px 18px rgba(0,0,0,.16)}
+.progpanel.stuck{box-shadow:0 8px 18px rgba(0,0,0,.16)}
 /* date fields: room for the whole date and its calendar icon, icon tinted for the theme */
 .modal .formgrid{grid-template-columns:1fr 1fr}
 .modal .formgrid .wide{grid-column:1/-1}
@@ -980,6 +980,13 @@ body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;bac
 /* the sticky switch bar and the strip under the frame's top paint exactly the page background (gradient + grain, aligned to the screen) */
 .modebar::before,.modebar .seg::before{background-color:var(--page,var(--bg));background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.132 -0.012'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),linear-gradient(180deg,transparent 0,transparent 26%,color-mix(in srgb,#000 16%,transparent) 100%),radial-gradient(130% 70% at 85% 0%,color-mix(in srgb,#fff var(--hl),transparent),transparent 60%);background-size:180px 180px,100vw 100vh,100vw 100vh;background-repeat:repeat,no-repeat,no-repeat;background-attachment:fixed,fixed,fixed;background-blend-mode:overlay,normal,normal}
 :root:not([data-app-theme="dark"]) .modebar::before,:root:not([data-app-theme="dark"]) .modebar .seg::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.286 -0.026'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),linear-gradient(180deg,transparent 0,transparent 26%,color-mix(in srgb,#3B2511 9%,transparent) 100%),radial-gradient(130% 70% at 85% 0%,color-mix(in srgb,#fff var(--hl),transparent),transparent 60%);background-blend-mode:multiply,normal,normal}
+
+/* no background band around the Collecting / Packing buttons: the page shows straight through */
+.modebar::before{display:none}
+
+/* no band behind the switch and no hiding strip: the frame clips itself (see updateCap) */
+.modebar::before,.modebar .seg::before{display:none!important}
+.modebar .seg button[aria-pressed="false"]{background-color:var(--surface)}
 
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
@@ -1389,7 +1396,14 @@ addEventListener('scroll',updateStuck,{passive:true});
 /* the rounded strip under the switch only shows while a frame is passing beneath it */
 function updateCap(){const mb=document.querySelector('.modebar');if(!mb)return;const capTop=mb.getBoundingClientRect().bottom;
   const on=[...document.querySelectorAll('.modebox,.modebox2')].some(x=>{const r=x.getBoundingClientRect();return r.top<=capTop+1&&r.bottom>=capTop+34});
-  mb.classList.toggle('nocap',!on)}
+  mb.classList.toggle('nocap',!on);
+  /* the frame trims its own content at the rounded top under the switch, so nothing shows behind the buttons and no background band is needed */
+  const seg=mb.querySelector('.seg');const cut=seg?seg.getBoundingClientRect().bottom:capTop;
+  document.querySelectorAll('main>.modebox,main>.modebox2').forEach(x=>{const h=Math.round((cut-x.getBoundingClientRect().top)*10)/10;
+    const v=h>0?'inset('+h+'px -40px -40px -40px round 56px 56px 0 0)':'';if(x.style.clipPath!==v)x.style.clipPath=v});
+  /* Packing: the list also stops at the bottom of the stuck progress box */
+  const pp=document.querySelector('.progpanel');if(pp){const pb=pp.classList.contains('stuck')?pp.getBoundingClientRect().bottom:-1;
+    let n=pp.nextElementSibling;while(n){if(!n.classList.contains('pp-sent')){const h=pb<0?0:Math.round((pb-n.getBoundingClientRect().top)*10)/10;const v=h>0?'inset('+h+'px -20px -20px -20px)':'';if(n.style.clipPath!==v)n.style.clipPath=v}n=n.nextElementSibling}}}
 addEventListener('scroll',updateCap,{passive:true});
 function morphKids(a,b){const ak=[...a.childNodes],bk=[...b.childNodes];if(ak.length!==bk.length){a.replaceChildren(...bk);return}ak.forEach((x,i)=>morphNode(x,bk[i]))}
 function morphNode(a,b){
@@ -1671,7 +1685,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.09-2138';
+const APP_BUILD='2026.11.09-2144';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
