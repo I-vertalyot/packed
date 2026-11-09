@@ -920,6 +920,12 @@ body{transition:background-color .35s ease}
 .inv-clear-row{justify-content:center;margin-top:6px}
 .inv-clear{display:inline-flex;align-items:center;gap:7px}
 
+/* picked and unpicked chips are exactly the same size: the −/+ slots are always there, just empty when not picked */
+.qchip .qn{font-weight:600}
+.qchip:not(.on) .pm{visibility:hidden;background:none}
+.qchip:not(.on){padding:0}
+.qchip.on{border-width:1px}
+
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
 :root[data-mode="days"]{--page:var(--bg)}
@@ -1487,7 +1493,7 @@ function viewDays(t,days){
       ${k!=='all'&&days.length>1?`<button class="btn" data-act="to-all-days">${T.toAll}</button>`:''}
       ${`<button class="btn clearbtn" data-act="clear-ask" ${grouped.length?'':'disabled'}><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>${T.clearAll}</button>`}</div>`;
   const picker=byCat(state.items).map(([c,l])=>`<div class="cat${fold('pick',c)}" data-cat><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pick',c,esc(c),T.nPicked(l.filter(it=>picks[it.id]).length,l.length))}</h3><div class="chips pick-box" style="--cc:var(--c-${catColor(c)})">${
-      l.slice().sort((a,b)=>cmp(a.name,b.name)).map(it=>{const q=+picks[it.id]||0;return q?`<span class="chip on qchip" style="--cc:var(--c-${catColor(it.cat||OTHER())})" data-name="${esc(it.name.toLowerCase())}"><button type="button" class="pm" data-act="qty" data-id="${it.id}" data-d="-1" aria-label="${T.less}: ${esc(it.name)}">−</button><button type="button" class="qn" data-act="toggle-pick" data-id="${it.id}" aria-pressed="true">${esc(it.name)}${q>1?`<span class="qx">×${q}</span>`:''}</button><button type="button" class="pm" data-act="qty" data-id="${it.id}" data-d="1" aria-label="${T.more}: ${esc(it.name)}">+</button></span>`:`<button class="chip" style="--cc:var(--c-${catColor(it.cat||OTHER())})" data-act="toggle-pick" data-id="${it.id}" data-name="${esc(it.name.toLowerCase())}">${esc(it.name)}</button>`}).join('')}</div></div>`).join('');
+      l.slice().sort((a,b)=>cmp(a.name,b.name)).map(it=>{const q=+picks[it.id]||0;return q?`<span class="chip on qchip" style="--cc:var(--c-${catColor(it.cat||OTHER())})" data-name="${esc(it.name.toLowerCase())}"><button type="button" class="pm" data-act="qty" data-id="${it.id}" data-d="-1" aria-label="${T.less}: ${esc(it.name)}">−</button><button type="button" class="qn" data-act="toggle-pick" data-id="${it.id}" aria-pressed="true">${esc(it.name)}${q>1?`<span class="qx">×${q}</span>`:''}</button><button type="button" class="pm" data-act="qty" data-id="${it.id}" data-d="1" aria-label="${T.more}: ${esc(it.name)}">+</button></span>`:`<span class="chip qchip" style="--cc:var(--c-${catColor(it.cat||OTHER())})" data-name="${esc(it.name.toLowerCase())}"><span class="pm" aria-hidden="true"></span><button type="button" class="qn" data-act="toggle-pick" data-id="${it.id}" aria-pressed="false">${esc(it.name)}</button><span class="pm" aria-hidden="true"></span></span>`}).join('')}</div></div>`).join('');
   return `
     <section class="panel">
       <h2 class="pick-title">${T.addOrSearch}</h2>
@@ -1601,7 +1607,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.09-2001';
+const APP_BUILD='2026.11.09-2004';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
