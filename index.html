@@ -1056,6 +1056,13 @@ body::before{background:#05060F!important}
 .bar .brand,.bar .brand *:not(svg):not(svg *){color:#FFFFFF!important}
 .bar .tabs button[aria-selected="true"],.bar .tabs button.on{color:#fff}
 
+/* footer: the same deep-space sky as the header */
+.credit .credit-box{position:relative;overflow:hidden;isolation:isolate;border:1px solid #2A2C46!important;color:#EDEBF5!important;background:radial-gradient(70% 160% at 12% 0%,rgba(98,64,170,.5),transparent 65%),radial-gradient(60% 140% at 92% 100%,rgba(10,147,150,.4),transparent 70%),radial-gradient(40% 120% at 55% 30%,rgba(226,128,46,.16),transparent 70%),#05060F!important;box-shadow:0 6px 20px rgba(0,0,0,.25)!important}
+.credit .credit-box .space{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;display:block}
+.credit .credit-box>*:not(.space){position:relative;z-index:1}
+.credit .credit-box,.credit .credit-box span{color:#EDEBF5!important}
+.credit .credit-box .ig{color:#FFC27A!important;border-bottom-color:rgba(255,194,122,.6)!important}
+
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
 :root[data-mode="days"]{--page:var(--bg)}
@@ -1530,7 +1537,7 @@ function render(){
     <p class="help-credit">${credit()}</p>
     <p class="help-credit" style="font-size:13px"><a href="${PRIVACY}" target="_blank" rel="noopener noreferrer" style="font-weight:500;border-bottom-width:1px">${esc(T.privacy)}</a></p>
     <p class="help-ver">v ${APP_BUILD}</p>`;
-  document.getElementById('credit').innerHTML='<div class="credit-box">'+credit()+'</div>';
+  document.getElementById('credit').innerHTML='<div class="credit-box"><canvas class="space" aria-hidden="true"></canvas>'+credit()+'</div>';
 }
 
 function viewTrips(){
@@ -1771,7 +1778,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.10-0025';
+const APP_BUILD='2026.11.10-0028';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
@@ -2281,8 +2288,8 @@ function quickAdd(pre){
   document.addEventListener('touchcancel',()=>{ok=false},{passive:true});
 })();
 /* deep-space starfield in the header: stars stream toward you, softly, at low cost */
-(function(){
-  const cv=document.getElementById('space');if(!cv||!cv.getContext)return;const cx=cv.getContext('2d');
+document.querySelectorAll('canvas.space').forEach(cv=>{if(!cv.getContext)return;(function(){
+  const cx=cv.getContext('2d');
   const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
   let W=0,H=0,D=1,stars=[],raf=0,last=0;
   const tints=['255,255,255','255,255,255','210,225,255','255,236,210','190,255,245'];
@@ -2304,7 +2311,7 @@ function quickAdd(pre){
   function stop(){cancelAnimationFrame(raf);raf=0}
   size();if('ResizeObserver' in window)new ResizeObserver(size).observe(cv);else addEventListener('resize',size);
   document.addEventListener('visibilitychange',()=>document.hidden?stop():start());start();
-})();
+})()});
 render();
 /* the intro tutorial no longer opens by itself on first start; it stays available from the help screen ("Show the tutorial") */
 connect();
