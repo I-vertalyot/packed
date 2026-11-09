@@ -1047,6 +1047,14 @@ body>.credit{flex:none;width:100%;box-sizing:border-box;padding-bottom:calc(14px
 main>.modebox,main>.modebox2{margin-top:-10px!important}
 .progpanel{top:calc(env(safe-area-inset-top,0px) + var(--barh,108px) + var(--modeh,58px) + 10px)}
 
+/* ===== header: deep space — night sky, galaxy haze and a starfield you fly through ===== */
+:root{--bar:#05060F;--bar-fg:#EDEBF5;--bar-muted:#A9A8C2;--bar-line:#2A2C46}
+.bar{background:radial-gradient(70% 140% at 18% 0%,rgba(98,64,170,.45),transparent 65%),radial-gradient(60% 120% at 88% 100%,rgba(10,147,150,.35),transparent 70%),radial-gradient(40% 90% at 60% 20%,rgba(226,128,46,.16),transparent 70%),#05060F!important;overflow:hidden;isolation:isolate}
+.bar .space{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;display:block}
+.bar>*:not(.space){position:relative;z-index:1}
+body::before{background:#05060F!important}
+.bar .tabs button[aria-selected="true"],.bar .tabs button.on{color:#fff}
+
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
 :root[data-mode="days"]{--page:var(--bg)}
@@ -1113,7 +1121,7 @@ body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,rgba(
 <script>(function(){var t='dark';try{t=localStorage.getItem('sbaleno-theme')||'dark'}catch(e){}document.documentElement.setAttribute('data-app-theme',t==='light'?'light':'dark');var pl='lantern';try{pl=localStorage.getItem('sbaleno-palette')||'lantern'}catch(e){}document.documentElement.setAttribute('data-palette',pl==='ocean'?'ocean':'lantern')})();</script>
 
 <div class="aurora" aria-hidden="true"><i></i></div>
-<header class="bar">
+<header class="bar"><canvas class="space" id="space" aria-hidden="true"></canvas>
   <div class="bar-in">
     <div class="brand"><svg class="brand-icon" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="96" fill="#3B2511"/><rect x="96" y="96" width="320" height="320" rx="40" fill="#E2802E"/><path d="M170 262l62 62 112-132" fill="none" stroke="#3B2511" stroke-width="44" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="brandName">Packed</span></div>
     <div class="status" id="status"><b></b><span></span></div>
@@ -1423,7 +1431,7 @@ const credit=()=>`<span class="by">${esc(T.madeBy)} <button class="ig" type="but
 function applyTheme(){const t=state.theme==='light'?'light':'dark';document.documentElement.setAttribute('data-app-theme',t);
   try{localStorage.setItem('sbaleno-theme',t)}catch(e){}
   const pl=state.palette==='ocean'?'ocean':'lantern';document.documentElement.setAttribute('data-palette',pl);try{localStorage.setItem('sbaleno-palette',pl)}catch(e){}
-  const m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',pl==='ocean'?(t==='dark'?'#000C11':'#001219'):(t==='dark'?'#26271A':'#583617'));
+  const m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content','#05060F');
   const ps=document.getElementById('palSw');if(ps){ps.setAttribute('aria-label',T.palLabel);ps.querySelectorAll('[role=radio]').forEach(x=>{const on=x.dataset.v===pl;x.setAttribute('aria-checked',on);x.tabIndex=on?0:-1;const l=x.dataset.v==='ocean'?T.palOcean:T.palLantern;x.setAttribute('aria-label',l);x.title=l})}
   [['thDark','dark',T.mDark],['thLight','light',T.mLight]].forEach(([id,v,l])=>{const x=document.getElementById(id);if(x){x.setAttribute('aria-checked',t===v);x.tabIndex=t===v?0:-1;x.querySelector('span').textContent=l}});
   document.querySelectorAll('#palSw .ps-n').forEach(n=>{n.textContent=n.parentElement.dataset.v==='ocean'?T.palOcean:T.palLantern})}
@@ -1762,7 +1770,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.09-2351';
+const APP_BUILD='2026.11.09-2357';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
@@ -2270,6 +2278,31 @@ function quickAdd(pre){
     const btn=document.querySelector('.modebar [data-act="mode"][data-v="'+to+'"]');if(btn)btn.click();
   },{passive:true});
   document.addEventListener('touchcancel',()=>{ok=false},{passive:true});
+})();
+/* deep-space starfield in the header: stars stream toward you, softly, at low cost */
+(function(){
+  const cv=document.getElementById('space');if(!cv||!cv.getContext)return;const cx=cv.getContext('2d');
+  const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let W=0,H=0,D=1,stars=[],raf=0,last=0;
+  const tints=['255,255,255','255,255,255','210,225,255','255,236,210','190,255,245'];
+  const mk=z=>({x:(Math.random()*2-1),y:(Math.random()*2-1),z:z==null?Math.random():z,t:tints[Math.random()*tints.length|0],px:null,py:null});
+  function size(){const r=cv.getBoundingClientRect();D=Math.min(2,devicePixelRatio||1);W=Math.max(1,r.width);H=Math.max(1,r.height);cv.width=W*D|0;cv.height=H*D|0;cx.setTransform(D,0,0,D,0,0);
+    const n=Math.round(Math.min(220,W*H/420));while(stars.length<n)stars.push(mk());stars.length=n;if(still)draw(0)}
+  function draw(dt){cx.clearRect(0,0,W,H);const fx=W*0.62,fy=H*0.55,f=Math.max(W,H)*0.55,sp=dt*0.00016;
+    for(const s of stars){
+      if(!still){s.z-=sp*(0.6+0.4*(1-s.z));}
+      if(s.z<=0.02){Object.assign(s,mk(1));continue}
+      const sx=fx+s.x/s.z*f*0.5,sy=fy+s.y/s.z*f*0.5;
+      if(sx<-20||sx>W+20||sy<-20||sy>H+20){Object.assign(s,mk(1));continue}
+      const k=1-s.z,a=Math.min(1,0.25+k*1.2),rad=0.45+k*1.9;
+      if(s.px!=null&&!still&&k>0.35){cx.strokeStyle='rgba('+s.t+','+(a*0.55)+')';cx.lineWidth=rad*0.9;cx.beginPath();cx.moveTo(s.px,s.py);cx.lineTo(sx,sy);cx.stroke()}
+      cx.fillStyle='rgba('+s.t+','+a+')';cx.beginPath();cx.arc(sx,sy,rad,0,6.283);cx.fill();
+      s.px=sx;s.py=sy}}
+  function loop(t){const dt=last?Math.min(50,t-last):16;last=t;draw(dt);raf=requestAnimationFrame(loop)}
+  function start(){if(still||raf||document.hidden)return;last=0;raf=requestAnimationFrame(loop)}
+  function stop(){cancelAnimationFrame(raf);raf=0}
+  size();if('ResizeObserver' in window)new ResizeObserver(size).observe(cv);else addEventListener('resize',size);
+  document.addEventListener('visibilitychange',()=>document.hidden?stop():start());start();
 })();
 render();
 /* the intro tutorial no longer opens by itself on first start; it stays available from the help screen ("Show the tutorial") */
