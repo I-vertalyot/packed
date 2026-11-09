@@ -1218,7 +1218,7 @@ const L={
   invEmpty:'Inventář je prázdný. Přidej první věc výše.',invClear:'Vymazat inventář',invClearQ:'Vymazat celý inventář?',invClearSub:n=>`Zmizí ${n} a všechny kategorie. Seznamy ve tvých cestách se tím vyprázdní. Hned potom to můžeš vrátit zpět.`,undoInvCleared:'Inventář vymazán',name:'Název',
   delItemQ:(n,u)=>`Smazat „${n}“${u?` (je ve ${u} ${csPl(u,'cestě','cestách','cestách')})`:''}?`,
   backup:'Export a záloha',backupNote:'Všechno se ukládá automaticky v tomto zařízení. Zálohou do souboru si data pojistíš nebo je přeneseš do jiného telefonu či počítače.',
-  dlBackup:'Stáhnout celou zálohu',ulBackup:'Nahrát soubor…',
+  dlBackup:'Stáhnout celou zálohu',ulBackup:'Importovat inventář',
   importQ:(i,t)=>`Nahrát zálohu (${i} věcí, ${t} cest)? Současná data se přepíšou.`,upload:'Nahrát',
   imported:'Záloha nahrána.',noDl:'Stahování souborů tady není dostupné.',dlDone:'Záloha stažena.',dlFail:'Zálohu se nepodařilo stáhnout.',
   badFile:'Tenhle soubor není záloha z aplikace Packed.',fileName:'packed-zaloha-',appName:'Packed',piecesPacked:'Sbalené kusy',palLabel:'Barvy',palLantern:'Lucerna',palOcean:'Oceán',mLang:'Jazyk',mTheme:'Vzhled',mDark:'Tmavý',mLight:'Světlý',mSettings:'Nastavení',showMore:'Zobrazit více',showLess:'Zobrazit méně',edit:'Upravit',saveChanges:'Uložit změny',saveAnyway:'Přesto uložit',editNote:'Věci se při změně termínu přesunou podle pořadí dnů: 1. den zůstane 1. dnem.',shortenWarn:n=>`Cesta se zkrátí a ${n} ${csPl(n,'den','dny','dní')} na konci se smaže i s vybranými věcmi. Klikni na „Přesto uložit“.`,moveTo:'Přesunout do kategorie',newCat:'Nová kategorie',newCatOpt:'+ Nová kategorie…',newCatPh:'Název nové kategorie',ok:'OK',collapseAll:'Sbalit vše',expandAll:'Rozbalit vše',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Přepnout na světlý vzhled',toDark:'Přepnout na tmavý vzhled',madeBy:'Made by',
@@ -1233,7 +1233,7 @@ const L={
   about:'Balicí seznam na cesty: vyber věci, při balení odškrtávej.',
   privacy:'Ochrana soukromí',
   helpTip:'Ukládá se samo · jazyk: CS / EN',
-  invExp:'Exportovat inventář',invXNote:'Inventář si vyexportuj do souboru a na jiném zařízení ho nahraj přes „Nahrát soubor…“. Věci se přidají k těm, které tam už máš.',invFileName:'packed-inventar-',
+  invExp:'Exportovat inventář',invXNote:'Inventář si vyexportuj do souboru a na jiném zařízení ho nahraj přes „Importovat inventář“. Věci se přidají k těm, které tam už máš.',invFileName:'packed-inventar-',
   invSend:'Exportovat a odeslat',invSent:'Inventář odeslán.',sendNo:'Sdílení tu není k dispozici, soubor se proto stáhl.',
   invDone:'Inventář stažen. Soubor si pošli do druhého zařízení (e-mailem, přes cloud…) a nahraj ho tam.',
   invQ:(n,k)=>`Přidat ${n} ${csPl(n,'novou věc','nové věci','nových věcí')} do inventáře?${k?` ${k} už máš, ty se přeskočí.`:''} Cesty zůstanou beze změny.`,
@@ -1270,7 +1270,7 @@ const L={
   invEmpty:'Your inventory is empty. Add the first item above.',invClear:'Clear inventory',invClearQ:'Clear your whole inventory?',invClearSub:n=>`This removes ${n} and all categories. The lists in your trips will be emptied too. You can undo it right after.`,undoInvCleared:'Inventory cleared',name:'Name',
   delItemQ:(n,u)=>`Delete “${n}”${u?` (used in ${u} ${enPl(u,'trip','trips')})`:''}?`,
   backup:'Export & backup',backupNote:'Everything saves automatically on this device. Download a backup file to keep your data safe or move it to another phone or computer.',
-  dlBackup:'Download full backup',ulBackup:'Upload file…',
+  dlBackup:'Download full backup',ulBackup:'Import inventory',
   importQ:(i,t)=>`Upload backup (${i} items, ${t} trips)? Your current data will be replaced.`,upload:'Upload',
   imported:'Backup uploaded.',noDl:'File downloads aren’t available here.',dlDone:'Backup downloaded.',dlFail:'Couldn’t download the backup.',
   badFile:'This file isn’t a Packed backup.',fileName:'packed-backup-',appName:'Packed',piecesPacked:'Pieces packed',palLabel:'Colours',palLantern:'Lantern',palOcean:'Ocean',mLang:'Language',mTheme:'Appearance',mDark:'Dark',mLight:'Light',mSettings:'Settings',showMore:'Show more',showLess:'Show less',edit:'Edit',saveChanges:'Save changes',saveAnyway:'Save anyway',editNote:'If you change the dates, your plan moves with the day order: day 1 stays day 1.',shortenWarn:n=>`The trip gets shorter: ${n} ${enPl(n,'day','days')} at the end will be removed with their items. Tap “Save anyway” to continue.`,moveTo:'Move to category',newCat:'New category',newCatOpt:'+ New category…',newCatPh:'New category name',ok:'OK',collapseAll:'Collapse all',expandAll:'Expand all',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Switch to light mode',toDark:'Switch to dark mode',madeBy:'Made by',
@@ -1285,7 +1285,7 @@ const L={
   about:'Your travel packing list: pick your things, tick them off as you pack.',
   privacy:'Privacy policy',
   helpTip:'Saves automatically · language: CS / EN',
-  invExp:'Export inventory',invXNote:'Export your inventory to a file, then load it on another device with “Upload file…”. The items are added to whatever is already there.',invFileName:'packed-inventory-',
+  invExp:'Export inventory',invXNote:'Export your inventory to a file, then load it on another device with “Import inventory”. The items are added to whatever is already there.',invFileName:'packed-inventory-',
   invSend:'Export and send',invSent:'Inventory sent.',sendNo:'Sharing isn’t available here, so the file was downloaded instead.',
   invDone:'Inventory downloaded. Send the file to your other device (email, cloud…) and upload it there.',
   invQ:(n,k)=>`Add ${n} new ${enPl(n,'item','items')} to your inventory?${k?` ${k} you already have will be skipped.`:''} Your trips stay the same.`,
@@ -1771,7 +1771,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.10-0023';
+const APP_BUILD='2026.11.10-0025';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
