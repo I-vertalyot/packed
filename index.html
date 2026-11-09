@@ -756,6 +756,14 @@ h2{font-size:13px}
 
 /* Uncheck all: a real button, left of the expand/collapse icon */
 .packhead{align-items:center;gap:10px}
+
+/* past trips: own dimmed group below the upcoming ones */
+.past-h{margin:18px 2px 8px;color:var(--muted)}
+.trip-w.past{opacity:.6}
+.trip-w.past:hover,.trip-w.past:focus-within{opacity:.85}
+.trip .t-empty{display:block;margin-top:4px;font-size:12.5px;color:var(--muted);font-style:italic}
+/* empty Collected items: one short line instead of a big box */
+.empty.empty-slim{padding:10px 12px;font-size:14px;border-radius:8px}
 </style>
 </head>
 <body>
@@ -826,7 +834,7 @@ const L={
   back:'← Zpět',menu:'Možnosti',editTrip:'Upravit cestu',delTrip:'Smazat cestu',delTripQ:n=>`Opravdu smazat „${n}“?`,delTripAsk:'Smazat cestu?',no:'Ne',del:'Smazat',
   byDay:'Sbírání',packing:'Balení',view:'Zobrazení',tripDays:'Dny cesty',
   whole:'Celá cesta',wholeTitle:'Sesbírané věci',
-  emptyWhole:'Tady se objeví věci, které vybereš. Ťukni na kategorii níže a přidej věci.',emptyDay:'Vyber věci z inventáře níže. Klikni na kategorii a vyber věci.',
+  emptyWhole:'Zatím nic. Vyber věci níže.',pastTrips:'Proběhlé cesty',noItemsYet:'Zatím prázdné',emptyDay:'Vyber věci z inventáře níže. Klikni na kategorii a vyber věci.',
   less:'Méně',more:'Více',remove:'Odebrat',
   copyPrev:'Zkopírovat z předchozího dne',toAll:'Tento den do všech dnů',clear:'Vyčistit',clearAll:'Vymazat vše',clearQ:'Vymazat všechny sesbírané věci?',clearSub:n=>`Ze seznamu zmizí ${n}. Hned potom to můžeš vrátit zpět.`,
   addFromInv:'Ťukni na kategorii, vyber věci',search:'Hledat…',qaPre:'Přidat',qaTo:'do kategorie',noFound:'Nic nenalezeno.',invEmptyPick:'Inventář je prázdný. Přidej věci níže nebo na kartě Inventář.',
@@ -877,7 +885,7 @@ const L={
   back:'← Back',menu:'Options',editTrip:'Edit trip',delTrip:'Delete trip',delTripQ:n=>`Delete “${n}”?`,delTripAsk:'Delete trip?',no:'No',del:'Delete',
   byDay:'Collecting',packing:'Packing',view:'View',tripDays:'Trip days',
   whole:'Whole trip',wholeTitle:'Collected items',
-  emptyWhole:'Your selections will appear here. Tap a category below to add items.',emptyDay:'Pick items from the inventory below. Click a category and choose the items.',
+  emptyWhole:'Nothing yet. Pick items below.',pastTrips:'Past trips',noItemsYet:'No items yet',emptyDay:'Pick items from the inventory below. Click a category and choose the items.',
   less:'Less',more:'More',remove:'Remove',
   copyPrev:'Copy from previous day',toAll:'Use this day for all days',clear:'Clear',clearAll:'Clear all',clearQ:'Clear all collected items?',clearSub:n=>`This removes ${n} from your list. You can undo it right after.`,
   addFromInv:'Tap a category, select items',search:'Search…',qaPre:'Add',qaTo:'to',noFound:'Nothing found.',invEmptyPick:'Your inventory is empty. Add items below or on the Inventory tab.',
@@ -1056,8 +1064,10 @@ function applyTheme(){const t=state.theme==='light'?'light':'dark';document.docu
   const m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',t==='dark'?'#26271A':'#583617');
   const b=document.getElementById('themeBtn');if(b){const l=t==='dark'?T.toLight:T.toDark;b.setAttribute('aria-label',l);b.title=l}}
 const CHEV='<svg class="chev" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>';
-const isFolded=(v,c)=>!(state.open&&Array.isArray(state.open[v])&&state.open[v].includes(c));
-function openCat(v,c){state.open=state.open||{};const l=new Set(state.open[v]||[]);l.add(c);state.open[v]=[...l]}
+/* most views start folded and remember what you opened; Packing starts open and remembers what you closed */
+const foldInv=v=>v==='pack',foldKey=v=>foldInv(v)?'packClosed':v;
+const isFolded=(v,c)=>{const l=state.open&&state.open[foldKey(v)];const has=Array.isArray(l)&&l.includes(c);return foldInv(v)?has:!has};
+function openCat(v,c){state.open=state.open||{};const k=foldKey(v);const l=new Set(state.open[k]||[]);foldInv(v)?l.delete(c):l.add(c);state.open[k]=[...l]}
 const fold=(v,c)=>isFolded(v,c)?' folded':'';
 const foldBtn=(v,c,label,count)=>`<button class="fold" type="button" data-act="fold" data-v="${v}" data-c="${esc(c)}" aria-expanded="${!isFolded(v,c)}"><span class="fold-l">${label}</span><span class="fold-n">${esc(count)}</span>${CHEV}</button>`;
 const foldAll=(v,cats)=>{if(!cats.length)return '';const all=cats.every(c=>isFolded(v,c));return `<button class="btn ghost foldall" type="button" data-act="foldall" data-v="${v}" data-all="${all?'1':''}" aria-label="${all?T.expandAll:T.collapseAll}" title="${all?T.expandAll:T.collapseAll}"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="${all?'M7 9.5l5-5 5 5M7 14.5l5 5 5-5':'M7 4.5l5 5 5-5M7 19.5l5-5 5 5'}"/></svg></button>`};
@@ -1142,7 +1152,8 @@ function render(){
 
 function viewTrips(){
   const today=iso(new Date());
-  const trips=state.trips.slice().sort((a,b)=>a.start.localeCompare(b.start));
+  /* upcoming (and ongoing) first, soonest on top; past trips below, most recent first */
+  const trips=state.trips.slice().sort((a,b)=>{const pa=a.end<today,pb=b.end<today;if(pa!==pb)return pa?1:-1;return pa?b.start.localeCompare(a.start):a.start.localeCompare(b.start)});
   const t0=new Date();const t1=new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+2);
   const form=ui.newTrip?`<form class="panel" id="newTrip">
       <div class="formgrid">
@@ -1159,14 +1170,15 @@ function viewTrips(){
     const fresh=t.created&&nowMs-t.created<NEW_MS;if(fresh)soonest=Math.min(soonest,t.created+NEW_MS-nowMs);
     const n=tripDays(t).length;const p=progress(t);const pct=p.total?Math.round(p.done/p.total*100):0;
     const d=parseD(t.start);const past=t.end<today;
-    return `<div class="trip-w" style="${past?'opacity:.65':''}"><button class="trip" data-act="open-trip" data-id="${t.id}">
+    const pastHead=past&&!trips.slice(0,trips.indexOf(t)).some(x=>x.end<today)?`<h2 class="past-h">${esc(T.pastTrips)}</h2>`:'';
+    return `${pastHead}<div class="trip-w${past?' past':''}"><button class="trip" data-act="open-trip" data-id="${t.id}">
       <span class="when"><b>${T.dayNum(d)}</b><span>${d.toLocaleDateString(T.locale,{month:'short'}).replace('.','')}</span></span>
       <span style="min-width:0">
         <span class="t-name">${fresh?`<span class="t-new">${esc(T.newBadge)}</span>`:''}${esc(t.name)}</span>
         <span class="t-meta mono" style="display:block">${dm(t.start)} – ${dm(t.end)} · ${T.days(n)}</span>
-        <span class="meter" aria-hidden="true" style="display:block"><i style="width:${pct}%"></i></span>
+        ${p.total?`<span class="meter" aria-hidden="true" style="display:block"><i style="width:${pct}%"></i></span>`:`<span class="t-empty">${esc(T.noItemsYet)}</span>`}
       </span>
-      <span class="pct">${p.done}/${p.total}</span>
+      ${p.total?`<span class="pct">${p.done}/${p.total}</span>`:'<span class="pct" aria-hidden="true"></span>'}
     </button><button class="trip-edit" data-act="edit-trip-open" data-id="${t.id}" aria-label="${esc(T.editTrip)}: ${esc(t.name)}" title="${esc(T.editTrip)}"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></button></div>`}).join('');
   /* drop the "New" flag on its own once its few minutes are up */
   clearTimeout(window.__newFlagT);if(soonest<Infinity)window.__newFlagT=setTimeout(()=>{if(!ui.tripId&&ui.tab==='trips')render()},soonest+100);
@@ -1241,7 +1253,7 @@ function viewDays(t,days){
   const list=grouped.length?`<div class="picked">${byCat(chosen).map(([c,l])=>{const rows=l.slice().sort((a,b)=>cmp(a.it.name,b.it.name)).map(x=>{const extra=rowNo++>=WHOLE_FOLD_MIN;return pickRow(x).replace('<div class="pick">',`<div class="pick${extra?' extra':''}">`)});
       const allExtra=rows.every(r=>r.startsWith('<div class="pick extra">'));
       return `<div class="pgroup${allExtra?' extra':''}" style="--cc:var(--c-${catColor(c)})"><h4 class="pg-h" style="--cc:var(--c-${catColor(c)})"><span>${esc(c)}</span><span class="pg-n">${l.length}</span></h4><div class="pflow">${rows.join('')}</div></div>`}).join('')}</div>`
-    :`<div class="empty">${esc(k==='all'?T.emptyWhole:T.emptyDay)}</div>`;
+    :`<div class="empty empty-slim">${esc(k==='all'?T.emptyWhole:T.emptyDay)}</div>`;
   const actions=`<div class="row">
       ${idx>0?`<button class="btn" data-act="copy-prev">${T.copyPrev}</button>`:''}
       ${k!=='all'&&days.length>1?`<button class="btn" data-act="to-all-days">${T.toAll}</button>`:''}
@@ -1639,8 +1651,8 @@ document.addEventListener('click',e=>{
   const a=b.dataset.act,id=b.dataset.id,t=trip();
   switch(a){
     case 'fold-whole':{const open=!!b.dataset.folded;if(b.dataset.k==='day')state.dayOpen=open;else state.wholeOpen=open;save();break}
-    case 'fold':{const v=b.dataset.v,c=b.dataset.c;state.open=state.open||{};const l=new Set(state.open[v]||[]);l.has(c)?l.delete(c):l.add(c);state.open[v]=[...l];save();break}
-    case 'foldall':{const v=b.dataset.v;state.open=state.open||{};state.open[v]=b.dataset.all?catOrder():[];save();break}
+    case 'fold':{const v=b.dataset.v,c=b.dataset.c,k=foldKey(v);state.open=state.open||{};const l=new Set(state.open[k]||[]);l.has(c)?l.delete(c):l.add(c);state.open[k]=[...l];save();break}
+    case 'foldall':{const v=b.dataset.v,k=foldKey(v);state.open=state.open||{};state.open[k]=(!!b.dataset.all)!==foldInv(v)?catOrder():[];save();break}
     case 'theme':state.theme=state.theme==='light'?'dark':'light';save();break;
     case 'lang':{const to=b.dataset.v;if(to===lang())return;translateStarter(to);state.lang=to;save();break}
     case 'tab':ui.tab=b.dataset.v;ui.delItem=null;break;
