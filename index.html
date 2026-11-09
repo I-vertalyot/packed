@@ -728,6 +728,14 @@ h2{font-size:13px}
 .quickadd .qa-cat{flex:none;max-width:42%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:4px 10px;border-radius:999px;background:var(--cc);color:#fff;font-size:13px;font-weight:600}
 .quickadd .qa-cat[style*="--c-yellow"]{color:#3B2511}
 :root[data-app-theme="dark"] .quickadd .qa-cat{color:#1A1A10}
+
+/* confirm popup (Clear all) */
+.confirm-card h2{font-family:var(--f-display);font-stretch:normal;text-transform:none;letter-spacing:0;font-size:24px;line-height:1.15;font-weight:600;color:var(--ink);margin:4px 0 8px}
+.confirm-card p{margin:0 0 18px;font-size:15px;line-height:1.45}
+.confirm-actions{gap:10px;justify-content:flex-end}
+.confirm-actions .btn{flex:1 1 0;min-height:46px;justify-content:center;text-align:center}
+.confirm-actions .btn.danger{background:var(--danger);border-color:var(--danger);color:#fff;font-weight:600}
+:root[data-app-theme="dark"] .confirm-actions .btn.danger{color:#1A1A10}
 </style>
 </head>
 <body>
@@ -800,7 +808,7 @@ const L={
   whole:'Celá cesta',wholeTitle:'Sesbírané věci',
   emptyWhole:'Tady se objeví věci, které vybereš. Ťukni na kategorii níže a přidej věci.',emptyDay:'Vyber věci z inventáře níže. Klikni na kategorii a vyber věci.',
   less:'Méně',more:'Více',remove:'Odebrat',
-  copyPrev:'Zkopírovat z předchozího dne',toAll:'Tento den do všech dnů',clear:'Vyčistit',clearAll:'Vymazat vše',
+  copyPrev:'Zkopírovat z předchozího dne',toAll:'Tento den do všech dnů',clear:'Vyčistit',clearAll:'Vymazat vše',clearQ:'Vymazat všechny sesbírané věci?',clearSub:n=>`Ze seznamu zmizí ${n}. Hned potom to můžeš vrátit zpět.`,
   addFromInv:'Ťukni na kategorii, vyber věci',search:'Hledat…',qaPre:'Přidat',qaTo:'do kategorie',noFound:'Nic nenalezeno.',invEmptyPick:'Inventář je prázdný. Přidej věci níže nebo na kartě Inventář.',
   newThing:'Nová věc',newThingPh:'Přidej novou věc…',or:'nebo',addOrSearch:'Hledej nebo přidej',toTop:'Nahoru',category:'Kategorie',addBoth:'Přidat do inventáře i dne',
   wholeTrip:'celá cesta',everyDay:'každý den',
@@ -851,7 +859,7 @@ const L={
   whole:'Whole trip',wholeTitle:'Collected items',
   emptyWhole:'Your selections will appear here. Tap a category below to add items.',emptyDay:'Pick items from the inventory below. Click a category and choose the items.',
   less:'Less',more:'More',remove:'Remove',
-  copyPrev:'Copy from previous day',toAll:'Use this day for all days',clear:'Clear',clearAll:'Clear all',
+  copyPrev:'Copy from previous day',toAll:'Use this day for all days',clear:'Clear',clearAll:'Clear all',clearQ:'Clear all collected items?',clearSub:n=>`This removes ${n} from your list. You can undo it right after.`,
   addFromInv:'Tap a category, select items',search:'Search…',qaPre:'Add',qaTo:'to',noFound:'Nothing found.',invEmptyPick:'Your inventory is empty. Add items below or on the Inventory tab.',
   newThing:'New item',newThingPh:'Add new item…',or:'or',addOrSearch:'Search or add',toTop:'Back to top',category:'Category',addBoth:'Add to inventory and this day',
   wholeTrip:'whole trip',everyDay:'every day',
@@ -1193,7 +1201,7 @@ function viewTrip(){
       <button class="packbtn${p.total&&p.done===p.total?' done':''}" data-act="mode" data-v="pack" aria-pressed="${ui.mode==='pack'}"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7l2 2 3.5-3.5M4 15l2 2 3.5-3.5M13 7.5h7M13 15.5h7"/></svg>${T.packing}<span class="seg-badge">${p.total&&p.done===p.total?'✓ ':''}${p.done}/${p.total}</span></button>
     </div></div>`;
   const body=ui.mode==='pack'?viewPack(t):viewDays(t,days),[top,rest]=body.split('<!--split-->');
-  return (ui.share?shareModal(t):'')+head+`<div class="modebox">${top}</div>${rest!==undefined?`<div class="modebox2">${rest}</div>`:''}`;
+  return (ui.share?shareModal(t):'')+(ui.clearAsk?clearModal(t):'')+head+`<div class="modebox">${top}</div>${rest!==undefined?`<div class="modebox2">${rest}</div>`:''}`;
 }
 
 function viewDays(t,days){
@@ -1218,7 +1226,7 @@ function viewDays(t,days){
   const actions=`<div class="row">
       ${idx>0?`<button class="btn" data-act="copy-prev">${T.copyPrev}</button>`:''}
       ${k!=='all'&&days.length>1?`<button class="btn" data-act="to-all-days">${T.toAll}</button>`:''}
-      ${grouped.length?`<button class="btn clearbtn" data-act="clear-day"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>${T.clearAll}</button>`:''}</div>`;
+      ${grouped.length?`<button class="btn clearbtn" data-act="clear-ask"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>${T.clearAll}</button>`:''}</div>`;
   const picker=byCat(state.items).map(([c,l])=>`<div class="cat${fold('pick',c)}" data-cat><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pick',c,esc(c),T.nPicked(l.filter(it=>picks[it.id]).length,l.length))}</h3><div class="chips pick-box" style="--cc:var(--c-${catColor(c)})">${
       l.slice().sort((a,b)=>cmp(a.name,b.name)).map(it=>`<button class="chip ${picks[it.id]?'on':''}" style="--cc:var(--c-${catColor(it.cat||OTHER())})" data-act="toggle-pick" data-id="${it.id}" data-name="${esc(it.name.toLowerCase())}">${esc(it.name)}</button>`).join('')}</div></div>`).join('');
   return `${(()=>{const isAll=k==='all',can=grouped.length>WHOLE_FOLD_MIN,fold=can&&!(isAll?state.wholeOpen:state.dayOpen);
@@ -1457,6 +1465,12 @@ function shareText(t){const a=aggregate(t),p=pieces(t,a),groups={};
   const lines=[`🧳 ${t.name}`,`${dm(t.start)} – ${dm(t.end)} · ${T.pdfPacked(p.done,p.total)}`,''];
   cats.forEach(c=>{lines.push(c.toUpperCase());groups[c].forEach(x=>lines.push(`${isDone(t,x)?'✅':'⬜'} ${x.it.name}${x.qty>1?' ×'+x.qty:''}`));lines.push('')});
   lines.push(`${T.shareMade}: ${APP_URL}`);return lines.join('\n')}
+function clearModal(t){const n=Object.values(t.picks[ui.day]||{}).reduce((s,q)=>s+(+q||1),0);
+  return `<div class="modal" id="clearModal" role="dialog" aria-modal="true" aria-labelledby="clearTitle" aria-describedby="clearSub"><div class="modal-card confirm-card">
+    <h2 id="clearTitle">${esc(T.clearQ)}</h2>
+    <p id="clearSub" class="muted">${esc(T.clearSub(T.things(n)))}</p>
+    <div class="row confirm-actions"><button type="button" class="btn" data-act="clear-no">${esc(T.cancel)}</button><button type="button" class="btn danger" data-act="clear-day">${esc(T.clearAll)}</button></div>
+  </div></div>`}
 function shareModal(t){const txt=shareText(t),e=encodeURIComponent,sys=!!navigator.share;
   const ic=d=>`<svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
   return `<div class="modal" id="shareModal" role="dialog" aria-modal="true" aria-labelledby="shareTitle"><div class="modal-card">
@@ -1535,8 +1549,8 @@ document.addEventListener('pointerdown',e=>{if(e.target.closest('#celeb'))endCel
 document.addEventListener('keydown',e=>{if(e.key==='Escape')endCeleb()});
 
 /* edit-trip popup: tap outside or press Escape to close */
-document.addEventListener('click',e=>{if(e.target.id==='shareModal'){ui.share=false;render();return}if(e.target.id==='editModal'){ui.delTrip=false;ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;render()}});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ui.share){ui.share=false;render();return}if(e.key==='Escape'&&ui.editId){ui.delTrip=false;ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;render()}});
+document.addEventListener('click',e=>{if(e.target.id==='clearModal'){ui.clearAsk=false;render();return}if(e.target.id==='shareModal'){ui.share=false;render();return}if(e.target.id==='editModal'){ui.delTrip=false;ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;render()}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ui.clearAsk){ui.clearAsk=false;render();return}if(e.key==='Escape'&&ui.share){ui.share=false;render();return}if(e.key==='Escape'&&ui.editId){ui.delTrip=false;ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;render()}});
 
 /* category popups close on an outside tap or Escape */
 function closeCatPops(){document.querySelectorAll('.cp-pop').forEach(p=>{if(!p.hidden){p.hidden=true;const bt=p.parentElement.querySelector('.cp-btn');if(bt)bt.setAttribute('aria-expanded','false')}})}
@@ -1551,7 +1565,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){const pop=document.
 
 /* phone Back / browser Back: close the top layer (share, edit popup, help), then leave the trip; only the trip list exits the app */
 let popSkip=0;
-const navDepth=()=>(ui.tab==='trips'&&ui.tripId?1:0)+(ui.help?1:0)+(ui.editId?1:0)+(ui.share?1:0);
+const navDepth=()=>(ui.tab==='trips'&&ui.tripId?1:0)+(ui.help?1:0)+(ui.editId?1:0)+(ui.share?1:0)+(ui.clearAsk?1:0);
 function syncHistory(){try{const w=navDepth(),cur=(history.state&&history.state.pk)||0;
   if(w>cur){for(let i=cur+1;i<=w;i++)history.pushState({pk:i},'')}
   else if(w<cur){popSkip++;history.go(w-cur)}}catch(e){}}
@@ -1559,6 +1573,7 @@ try{if(!history.state||history.state.pk==null)history.replaceState({pk:0},'')}ca
 addEventListener('popstate',e=>{if(popSkip>0){popSkip--;return}
   const target=(e.state&&e.state.pk)||0;let guard=8;
   while(navDepth()>target&&guard--){
+    if(ui.clearAsk){ui.clearAsk=false;continue}
     if(ui.share){ui.share=false;continue}
     if(ui.editId){ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;ui.delTrip=false;continue}
     if(ui.help){ui.help=false;continue}
@@ -1623,7 +1638,9 @@ document.addEventListener('click',e=>{
       /* taking the last piece away removes the item: offer Undo */
       if(cur>0&&nq===0){const it=item(id),day=ui.day,tid=t.id;showUndo(T.undoRemoved(it?it.name:''),()=>{const tr=state.trips.find(x=>x.id===tid);if(tr){setPick(tr,day,id,cur);save();render()}})}break}
     case 'rm-pick':setPick(t,ui.day,id,0);save();break;
-    case 'clear-day':{const prev=JSON.parse(JSON.stringify(t.picks[ui.day]||{})),day=ui.day,tid=t.id;t.picks[ui.day]={};save();
+    case 'clear-ask':ui.clearAsk=true;render();requestAnimationFrame(()=>{const c=document.querySelector('#clearModal [data-act="clear-no"]');if(c)c.focus({preventScroll:true})});return;
+    case 'clear-no':ui.clearAsk=false;render();return;
+    case 'clear-day':{ui.clearAsk=false;const prev=JSON.parse(JSON.stringify(t.picks[ui.day]||{})),day=ui.day,tid=t.id;t.picks[ui.day]={};save();
       showUndo(T.undoCleared,()=>{const tr=state.trips.find(x=>x.id===tid);if(tr){tr.picks[day]=prev;save();render()}});break}
     case 'copy-prev':{const days=tripDays(t);const i=days.indexOf(ui.day);if(i>0){t.picks[ui.day]={...(t.picks[days[i-1]]||{})};save()}break}
     case 'to-all-days':{const src={...(t.picks[ui.day]||{})};tripDays(t).forEach(d=>{t.picks[d]={...src}});save();break}
