@@ -818,7 +818,7 @@ const L={
   noPicks:'Zatím nemáš vybrané žádné věci. Přepni na „Sbírání“ a poskládej si, co bereš.',
   allPacked:'Všechno sbaleno. Šťastnou cestu!',celebTitle:'Sbaleno!',celebSub:'Šťastnou cestu!',
   tut:[['Vítej v Packed','Balicí seznam na cesty. Už nikdy nic nezapomeneš.'],['Inventář','Sepiš si věci, které běžně bereš, roztříděné do barevných kategorií.'],['Sbírání','Vytvoř cestu a přidej do ní věci z inventáře.'],['Balení','Jeden seznam pro celou cestu. Odškrtej, co je v kufru.']],
-  undo:'Zpět',undoRemoved:n=>`Odebráno: ${n}`,undoCleared:'Seznam vymazán',undoTripDel:'Cesta smazána',delTripSub:'Cesta i její seznam věcí zmizí. Hned potom to můžeš vrátit zpět.',undoUnchecked:'Odškrtnuto vše',
+  undo:'Zpět',undoRemoved:n=>`Odebráno: ${n}`,undoCleared:'Seznam vymazán',undoTripDel:'Cesta smazána',delTripSub:'Cesta i její seznam věcí zmizí. Tohle nejde vrátit zpět.',undoUnchecked:'Odškrtnuto vše',
   tutSkip:'Přeskočit',tutNext:'Další',tutBack:'Zpět',tutGo:'Jdeme na to!',tutAgain:'Zobrazit průvodce',tutLabel:'Průvodce aplikací',packedOf:'věcí sbaleno',resetPack:'Zrušit odškrtnutí',
   inv:'Inventář',thing:'Věc',thingPh:'např. Čelovka',add:'Přidat',
   invNote:'Kategorii vyber v nabídce vedle názvu. Název věci přepíšeš klepnutím, klepnutím na kategorii u věci ji přesuneš jinam. Barvu kategorie změníš kliknutím na barevné kolečko.',
@@ -869,7 +869,7 @@ const L={
   noPicks:'You haven’t picked anything yet. Switch to “Collecting” and choose what you’re taking.',
   allPacked:'All packed. Have a good trip!',celebTitle:'All packed!',celebSub:'Have a good trip!',
   tut:[['Welcome to Packed','Your travel packing list. Never forget anything again.'],['Inventory','Keep a list of the things you usually take, sorted into coloured categories.'],['Collecting','Create a trip and add items from your inventory.'],['Packing','One checklist for the whole trip. Tick off what’s in your bag.']],
-  undo:'Undo',undoRemoved:n=>`${n} removed`,undoCleared:'List cleared',undoTripDel:'Trip deleted',delTripSub:'The trip and its packing list will be removed. You can undo it right after.',undoUnchecked:'All unchecked',
+  undo:'Undo',undoRemoved:n=>`${n} removed`,undoCleared:'List cleared',undoTripDel:'Trip deleted',delTripSub:'The trip and its packing list will be removed. This can’t be undone.',undoUnchecked:'All unchecked',
   tutSkip:'Skip',tutNext:'Next',tutBack:'Back',tutGo:'Let’s go!',tutAgain:'Show the tutorial',tutLabel:'App tutorial',packedOf:'items packed',resetPack:'Uncheck all',
   inv:'Inventory',thing:'Item',thingPh:'e.g. Headlamp',add:'Add',
   invNote:'Pick a category from the menu next to the name. Tap an item’s name to rename it; tap its category to move it to another one. Click a category’s colour dot to change its colour.',
@@ -1681,8 +1681,7 @@ document.addEventListener('click',e=>{
     case 'edit-cancel':ui.delTrip=false;ui.editTrip=false;ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;break;
     case 'del-trip':toggleTripMenu(false);ui.delTrip=true;render();requestAnimationFrame(()=>{const c=document.querySelector('#delModal [data-act="del-trip-no"]');if(c)c.focus({preventScroll:true})});return;
     case 'del-trip-no':ui.delTrip=false;break;
-    case 'del-trip-yes':{const did=ui.editId||ui.tripId,idx=state.trips.findIndex(x=>x.id===did),gone=state.trips[idx];state.trips=state.trips.filter(x=>x.id!==did);ui.tripId=null;ui.editId=null;ui.editVals=null;ui.delTrip=false;ui.share=false;save();
-      if(gone)showUndo(T.undoTripDel,()=>{if(!state.trips.some(x=>x.id===gone.id)){state.trips.splice(Math.min(idx,state.trips.length),0,gone);save();render()}});break}
+    case 'del-trip-yes':{const did=ui.editId||ui.tripId,idx=state.trips.findIndex(x=>x.id===did),gone=state.trips[idx];state.trips=state.trips.filter(x=>x.id!==did);ui.tripId=null;ui.editId=null;ui.editVals=null;ui.delTrip=false;ui.share=false;save();break}
     case 'pick-color':ui.colorCat=ui.colorCat===b.dataset.c?null:b.dataset.c;break;
     case 'set-color':state.catColors=state.catColors||{};state.catColors[b.dataset.c]=b.dataset.v;ui.colorCat=null;save();break;
     case 'newcat-cancel':ui.newCatFor=null;break;
