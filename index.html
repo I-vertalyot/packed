@@ -1732,6 +1732,23 @@ document.addEventListener('input',e=>{
   main.querySelectorAll('[data-cat]').forEach(c=>{let any=false;c.querySelectorAll('.chip').forEach(ch=>{const m=!q||ch.dataset.name.includes(q);ch.hidden=!m;if(m)any=true});c.hidden=!any;c.classList.toggle('force',!!q)});
 });
 
+/* gentle haptic tick on taps: Android vibrates briefly; iPhone (Safari 17.4+) gets the system tick via a hidden switch */
+(function(){
+  const canVib=typeof navigator.vibrate==='function';
+  const isIOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  let sw=null,last=0;
+  if(!canVib&&isIOS){sw=document.createElement('label');sw.setAttribute('aria-hidden','true');sw.style.cssText='position:fixed;left:-99px;top:0;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden';sw.innerHTML='<input type="checkbox" switch tabindex="-1">';document.body.appendChild(sw)}
+  const ITEM=/^(toggle-pick|pk-inc|pk-dec|qty|rm-pick|cp-pick|set-color)$/;
+  function tick(ms){const now=Date.now();if(now-last<40)return;last=now;
+    try{if(canVib)navigator.vibrate(ms);else if(sw){const a=document.activeElement;sw.click();if(a&&a!==document.body&&a.focus&&/^(INPUT|TEXTAREA)$/.test(a.tagName))a.focus({preventScroll:true})}}catch(e){}}
+  document.addEventListener('click',e=>{
+    if(sw&&sw.contains(e.target))return;
+    const el=e.target.closest&&e.target.closest('button,[data-act],input[type=checkbox],input[type=radio],label,a,summary,.trip');
+    if(!el||el.disabled)return;
+    const act=el.getAttribute('data-act')||'';
+    tick(ITEM.test(act)||el.matches('input[type=checkbox],label')?14:9);
+  },true);
+})();
 render();
 /* first start: show the tutorial (no opening animation) */
 setTimeout(()=>{if(!state.tutorialDone)openTut()},400);
