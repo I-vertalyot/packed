@@ -1746,7 +1746,7 @@ document.addEventListener('input',e=>{
     const el=e.target.closest&&e.target.closest('button,[data-act],input[type=checkbox],input[type=radio],label,a,summary,.trip');
     if(!el||el.disabled)return;
     const act=el.getAttribute('data-act')||'';
-    tick(ITEM.test(act)||el.matches('input[type=checkbox],label')?14:9);
+    tick(ITEM.test(act)||el.matches('input[type=checkbox],label')?28:20);
   },true);
 })();
 render();
