@@ -717,6 +717,17 @@ h2{font-size:13px}
 @keyframes tnew{50%{box-shadow:0 0 0 4px rgba(226,128,46,.18),0 0 18px rgba(226,128,46,.6)}}
 .trip-w:has(.t-new) .trip{border-color:color-mix(in srgb,var(--sign) 55%,var(--line))}
 @media (prefers-reduced-motion:reduce){.t-new{animation:none}}
+
+/* quick add from search: "+ Add “Sunglasses” to [Category]" */
+.quickadd{margin-top:10px}
+.quickadd .qa-none{margin:0 0 8px;color:var(--muted);font-size:14px}
+.quickadd .qa-btn{width:100%;display:flex;align-items:center;gap:10px;justify-content:flex-start;text-align:left;min-height:48px;padding:8px 10px 8px 8px;border:1.5px dashed var(--sign);background:color-mix(in srgb,var(--sign) 10%,var(--surface));color:var(--ink);font-weight:500}
+.quickadd .qa-plus{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:999px;background:var(--sign);color:var(--sign-ink);font-size:20px;font-weight:600;line-height:1}
+.quickadd .qa-txt{flex:1 1 auto;min-width:0;overflow-wrap:anywhere}
+.quickadd .qa-txt b{font-weight:700}
+.quickadd .qa-cat{flex:none;max-width:42%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:4px 10px;border-radius:999px;background:var(--cc);color:#fff;font-size:13px;font-weight:600}
+.quickadd .qa-cat[style*="--c-yellow"]{color:#3B2511}
+:root[data-app-theme="dark"] .quickadd .qa-cat{color:#1A1A10}
 </style>
 </head>
 <body>
@@ -790,7 +801,7 @@ const L={
   emptyWhole:'Tady se objeví věci, které vybereš. Ťukni na kategorii níže a přidej věci.',emptyDay:'Vyber věci z inventáře níže. Klikni na kategorii a vyber věci.',
   less:'Méně',more:'Více',remove:'Odebrat',
   copyPrev:'Zkopírovat z předchozího dne',toAll:'Tento den do všech dnů',clear:'Vyčistit',clearAll:'Vymazat vše',
-  addFromInv:'Ťukni na kategorii, vyber věci',search:'Hledat…',invEmptyPick:'Inventář je prázdný. Přidej věci níže nebo na kartě Inventář.',
+  addFromInv:'Ťukni na kategorii, vyber věci',search:'Hledat…',qaPre:'Přidat',qaTo:'do kategorie',noFound:'Nic nenalezeno.',invEmptyPick:'Inventář je prázdný. Přidej věci níže nebo na kartě Inventář.',
   newThing:'Nová věc',newThingPh:'Přidej novou věc…',or:'nebo',addOrSearch:'Hledej nebo přidej',toTop:'Nahoru',category:'Kategorie',addBoth:'Přidat do inventáře i dne',
   wholeTrip:'celá cesta',everyDay:'každý den',
   noPicks:'Zatím nemáš vybrané žádné věci. Přepni na „Sbírání“ a poskládej si, co bereš.',
@@ -841,7 +852,7 @@ const L={
   emptyWhole:'Your selections will appear here. Tap a category below to add items.',emptyDay:'Pick items from the inventory below. Click a category and choose the items.',
   less:'Less',more:'More',remove:'Remove',
   copyPrev:'Copy from previous day',toAll:'Use this day for all days',clear:'Clear',clearAll:'Clear all',
-  addFromInv:'Tap a category, select items',search:'Search…',invEmptyPick:'Your inventory is empty. Add items below or on the Inventory tab.',
+  addFromInv:'Tap a category, select items',search:'Search…',qaPre:'Add',qaTo:'to',noFound:'Nothing found.',invEmptyPick:'Your inventory is empty. Add items below or on the Inventory tab.',
   newThing:'New item',newThingPh:'Add new item…',or:'or',addOrSearch:'Search or add',toTop:'Back to top',category:'Category',addBoth:'Add to inventory and this day',
   wholeTrip:'whole trip',everyDay:'every day',
   noPicks:'You haven’t picked anything yet. Switch to “Collecting” and choose what you’re taking.',
@@ -1217,6 +1228,7 @@ function viewDays(t,days){
       <h2 class="pick-title">${T.addOrSearch}</h2>
       <div class="row pickhead">
         <input class="inp" id="search" type="search" placeholder="${T.search}" style="max-width:200px" autocomplete="off"></div>
+      <div class="quickadd" id="qa-ad" data-f="addToDay" hidden></div>
       <div class="or-sep" aria-hidden="true"><span>${T.or}</span></div>
       <form id="addToDay" class="addform" style="border-bottom:1px solid var(--line);padding-bottom:14px">
         <div class="addrow" style="width:100%">
@@ -1262,6 +1274,7 @@ function viewInv(){
     <section class="panel addpanel">
       <h2 class="pick-title">${T.addOrSearch}</h2>
       <div class="row pickhead"><input class="inp" id="invsearch" type="search" placeholder="${T.search}" autocomplete="off" aria-label="${T.search}"></div>
+      <div class="quickadd" id="qa-ai" data-f="addItem" hidden></div>
       <div class="or-sep" aria-hidden="true"><span>${T.or}</span></div>
       <form id="addItem" class="addform">
         <div class="addrow" style="width:100%">
@@ -1622,6 +1635,8 @@ document.addEventListener('click',e=>{
     case 'help-go':helpGo(b.dataset.v);return;
     case 'trip-menu':toggleTripMenu();return;
     case 'cp-open':{const pop=b.parentElement.querySelector('.cp-pop'),open=pop.hidden;closeCatPops();if(open){pop.hidden=false;b.setAttribute('aria-expanded','true');const s=pop.querySelector('[aria-selected="true"]')||pop.firstElementChild;s.focus({preventScroll:true})}return}
+    case 'quick-add':{const pre=b.dataset.pre,inp=document.getElementById(pre==='ad'?'search':'invsearch'),nm=document.getElementById(pre+'-name'),f=document.getElementById(pre==='ad'?'addToDay':'addItem');
+      if(!inp||!nm||!f)return;nm.value=inp.value.trim().replace(/\s+/g,' ');if(!nm.value)return;f.requestSubmit();return}
     case 'cp-pick':{const sel=document.getElementById(b.dataset.pre+'-cat');closeCatPops();if(sel){sel.value=b.dataset.v;sel.dispatchEvent(new Event('change',{bubbles:true}))}const btn=b.closest('.catpick').querySelector('.cp-btn');if(btn&&b.dataset.v!=='__new')btn.focus({preventScroll:true});return}
     case 'tut-next':if(ui.tut===T.tut.length-1)closeTut();else tutGo(ui.tut+1);return;
     case 'tut-back':tutGo(ui.tut-1);return;
@@ -1697,6 +1712,7 @@ document.addEventListener('submit',e=>{
 
 document.addEventListener('change',e=>{
   const el=e.target;
+  if(el.id==='ad-cat'||el.id==='ai-cat')setTimeout(()=>quickAdd(el.id.slice(0,2)),0);
   if(el.classList.contains('recat-sel')){const it=item(el.dataset.id);if(!it)return;
     if(el.value==='__new'){ui.newCatFor=it.id;const y=window.scrollY;render();window.scrollTo(0,y);const n=document.getElementById('nc-'+it.id);if(n)n.focus();return}
     it.cat=el.value;openCat('inv',el.value);save();const y=window.scrollY;render();window.scrollTo(0,y);return}
@@ -1726,11 +1742,24 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!holo.hidden){close
 document.addEventListener('input',e=>{
   if(e.target.id==='et-start'||e.target.id==='et-end'){ui.editWarn=0;return}
   if(e.target.id==='invsearch'){const q=e.target.value.trim().toLowerCase();
-    main.querySelectorAll('.cat.cardcat').forEach(c=>{let any=false;c.querySelectorAll('.inv').forEach(r=>{const n=(r.querySelector('.rename')||{}).value||'';const m=!q||n.toLowerCase().includes(q);r.hidden=!m;if(m)any=true});c.hidden=!any;c.classList.toggle('force',!!q)});return}
+    main.querySelectorAll('.cat.cardcat').forEach(c=>{let any=false;c.querySelectorAll('.inv').forEach(r=>{const n=(r.querySelector('.rename')||{}).value||'';const m=!q||n.toLowerCase().includes(q);r.hidden=!m;if(m)any=true});c.hidden=!any;c.classList.toggle('force',!!q)});quickAdd('ai');return}
   if(e.target.id!=='search')return;
   const q=e.target.value.trim().toLowerCase();
   main.querySelectorAll('[data-cat]').forEach(c=>{let any=false;c.querySelectorAll('.chip').forEach(ch=>{const m=!q||ch.dataset.name.includes(q);ch.hidden=!m;if(m)any=true});c.hidden=!any;c.classList.toggle('force',!!q)});
+  quickAdd('ad');
 });
+/* search that finds no exact match offers to add it straight away, into the category picked in the add row */
+function quickAdd(pre){
+  const box=document.getElementById('qa-'+pre),inp=document.getElementById(pre==='ad'?'search':'invsearch');if(!box||!inp)return;
+  const raw=inp.value.trim().replace(/\s+/g,' ');
+  const exact=raw&&state.items.some(i=>i.name.toLowerCase()===raw.toLowerCase());
+  if(!raw||exact){box.hidden=true;box.innerHTML='';return}
+  const sel=document.getElementById(pre+'-cat');let cat=sel?sel.value:'';
+  if(!cat||cat==='__new'){const nc=document.getElementById(pre+'-newcat');cat=(nc&&nc.value.trim())||OTHER()}
+  const none=pre==='ad'?!main.querySelector('[data-cat]:not([hidden])'):!main.querySelector('.cat.cardcat:not([hidden])');
+  box.hidden=false;
+  box.innerHTML=`${none?`<p class="qa-none">${esc(T.noFound)}</p>`:''}<button type="button" class="btn qa-btn" data-act="quick-add" data-pre="${pre}"><span class="qa-plus" aria-hidden="true">+</span><span class="qa-txt">${esc(T.qaPre)} <b>“${esc(raw)}”</b> ${esc(T.qaTo)}</span><span class="qa-cat" style="--cc:var(--c-${catColor(cat)})">${esc(cat)}</span></button>`;
+}
 
 /* gentle haptic tick on taps: Android vibrates briefly; iPhone (Safari 17.4+) gets the system tick via a hidden switch */
 (function(){
