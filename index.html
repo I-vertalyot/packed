@@ -1088,6 +1088,10 @@ body>.credit{max-width:none!important;margin:0!important;padding:0!important}
 .bar .space{clip-path:inset(0)}
 .appmenu-pop{z-index:60}
 
+/* header: plain black space, just the flying stars (no violet / blue / amber haze) */
+.bar{background:#000!important}
+body::before{background:#000!important}
+
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
 :root[data-mode="days"]{--page:var(--bg)}
@@ -1464,7 +1468,7 @@ const credit=()=>`<span class="by">${esc(T.madeBy)} <button class="ig" type="but
 function applyTheme(){const t=state.theme==='light'?'light':'dark';document.documentElement.setAttribute('data-app-theme',t);
   try{localStorage.setItem('sbaleno-theme',t)}catch(e){}
   const pl=state.palette==='ocean'?'ocean':'lantern';document.documentElement.setAttribute('data-palette',pl);try{localStorage.setItem('sbaleno-palette',pl)}catch(e){}
-  const m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content','#05060F');
+  const m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content','#000000');
   const ps=document.getElementById('palSw');if(ps){ps.setAttribute('aria-label',T.palLabel);ps.querySelectorAll('[role=radio]').forEach(x=>{const on=x.dataset.v===pl;x.setAttribute('aria-checked',on);x.tabIndex=on?0:-1;const l=x.dataset.v==='ocean'?T.palOcean:T.palLantern;x.setAttribute('aria-label',l);x.title=l})}
   [['thDark','dark',T.mDark],['thLight','light',T.mLight]].forEach(([id,v,l])=>{const x=document.getElementById(id);if(x){x.setAttribute('aria-checked',t===v);x.tabIndex=t===v?0:-1;x.querySelector('span').textContent=l}});
   document.querySelectorAll('#palSw .ps-n').forEach(n=>{n.textContent=n.parentElement.dataset.v==='ocean'?T.palOcean:T.palLantern})}
@@ -1806,7 +1810,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.10-0045';
+const APP_BUILD='2026.11.10-0055';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
