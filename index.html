@@ -963,16 +963,17 @@ body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;bac
 :root[data-palette="ocean"]{--au1:#0A9396;--au2:#EE9B00;--au3:#94D2BD}
 :root[data-mode="days"]{--au1:#E07A5F;--au2:#EE9B00;--au3:#3A0F14;--au-op:.34}
 :root[data-mode="pack"]{--au1:#0A9396;--au2:#94D2BD;--au3:#E2802E}
-body::before{content:"";position:fixed;left:-25%;top:-25%;width:150%;height:150%;z-index:-2;pointer-events:none;opacity:var(--au-op);
+.aurora{position:fixed;inset:0;z-index:-2;pointer-events:none;overflow:hidden;
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,transparent 240px,#000 440px);mask-image:linear-gradient(180deg,transparent 0,transparent 240px,#000 440px)}
+.aurora i{position:absolute;left:-25%;top:-25%;width:150%;height:150%;opacity:var(--au-op);
   background:radial-gradient(38% 32% at 22% 62%,var(--au1),transparent 70%),radial-gradient(34% 30% at 78% 74%,var(--au2),transparent 70%),radial-gradient(40% 34% at 55% 92%,var(--au3),transparent 70%),radial-gradient(30% 26% at 85% 45%,var(--au1),transparent 70%);
-  -webkit-mask-image:linear-gradient(180deg,transparent 0,transparent 30%,#000 52%);mask-image:linear-gradient(180deg,transparent 0,transparent 30%,#000 52%);
   animation:aurora 26s ease-in-out infinite alternate;will-change:transform;transition:opacity .4s}
 @keyframes aurora{0%{transform:translate3d(0,0,0) rotate(0deg) scale(1)}35%{transform:translate3d(6%,-4%,0) rotate(8deg) scale(1.06)}70%{transform:translate3d(-5%,3%,0) rotate(-6deg) scale(1.03)}100%{transform:translate3d(3%,-6%,0) rotate(5deg) scale(1.08)}}
 /* buttons: a slow sweep through shades of the action colour */
 .btn.primary{background-image:linear-gradient(115deg,var(--sign) 0%,color-mix(in srgb,var(--sign) 72%,#fff) 25%,var(--sign) 50%,color-mix(in srgb,var(--sign) 82%,#7a1a00) 75%,var(--sign) 100%);background-size:300% 100%;animation:btnflow 9s ease-in-out infinite alternate}
 .modebar .seg button[aria-pressed="true"]{background-image:linear-gradient(115deg,transparent 0%,rgba(255,255,255,.18) 30%,transparent 55%,rgba(0,0,0,.10) 80%,transparent 100%);background-size:300% 100%;animation:btnflow 11s ease-in-out infinite alternate}
 @keyframes btnflow{from{background-position:0% 50%}to{background-position:100% 50%}}
-@media (prefers-reduced-motion:reduce){body::before,.btn.primary,.modebar .seg button[aria-pressed="true"]{animation:none}}
+@media (prefers-reduced-motion:reduce){.aurora i,.btn.primary,.modebar .seg button[aria-pressed="true"]{animation:none}}
 
 
 
@@ -1041,6 +1042,7 @@ body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,rgba(
 <body>
 <script>(function(){var t='dark';try{t=localStorage.getItem('sbaleno-theme')||'dark'}catch(e){}document.documentElement.setAttribute('data-app-theme',t==='light'?'light':'dark');var pl='lantern';try{pl=localStorage.getItem('sbaleno-palette')||'lantern'}catch(e){}document.documentElement.setAttribute('data-palette',pl==='ocean'?'ocean':'lantern')})();</script>
 
+<div class="aurora" aria-hidden="true"><i></i></div>
 <header class="bar">
   <div class="bar-in">
     <div class="brand"><svg class="brand-icon" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="96" fill="#3B2511"/><rect x="96" y="96" width="320" height="320" rx="40" fill="#E2802E"/><path d="M170 262l62 62 112-132" fill="none" stroke="#3B2511" stroke-width="44" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="brandName">Packed</span></div>
@@ -1669,7 +1671,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.09-2134';
+const APP_BUILD='2026.11.09-2138';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
