@@ -848,6 +848,16 @@ input[type=date].inp::-webkit-calendar-picker-indicator:hover{opacity:1;backgrou
 .swipe-from-right{animation:swR .22s ease-out}
 .swipe-from-left{animation:swL .22s ease-out}
 @media (prefers-reduced-motion:reduce){.swipe-from-right,.swipe-from-left{animation:none}}
+
+/* smooth page change between Collecting and Packing */
+@keyframes modeInR{from{transform:translate3d(48px,0,0);opacity:0}to{transform:none;opacity:1}}
+@keyframes modeInL{from{transform:translate3d(-48px,0,0);opacity:0}to{transform:none;opacity:1}}
+.mode-in-r{animation:modeInR .34s cubic-bezier(.22,.8,.24,1) both}
+.mode-in-l{animation:modeInL .34s cubic-bezier(.22,.8,.24,1) both}
+@media (prefers-reduced-motion:reduce){.mode-in-r,.mode-in-l{animation:fadeOnly .2s ease-out both}@keyframes fadeOnly{from{opacity:0}to{opacity:1}}}
+/* the mode buttons cross-fade their colour */
+.modebar .seg button{transition:background-color .25s ease,color .25s ease,border-color .25s ease,box-shadow .25s ease}
+body{transition:background-color .35s ease}
 </style>
 </head>
 <body>
@@ -1760,10 +1770,13 @@ document.addEventListener('click',e=>{
     case 'open-trip':ui.editFromHome=false;ui.wholeKeep=false;ui.tripMsg='';ui.editTrip=false;ui.editVals=null;ui.editWarn=0;ui.tripId=id;ui.mode='days';ui.day='all';ui.delTrip=false;break;
     case 'back':ui.share=false;ui.editFromHome=false;ui.editTrip=false;ui.editVals=null;ui.editWarn=0;ui.tripId=null;ui.delTrip=false;break;
     case 'mode':{/* switch without shaking: the new content starts right under the switch, no jump or shrink animation */
-      if(ui.mode===b.dataset.v)return;ui.mode=b.dataset.v;const y0=window.scrollY;render();
+      if(ui.mode===b.dataset.v)return;const fwd=b.dataset.v==='pack';ui.mode=b.dataset.v;const y0=window.scrollY;render();
       const box=document.querySelector('.modebox'),mb=document.querySelector('.modebar'),bar=document.querySelector('.bar');
       if(box&&mb&&bar){const target=Math.max(0,box.getBoundingClientRect().top+window.scrollY-(bar.offsetHeight+mb.offsetHeight));window.scrollTo(0,Math.min(y0,target))}
-      updateStuck();return}
+      updateStuck();
+      /* slide the new page in from the side it lives on: Packing from the right, Collecting from the left */
+      requestAnimationFrame(()=>{document.querySelectorAll('main>.modebox,main>.modebox2').forEach((el,i)=>{el.classList.remove('mode-in-r','mode-in-l');void el.offsetWidth;el.style.animationDelay=(i*45)+'ms';el.classList.add(fwd?'mode-in-r':'mode-in-l');el.addEventListener('animationend',()=>{el.classList.remove('mode-in-r','mode-in-l');el.style.animationDelay=''},{once:true})})});
+      return}
     case 'day':ui.day=b.dataset.k;break;
     case 'toggle-pick':{if(ui.day==='all')ui.wholeKeep=true;const cur=(t.picks[ui.day]||{})[id];setPick(t,ui.day,id,cur?0:1);save();break}
     case 'qty':{if(ui.day==='all')ui.wholeKeep=true;const cur=(t.picks[ui.day]||{})[id]||0,nq=Math.max(0,Math.min(99,cur+Number(b.dataset.d)));setPick(t,ui.day,id,nq);save();
@@ -1941,9 +1954,7 @@ function quickAdd(pre){
   document.addEventListener('touchend',e=>{if(!ok)return;ok=false;const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;
     if(Date.now()-st>700||Math.abs(dx)<70||Math.abs(dx)<Math.abs(dy)*1.7)return;
     const to=dx<0?'pack':'days';if(ui.mode===to)return;
-    const btn=document.querySelector('.modebar [data-act="mode"][data-v="'+to+'"]');if(!btn)return;btn.click();
-    const cls=dx<0?'swipe-from-right':'swipe-from-left';
-    document.querySelectorAll('.modebox,.modebox2,.progpanel~.panel').forEach(el=>{el.classList.remove('swipe-from-right','swipe-from-left');void el.offsetWidth;el.classList.add(cls)});
+    const btn=document.querySelector('.modebar [data-act="mode"][data-v="'+to+'"]');if(btn)btn.click();
   },{passive:true});
   document.addEventListener('touchcancel',()=>{ok=false},{passive:true});
 })();
