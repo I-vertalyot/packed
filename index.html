@@ -1063,6 +1063,14 @@ body::before{background:#05060F!important}
 .credit .credit-box,.credit .credit-box span{color:#EDEBF5!important}
 .credit .credit-box .ig{color:#FFC27A!important;border-bottom-color:rgba(255,194,122,.6)!important}
 
+/* footer: the galaxy haze drifts slowly behind the stars */
+.credit .credit-box{background:#05060F!important}
+.credit .credit-box::before{content:"";position:absolute;left:-40%;top:-120%;width:180%;height:340%;z-index:-1;pointer-events:none;
+  background:radial-gradient(26% 20% at 25% 47%,rgba(130,80,220,.85),transparent 70%),radial-gradient(24% 18% at 75% 55%,rgba(10,160,165,.75),transparent 70%),radial-gradient(18% 15% at 52% 50%,rgba(226,128,46,.35),transparent 70%),radial-gradient(16% 13% at 90% 44%,rgba(170,60,150,.5),transparent 70%);
+  animation:galaxyDrift 22s ease-in-out infinite alternate;will-change:transform}
+@keyframes galaxyDrift{0%{transform:translate3d(-6%,0,0) rotate(0deg)}50%{transform:translate3d(5%,2%,0) rotate(6deg)}100%{transform:translate3d(-2%,-2%,0) rotate(-5deg)}}
+@media (prefers-reduced-motion:reduce){.credit .credit-box::before{animation:none}}
+
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
 :root[data-mode="days"]{--page:var(--bg)}
@@ -1778,7 +1786,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.10-0028';
+const APP_BUILD='2026.11.10-0030';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
