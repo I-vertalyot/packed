@@ -1770,7 +1770,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.09-2358';
+const APP_BUILD='2026.11.10-0001';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
@@ -2294,7 +2294,7 @@ function quickAdd(pre){
       if(s.z<=0.02){Object.assign(s,mk(1));continue}
       const sx=fx+s.x/s.z*f*0.5,sy=fy+s.y/s.z*f*0.5;
       if(sx<-20||sx>W+20||sy<-20||sy>H+20){Object.assign(s,mk(1));continue}
-      const k=1-s.z,a=Math.min(1,0.25+k*1.2),rad=0.45+k*1.9;
+      const k=1-s.z,a=Math.min(1,0.3+k*1.2),rad=0.25+k*0.9;
       if(s.px!=null&&!still&&k>0.35){cx.strokeStyle='rgba('+s.t+','+(a*0.55)+')';cx.lineWidth=rad*0.9;cx.beginPath();cx.moveTo(s.px,s.py);cx.lineTo(sx,sy);cx.stroke()}
       cx.fillStyle='rgba('+s.t+','+a+')';cx.beginPath();cx.arc(sx,sy,rad,0,6.283);cx.fill();
       s.px=sx;s.py=sy}}
