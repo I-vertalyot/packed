@@ -268,7 +268,7 @@ button.ig{appearance:none;-webkit-appearance:none;background:none;border:0;borde
 .themebtn:hover{border-color:var(--bar-fg)}
 :root[data-app-theme="dark"] .themebtn .i-moon,:root:not([data-app-theme="dark"]) .themebtn .i-sun{display:none}
 /* top row: logo · language · theme · help; second row: the tabs */
-.bar-in>.status{order:1}.bar-in>.lang{order:2}.bar-in>.themebtn{order:3}.bar-in>.palsw{order:3}.bar-in>.infobtn{order:4}.bar-in>.tabs{order:5;flex-basis:100%}
+.bar-in>.status{order:1}.bar-in>.lang{order:2}.bar-in>.appmenu{order:4;margin-left:auto}.bar-in>.tabs{order:5;flex-basis:100%}
 .bar-in>.themebtn,.bar-in>.infobtn{margin-top:0}
 .tabs button{background:none;border:0;color:var(--bar-muted);padding:10px 12px 12px;font-family:var(--f-display);font-weight:700;font-stretch:87%;font-size:15px;text-transform:uppercase;letter-spacing:.05em;border-bottom:3px solid transparent}
 .tabs button[aria-selected="true"]{color:var(--bar-fg);border-bottom-color:var(--sign)}
@@ -864,6 +864,28 @@ body{transition:background-color .35s ease}
 .trip .when b{font-size:22px}
 .trip .when span{font-size:10px;letter-spacing:.06em}
 .trip .t-meta{font-family:var(--f-body);font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
+
+/* ===== settings menu in the top bar (language, appearance, colours, help) ===== */
+.appmenu{position:relative}
+.appmenubtn{width:40px;height:40px;border-radius:10px;border:1.5px solid var(--bar-line);background:none;color:var(--bar-fg);display:grid;place-items:center;padding:0;cursor:pointer}
+.appmenubtn:hover,.appmenubtn[aria-expanded="true"]{border-color:var(--bar-fg);background:color-mix(in srgb,var(--bar-fg) 10%,transparent)}
+.appmenu-pop{position:absolute;right:0;top:calc(100% + 8px);z-index:60;width:min(300px,calc(100vw - 24px));padding:14px;display:flex;flex-direction:column;gap:14px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 40px rgba(0,0,0,.32);animation:menuin .16s ease-out}
+.appmenu-pop[hidden]{display:none}
+.am-row{display:flex;flex-direction:column;gap:7px}
+.am-lbl{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.appmenu-pop .am-seg{margin:0;display:flex;gap:4px;padding:3px;border:1px solid var(--line);border-radius:999px;background:var(--chip);overflow:visible}
+.appmenu-pop .am-seg button{flex:1 1 0;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:0 10px;border:0;border-radius:999px;background:none;color:var(--muted);font-family:var(--f-body);font-size:14px;font-weight:600;cursor:pointer;min-width:0}
+.appmenu-pop .am-seg button[aria-pressed="true"],.appmenu-pop .am-seg button[aria-checked="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.appmenu-pop .am-seg button:focus-visible{outline:2px solid var(--sign-text);outline-offset:1px}
+.appmenu-pop .palsw{align-self:stretch;border-color:var(--line)}
+.appmenu-pop .palsw button{width:auto;height:auto}
+.appmenu-pop .palsw button::after{display:none}
+.appmenu-pop .palsw i{width:16px;height:16px}
+.appmenu-pop .palsw button[aria-checked="true"] i{box-shadow:0 0 0 2px var(--ink);transform:none}
+.appmenu-pop .palsw button[aria-checked="false"] i{opacity:1}
+.am-help{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 12px;border:1px solid var(--line);border-radius:12px;background:none;color:var(--ink);font:inherit;font-weight:600;cursor:pointer;text-align:left}
+.am-help:hover{background:var(--chip)}
+.am-help .am-i{display:grid;place-items:center;width:24px;height:24px;border-radius:7px;border:1.5px solid currentColor;font-family:Georgia,serif;font-style:italic;font-weight:700;font-size:14px;color:var(--sign-text)}
 </style>
 </head>
 <body>
@@ -873,20 +895,31 @@ body{transition:background-color .35s ease}
   <div class="bar-in">
     <div class="brand"><svg class="brand-icon" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="96" fill="#3B2511"/><rect x="96" y="96" width="320" height="320" rx="40" fill="#E2802E"/><path d="M170 262l62 62 112-132" fill="none" stroke="#3B2511" stroke-width="44" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="brandName">Packed</span></div>
     <div class="status" id="status"><b></b><span></span></div>
-    <div class="lang" role="group" aria-label="Language">
-      <button id="lang-cs" data-act="lang" data-v="cs" aria-pressed="true">CS</button>
-      <button id="lang-en" data-act="lang" data-v="en" aria-pressed="false">EN</button>
-    </div>
     <nav class="tabs" role="tablist">
       <button role="tab" id="tab-trips" data-act="tab" data-v="trips" aria-selected="true"></button>
       <button role="tab" id="tab-inv" data-act="tab" data-v="inv" aria-selected="false"></button>
     </nav>
-    <button class="themebtn" id="themeBtn" data-act="theme" type="button"><svg class="i-sun" width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg><svg class="i-moon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.6 8.6 0 1 0 11.1 11.1z"/></svg></button>
-    <div class="palsw" id="palSw" role="radiogroup" aria-label="Colors">
-      <button type="button" role="radio" class="ps-lantern" data-act="palette" data-v="lantern" aria-checked="true"><i aria-hidden="true"></i></button>
-      <button type="button" role="radio" class="ps-ocean" data-act="palette" data-v="ocean" aria-checked="false"><i aria-hidden="true"></i></button>
+    <div class="appmenu">
+      <button class="appmenubtn" id="appMenuBtn" type="button" data-act="app-menu" aria-haspopup="true" aria-expanded="false" aria-controls="appMenu"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <div class="appmenu-pop" id="appMenu" hidden>
+        <div class="am-row"><span class="am-lbl" id="amLang">Language</span>
+          <div class="am-seg lang" role="group" aria-labelledby="amLang">
+            <button id="lang-cs" data-act="lang" data-v="cs" aria-pressed="true">Čeština</button>
+            <button id="lang-en" data-act="lang" data-v="en" aria-pressed="false">English</button>
+          </div></div>
+        <div class="am-row"><span class="am-lbl" id="amTheme">Appearance</span>
+          <div class="am-seg" role="radiogroup" aria-labelledby="amTheme">
+            <button type="button" role="radio" id="thDark" data-act="set-theme" data-v="dark" aria-checked="true"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><span></span></button>
+            <button type="button" role="radio" id="thLight" data-act="set-theme" data-v="light" aria-checked="false"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg><span></span></button>
+          </div></div>
+        <div class="am-row"><span class="am-lbl" id="amPal">Colours</span>
+          <div class="am-seg palsw" id="palSw" role="radiogroup" aria-labelledby="amPal">
+            <button type="button" role="radio" class="ps-lantern" data-act="palette" data-v="lantern" aria-checked="true"><i aria-hidden="true"></i><span class="ps-n"></span></button>
+            <button type="button" role="radio" class="ps-ocean" data-act="palette" data-v="ocean" aria-checked="false"><i aria-hidden="true"></i><span class="ps-n"></span></button>
+          </div></div>
+        <button class="am-help" id="infoBtn" type="button" data-act="info" aria-haspopup="dialog"><span class="am-i" aria-hidden="true">i</span><span id="amHelp"></span></button>
+      </div>
     </div>
-    <button class="infobtn" id="infoBtn" data-act="info" aria-haspopup="dialog">i</button>
   </div>
 </header>
 <main id="main"></main>
@@ -957,7 +990,7 @@ const L={
   dlBackup:'Stáhnout celou zálohu',ulBackup:'Nahrát soubor…',
   importQ:(i,t)=>`Nahrát zálohu (${i} věcí, ${t} cest)? Současná data se přepíšou.`,upload:'Nahrát',
   imported:'Záloha nahrána.',noDl:'Stahování souborů tady není dostupné.',dlDone:'Záloha stažena.',dlFail:'Zálohu se nepodařilo stáhnout.',
-  badFile:'Tenhle soubor není záloha z aplikace Packed.',fileName:'packed-zaloha-',appName:'Packed',piecesPacked:'Sbalené kusy',palLabel:'Barevné téma',palLantern:'Lucerna',palOcean:'Oceán',showMore:'Zobrazit více',showLess:'Zobrazit méně',edit:'Upravit',saveChanges:'Uložit změny',saveAnyway:'Přesto uložit',editNote:'Věci se při změně termínu přesunou podle pořadí dnů: 1. den zůstane 1. dnem.',shortenWarn:n=>`Cesta se zkrátí a ${n} ${csPl(n,'den','dny','dní')} na konci se smaže i s vybranými věcmi. Klikni na „Přesto uložit“.`,moveTo:'Přesunout do kategorie',newCat:'Nová kategorie',newCatOpt:'+ Nová kategorie…',newCatPh:'Název nové kategorie',ok:'OK',collapseAll:'Sbalit vše',expandAll:'Rozbalit vše',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Přepnout na světlý vzhled',toDark:'Přepnout na tmavý vzhled',madeBy:'Made by',
+  badFile:'Tenhle soubor není záloha z aplikace Packed.',fileName:'packed-zaloha-',appName:'Packed',piecesPacked:'Sbalené kusy',palLabel:'Barvy',palLantern:'Lucerna',palOcean:'Oceán',mLang:'Jazyk',mTheme:'Vzhled',mDark:'Tmavý',mLight:'Světlý',mSettings:'Nastavení',showMore:'Zobrazit více',showLess:'Zobrazit méně',edit:'Upravit',saveChanges:'Uložit změny',saveAnyway:'Přesto uložit',editNote:'Věci se při změně termínu přesunou podle pořadí dnů: 1. den zůstane 1. dnem.',shortenWarn:n=>`Cesta se zkrátí a ${n} ${csPl(n,'den','dny','dní')} na konci se smaže i s vybranými věcmi. Klikni na „Přesto uložit“.`,moveTo:'Přesunout do kategorie',newCat:'Nová kategorie',newCatOpt:'+ Nová kategorie…',newCatPh:'Název nové kategorie',ok:'OK',collapseAll:'Sbalit vše',expandAll:'Rozbalit vše',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Přepnout na světlý vzhled',toDark:'Přepnout na tmavý vzhled',madeBy:'Made by',
   pdfBtn:'Stáhnout PDF',share:'Sdílet seznam',shareTitle:'Sdílet balicí seznam',shareSys:'Sdílet…',shareSysSub:'AirDrop, Zprávy a další aplikace',email:'E-mail',copyText:'Kopírovat text',copied:'Zkopírováno ✓',shareMade:'Vytvořeno v aplikaci Packed',pdfLabel:'BALICÍ SEZNAM',pdfPacked:(d,t)=>`sbaleno ${d} z ${t}`,pdfList:'Co zabalit',pdfByDay:'Po dnech',pdfDone:'PDF staženo.',pdfFail:'PDF se nepodařilo vytvořit.',coffee:'Buy me a coffee',
   info:'Nápověda',helpTitle:'Jak používat Packed',close:'Rozumím',helpLinks:'Ťukni na krok a jsi rovnou tam.',
   help:[['Inventář','Přidej do inventáře věci, které běžně bereš.'],
@@ -1008,7 +1041,7 @@ const L={
   dlBackup:'Download full backup',ulBackup:'Upload file…',
   importQ:(i,t)=>`Upload backup (${i} items, ${t} trips)? Your current data will be replaced.`,upload:'Upload',
   imported:'Backup uploaded.',noDl:'File downloads aren’t available here.',dlDone:'Backup downloaded.',dlFail:'Couldn’t download the backup.',
-  badFile:'This file isn’t a Packed backup.',fileName:'packed-backup-',appName:'Packed',piecesPacked:'Pieces packed',palLabel:'Colour theme',palLantern:'Lantern',palOcean:'Ocean',showMore:'Show more',showLess:'Show less',edit:'Edit',saveChanges:'Save changes',saveAnyway:'Save anyway',editNote:'If you change the dates, your plan moves with the day order: day 1 stays day 1.',shortenWarn:n=>`The trip gets shorter: ${n} ${enPl(n,'day','days')} at the end will be removed with their items. Tap “Save anyway” to continue.`,moveTo:'Move to category',newCat:'New category',newCatOpt:'+ New category…',newCatPh:'New category name',ok:'OK',collapseAll:'Collapse all',expandAll:'Expand all',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Switch to light mode',toDark:'Switch to dark mode',madeBy:'Made by',
+  badFile:'This file isn’t a Packed backup.',fileName:'packed-backup-',appName:'Packed',piecesPacked:'Pieces packed',palLabel:'Colours',palLantern:'Lantern',palOcean:'Ocean',mLang:'Language',mTheme:'Appearance',mDark:'Dark',mLight:'Light',mSettings:'Settings',showMore:'Show more',showLess:'Show less',edit:'Edit',saveChanges:'Save changes',saveAnyway:'Save anyway',editNote:'If you change the dates, your plan moves with the day order: day 1 stays day 1.',shortenWarn:n=>`The trip gets shorter: ${n} ${enPl(n,'day','days')} at the end will be removed with their items. Tap “Save anyway” to continue.`,moveTo:'Move to category',newCat:'New category',newCatOpt:'+ New category…',newCatPh:'New category name',ok:'OK',collapseAll:'Collapse all',expandAll:'Expand all',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Switch to light mode',toDark:'Switch to dark mode',madeBy:'Made by',
   pdfBtn:'Download PDF',share:'Share list',shareTitle:'Share packing list',shareSys:'Share…',shareSysSub:'AirDrop, Messages and other apps',email:'Email',copyText:'Copy text',copied:'Copied ✓',shareMade:'Made with Packed',pdfLabel:'PACKING LIST',pdfPacked:(d,t)=>`${d} of ${t} packed`,pdfList:'What to pack',pdfByDay:'Day by day',pdfDone:'PDF downloaded.',pdfFail:'Couldn’t create the PDF.',coffee:'Buy me a coffee',
   info:'Help',helpTitle:'How to use Packed',close:'Got it',helpLinks:'Tap any step to go straight there.',
   help:[['Inventory','Add to inventory things you usually take.'],
@@ -1168,7 +1201,8 @@ function applyTheme(){const t=state.theme==='light'?'light':'dark';document.docu
   const pl=state.palette==='ocean'?'ocean':'lantern';document.documentElement.setAttribute('data-palette',pl);try{localStorage.setItem('sbaleno-palette',pl)}catch(e){}
   const m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',pl==='ocean'?(t==='dark'?'#000C11':'#001219'):(t==='dark'?'#26271A':'#583617'));
   const ps=document.getElementById('palSw');if(ps){ps.setAttribute('aria-label',T.palLabel);ps.querySelectorAll('[role=radio]').forEach(x=>{const on=x.dataset.v===pl;x.setAttribute('aria-checked',on);x.tabIndex=on?0:-1;const l=x.dataset.v==='ocean'?T.palOcean:T.palLantern;x.setAttribute('aria-label',l);x.title=l})}
-  const b=document.getElementById('themeBtn');if(b){const l=t==='dark'?T.toLight:T.toDark;b.setAttribute('aria-label',l);b.title=l}}
+  [['thDark','dark',T.mDark],['thLight','light',T.mLight]].forEach(([id,v,l])=>{const x=document.getElementById(id);if(x){x.setAttribute('aria-checked',t===v);x.tabIndex=t===v?0:-1;x.querySelector('span').textContent=l}});
+  document.querySelectorAll('#palSw .ps-n').forEach(n=>{n.textContent=n.parentElement.dataset.v==='ocean'?T.palOcean:T.palLantern})}
 const CHEV='<svg class="chev" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>';
 /* most views start folded and remember what you opened; Packing starts open and remembers what you closed */
 const foldInv=v=>v==='pack',foldKey=v=>foldInv(v)?'packClosed':v;
@@ -1244,7 +1278,8 @@ function render(){
     if(lp&&lp.id===ui.tripId&&lp.done<lp.total&&pr.total&&pr.done===pr.total)celebrate();
     ui.lastPack={id:ui.tripId,done:pr.done,total:pr.total}}else ui.lastPack=null;
   main.querySelectorAll('input[data-partial]').forEach(c=>{c.indeterminate=true});
-  const ib=document.getElementById('infoBtn');ib.setAttribute('aria-label',T.info);ib.title=T.info;
+  document.getElementById('amHelp').textContent=T.helpTitle;document.getElementById('amLang').textContent=T.mLang;document.getElementById('amTheme').textContent=T.mTheme;document.getElementById('amPal').textContent=T.palLabel;
+  {const mb=document.getElementById('appMenuBtn');mb.setAttribute('aria-label',T.mSettings);mb.title=T.mSettings}
   const hp=document.getElementById('help');hp.hidden=!ui.help;
   if(ui.help)document.getElementById('helpCard').innerHTML=`<h1 id="helpTitle" style="font-size:24px">${esc(T.helpTitle).replace('Packed','<span class="help-brand">Packed</span>')}</h1>
     <p class="help-about">${esc(T.about)}</p>
@@ -1704,6 +1739,11 @@ document.addEventListener('click',e=>{if(!e.target.closest('.catpick'))closeCatP
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeCatPops()});
 
 /* trip options menu (Download PDF, Delete trip) */
+function toggleAppMenu(open){const pop=document.getElementById('appMenu'),btn=document.getElementById('appMenuBtn');if(!pop||!btn)return;
+  const want=open===undefined?pop.hidden:open;pop.hidden=!want;btn.setAttribute('aria-expanded',want);
+  if(want){const f=pop.querySelector('[aria-pressed="true"],[aria-checked="true"]');if(f)f.focus({preventScroll:true})}}
+document.addEventListener('click',e=>{const pop=document.getElementById('appMenu');if(pop&&!pop.hidden&&!e.target.closest('.appmenu'))toggleAppMenu(false)},true);
+document.addEventListener('keydown',e=>{const pop=document.getElementById('appMenu');if(e.key==='Escape'&&pop&&!pop.hidden){toggleAppMenu(false);document.getElementById('appMenuBtn').focus()}});
 function toggleTripMenu(open){const pop=document.querySelector('.menu-pop'),btn=document.querySelector('[data-act="trip-menu"]');if(!pop||!btn)return;
   const o=open===undefined?pop.hidden:open;pop.hidden=!o;btn.setAttribute('aria-expanded',o);if(o){const f=pop.querySelector('button:not([disabled])');if(f)f.focus({preventScroll:true})}}
 document.addEventListener('click',e=>{if(!e.target.closest('.tr-menu'))toggleTripMenu(false)},true);
@@ -1763,6 +1803,8 @@ document.addEventListener('click',e=>{
     case 'fold':{const v=b.dataset.v,c=b.dataset.c,k=foldKey(v);state.open=state.open||{};const l=new Set(state.open[k]||[]);l.has(c)?l.delete(c):l.add(c);state.open[k]=[...l];save();break}
     case 'foldall':{const v=b.dataset.v,k=foldKey(v);state.open=state.open||{};state.open[k]=(!!b.dataset.all)!==foldInv(v)?catOrder():[];save();break}
     case 'theme':state.theme=state.theme==='light'?'dark':'light';save();break;
+    case 'set-theme':state.theme=b.dataset.v==='light'?'light':'dark';save();break;
+    case 'app-menu':toggleAppMenu();return;
     case 'palette':state.palette=b.dataset.v==='ocean'?'ocean':'lantern';save();break;
     case 'lang':{const to=b.dataset.v;if(to===lang())return;translateStarter(to);state.lang=to;save();break}
     case 'tab':ui.tab=b.dataset.v;ui.delItem=null;break;
@@ -1798,7 +1840,7 @@ document.addEventListener('click',e=>{
     case 'pk-inc':case 'pk-dec':{const x=aggregate(t).find(z=>z.it.id===id);if(!x)break;setPacked(t,id,packedN(t,x)+(a==='pk-inc'?1:-1),x.qty);save();ui.patch=true;break}
     case 'reset-pack':{const prev=JSON.parse(JSON.stringify(t.packed||{})),tid=t.id;t.packed={};save();
       showUndo(T.undoUnchecked,()=>{const tr=state.trips.find(x=>x.id===tid);if(tr){tr.packed=prev;ui.lastPack=null;save();render()}});break}
-    case 'info':ui.help=true;render();{const c=document.getElementById('helpClose');if(c)c.focus()}return;
+    case 'info':toggleAppMenu(false);ui.help=true;render();{const c=document.getElementById('helpClose');if(c)c.focus()}return;
     case 'help-close':ui.help=false;render();document.getElementById('infoBtn').focus();return;
     case 'help-go':helpGo(b.dataset.v);return;
     case 'trip-menu':toggleTripMenu();return;
