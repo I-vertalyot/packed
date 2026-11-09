@@ -947,6 +947,13 @@ body{transition:background-color .35s ease}
 :root[data-mode="days"] .modebar .seg button[aria-pressed="true"]::after{background:var(--mcol)}
 :root[data-mode="days"] .credit .credit-box{box-shadow:none}
 
+/* ===== page background: soft gradient + fine film grain (background only, never over the content boxes) ===== */
+body{position:relative;isolation:isolate;background-image:linear-gradient(180deg,transparent 0,transparent 26%,color-mix(in srgb,#000 16%,transparent) 100%),radial-gradient(130% 70% at 85% 0%,color-mix(in srgb,#fff 6%,transparent),transparent 60%);background-attachment:fixed,fixed;background-repeat:no-repeat}
+:root:not([data-app-theme="dark"]) body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,color-mix(in srgb,#3B2511 9%,transparent) 100%),radial-gradient(130% 70% at 85% 0%,color-mix(in srgb,#fff 35%,transparent),transparent 60%)}
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1.1 -0.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:180px 180px;opacity:.12;mix-blend-mode:overlay}
+:root:not([data-app-theme="dark"]) body::after{opacity:.26;mix-blend-mode:multiply}
+@media (prefers-reduced-transparency:reduce){body::after{display:none}}
+
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
 :root[data-mode="days"]{--page:var(--bg)}
@@ -997,6 +1004,8 @@ body{transition:background-color .35s ease}
 :root[data-mode="days"]{--page:var(--bg)}
 :root[data-mode="days"]{--mcol:var(--on-wine)}
 :root[data-mode="days"]:not([data-app-theme="dark"]) .modebar .seg button[data-v="days"][aria-pressed="true"] .seg-badge{background:transparent}
+body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,rgba(0,0,0,0.16) 100%),radial-gradient(130% 70% at 85% 0%,rgba(255,255,255,0.06),transparent 60%)}
+:root:not([data-app-theme="dark"]) body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,rgba(59,37,17,0.09) 100%),radial-gradient(130% 70% at 85% 0%,rgba(255,255,255,0.35),transparent 60%)}
 }
 </style>
 </head>
@@ -1631,7 +1640,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.09-2043';
+const APP_BUILD='2026.11.09-2129';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
