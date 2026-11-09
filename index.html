@@ -268,7 +268,7 @@ button.ig{appearance:none;-webkit-appearance:none;background:none;border:0;borde
 .themebtn:hover{border-color:var(--bar-fg)}
 :root[data-app-theme="dark"] .themebtn .i-moon,:root:not([data-app-theme="dark"]) .themebtn .i-sun{display:none}
 /* top row: logo · language · theme · help; second row: the tabs */
-.bar-in>.status{order:1}.bar-in>.lang{order:2}.bar-in>.themebtn{order:3}.bar-in>.infobtn{order:4}.bar-in>.tabs{order:5;flex-basis:100%}
+.bar-in>.status{order:1}.bar-in>.lang{order:2}.bar-in>.themebtn{order:3}.bar-in>.palsw{order:3}.bar-in>.infobtn{order:4}.bar-in>.tabs{order:5;flex-basis:100%}
 .bar-in>.themebtn,.bar-in>.infobtn{margin-top:0}
 .tabs button{background:none;border:0;color:var(--bar-muted);padding:10px 12px 12px;font-family:var(--f-display);font-weight:700;font-stretch:87%;font-size:15px;text-transform:uppercase;letter-spacing:.05em;border-bottom:3px solid transparent}
 .tabs button[aria-selected="true"]{color:var(--bar-fg);border-bottom-color:var(--sign)}
@@ -801,10 +801,50 @@ input[type=date].inp::-webkit-calendar-picker-indicator:hover{opacity:1;backgrou
 /* light theme: the three lightest category fills take dark text */
 :root:not([data-app-theme="dark"]) :is(.chip.on,.quickadd .qa-cat)[style*="--c-teal"],:root:not([data-app-theme="dark"]) :is(.chip.on,.quickadd .qa-cat)[style*="--c-orange"],
 :root:not([data-app-theme="dark"]) :is(.pgroup[style*="--c-teal"],.pgroup[style*="--c-orange"]) .pflow>.pick,:root:not([data-app-theme="dark"]) :is(.pgroup[style*="--c-teal"],.pgroup[style*="--c-orange"]) .pm{color:#3B2511}
+
+/* ===== colour theme switch (Lantern / Ocean): two swatches in a radio pill ===== */
+.palsw{display:inline-flex;align-items:center;gap:2px;padding:2px;border:1.5px solid var(--bar-line);border-radius:999px;align-self:center}
+.palsw button{position:relative;width:26px;height:26px;border:0;border-radius:50%;padding:0;background:none;display:grid;place-items:center;cursor:pointer}
+.palsw button::after{content:"";position:absolute;inset:-6px -2px}
+.palsw i{width:16px;height:16px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25);transition:transform .15s}
+.palsw .ps-lantern i{background:conic-gradient(#E2802E 0 50%,#583617 0)}
+.palsw .ps-ocean i{background:conic-gradient(#EE9B00 0 50%,#005F73 0)}
+.palsw button[aria-checked="true"]{background:color-mix(in srgb,var(--bar-fg) 18%,transparent)}
+.palsw button[aria-checked="true"] i{transform:scale(1.12);box-shadow:0 0 0 2px var(--bar-fg)}
+.palsw button[aria-checked="false"] i{opacity:.7}
+.palsw button:focus-visible{outline:2px solid var(--sign);outline-offset:1px}
+@media (max-width:400px){.brand{font-size:23px}.bar .lang button{min-width:34px}}
+
+/* ===== Ocean palette: navy, petrol, teal, mint, sand + amber, ochre, rust, red, wine ===== */
+:root[data-palette="ocean"]:not([data-app-theme="dark"]){
+  --bg:#F3EDDB;--surface:#FBF8EF;--ink:#001219;--muted:#3E5660;--line:#D9CDA6;--chip:#E9E1C8;
+  --bar:#001219;--bar-fg:#F3EDDB;--bar-muted:#94D2BD;--bar-line:#173A45;
+  --sign:#EE9B00;--sign-ink:#001219;--gold:#EE9B00;--sign-text:#A84A02;--ok:#007E80;--danger:#AE2012;
+  --mode-days:#005F73;--on-days:#FFFFFF;--mode-pack:#94D2BD;--on-pack:#001219;
+  --c-blue:#005F73;--c-teal:#0A8486;--c-green:#3E8E73;--c-yellow:#C98500;--c-orange:#CA6702;--c-red:#AE2012;--c-pink:#9B2226;--c-purple:#2F4858;--c-gray:#7E7B6C;
+  --shadow-card:0 1px 2px rgba(0,18,25,.08),0 8px 24px rgba(0,18,25,.08)}
+:root[data-palette="ocean"][data-app-theme="dark"]{
+  --bg:#001219;--surface:#06222B;--ink:#EDE6D1;--muted:#A7BDBE;--line:#1B3E49;--chip:#0D2F3A;
+  --bar:#000C11;--bar-fg:#E9D8A6;--bar-muted:#94D2BD;--bar-line:#173A45;
+  --sign:#EE9B00;--sign-ink:#001219;--gold:#EE9B00;--sign-text:#F2AE33;--ok:#94D2BD;--danger:#E8705F;
+  --mode-days:#0A9396;--on-days:#001219;--mode-pack:#94D2BD;--on-pack:#001219;
+  --c-blue:#4FA3B5;--c-teal:#3CC1C3;--c-green:#94D2BD;--c-yellow:#F5B83A;--c-orange:#E58A2E;--c-red:#E8705F;--c-pink:#D9777C;--c-purple:#8FA8B8;--c-gray:#B8B3A3;
+  --shadow-card:none}
+/* light theme in Ocean: dark text on the lightest category fills */
+:root[data-palette="ocean"]:not([data-app-theme="dark"]) :is(.chip.on,.quickadd .qa-cat)[style*="--c-yellow"],:root[data-palette="ocean"]:not([data-app-theme="dark"]) .pgroup[style*="--c-yellow"] :is(.pflow>.pick,.pm){color:#001219}
+:root[data-palette="ocean"]:not([data-app-theme="dark"]) :is(.chip.on,.quickadd .qa-cat)[style*="--c-teal"],:root[data-palette="ocean"]:not([data-app-theme="dark"]) :is(.chip.on,.quickadd .qa-cat)[style*="--c-orange"],
+:root[data-palette="ocean"]:not([data-app-theme="dark"]) :is(.pgroup[style*="--c-teal"],.pgroup[style*="--c-orange"]) :is(.pflow>.pick,.pm){color:#FFFFFF}
+/* Ocean glow and logo use amber and navy */
+:root[data-palette="ocean"] .btn.primary{box-shadow:0 0 0 4px rgba(238,155,0,.16),0 0 22px rgba(238,155,0,.36)}
+:root[data-palette="ocean"] .brand-icon rect:first-child{fill:#005F73}
+:root[data-palette="ocean"] .brand-icon rect:nth-child(2){fill:#EE9B00}
+:root[data-palette="ocean"] .brand-icon path{stroke:#001219}
+:root[data-palette="ocean"] .t-new{box-shadow:0 0 12px rgba(238,155,0,.45)}
+:root[data-palette="ocean"][data-app-theme="dark"] .pgroup .pflow>.pick,:root[data-palette="ocean"][data-app-theme="dark"] .chip.on{color:#001219}
 </style>
 </head>
 <body>
-<script>(function(){var t='dark';try{t=localStorage.getItem('sbaleno-theme')||'dark'}catch(e){}document.documentElement.setAttribute('data-app-theme',t==='light'?'light':'dark')})();</script>
+<script>(function(){var t='dark';try{t=localStorage.getItem('sbaleno-theme')||'dark'}catch(e){}document.documentElement.setAttribute('data-app-theme',t==='light'?'light':'dark');var pl='lantern';try{pl=localStorage.getItem('sbaleno-palette')||'lantern'}catch(e){}document.documentElement.setAttribute('data-palette',pl==='ocean'?'ocean':'lantern')})();</script>
 
 <header class="bar">
   <div class="bar-in">
@@ -819,6 +859,10 @@ input[type=date].inp::-webkit-calendar-picker-indicator:hover{opacity:1;backgrou
       <button role="tab" id="tab-inv" data-act="tab" data-v="inv" aria-selected="false"></button>
     </nav>
     <button class="themebtn" id="themeBtn" data-act="theme" type="button"><svg class="i-sun" width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg><svg class="i-moon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.6 8.6 0 1 0 11.1 11.1z"/></svg></button>
+    <div class="palsw" id="palSw" role="radiogroup" aria-label="Colors">
+      <button type="button" role="radio" class="ps-lantern" data-act="palette" data-v="lantern" aria-checked="true"><i aria-hidden="true"></i></button>
+      <button type="button" role="radio" class="ps-ocean" data-act="palette" data-v="ocean" aria-checked="false"><i aria-hidden="true"></i></button>
+    </div>
     <button class="infobtn" id="infoBtn" data-act="info" aria-haspopup="dialog">i</button>
   </div>
 </header>
@@ -890,7 +934,7 @@ const L={
   dlBackup:'Stáhnout celou zálohu',ulBackup:'Nahrát soubor…',
   importQ:(i,t)=>`Nahrát zálohu (${i} věcí, ${t} cest)? Současná data se přepíšou.`,upload:'Nahrát',
   imported:'Záloha nahrána.',noDl:'Stahování souborů tady není dostupné.',dlDone:'Záloha stažena.',dlFail:'Zálohu se nepodařilo stáhnout.',
-  badFile:'Tenhle soubor není záloha z aplikace Packed.',fileName:'packed-zaloha-',appName:'Packed',piecesPacked:'Sbalené kusy',showMore:'Zobrazit více',showLess:'Zobrazit méně',edit:'Upravit',saveChanges:'Uložit změny',saveAnyway:'Přesto uložit',editNote:'Věci se při změně termínu přesunou podle pořadí dnů: 1. den zůstane 1. dnem.',shortenWarn:n=>`Cesta se zkrátí a ${n} ${csPl(n,'den','dny','dní')} na konci se smaže i s vybranými věcmi. Klikni na „Přesto uložit“.`,moveTo:'Přesunout do kategorie',newCat:'Nová kategorie',newCatOpt:'+ Nová kategorie…',newCatPh:'Název nové kategorie',ok:'OK',collapseAll:'Sbalit vše',expandAll:'Rozbalit vše',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Přepnout na světlý vzhled',toDark:'Přepnout na tmavý vzhled',madeBy:'Made by',
+  badFile:'Tenhle soubor není záloha z aplikace Packed.',fileName:'packed-zaloha-',appName:'Packed',piecesPacked:'Sbalené kusy',palLabel:'Barevné téma',palLantern:'Lucerna',palOcean:'Oceán',showMore:'Zobrazit více',showLess:'Zobrazit méně',edit:'Upravit',saveChanges:'Uložit změny',saveAnyway:'Přesto uložit',editNote:'Věci se při změně termínu přesunou podle pořadí dnů: 1. den zůstane 1. dnem.',shortenWarn:n=>`Cesta se zkrátí a ${n} ${csPl(n,'den','dny','dní')} na konci se smaže i s vybranými věcmi. Klikni na „Přesto uložit“.`,moveTo:'Přesunout do kategorie',newCat:'Nová kategorie',newCatOpt:'+ Nová kategorie…',newCatPh:'Název nové kategorie',ok:'OK',collapseAll:'Sbalit vše',expandAll:'Rozbalit vše',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Přepnout na světlý vzhled',toDark:'Přepnout na tmavý vzhled',madeBy:'Made by',
   pdfBtn:'Stáhnout PDF',share:'Sdílet seznam',shareTitle:'Sdílet balicí seznam',shareSys:'Sdílet…',shareSysSub:'AirDrop, Zprávy a další aplikace',email:'E-mail',copyText:'Kopírovat text',copied:'Zkopírováno ✓',shareMade:'Vytvořeno v aplikaci Packed',pdfLabel:'BALICÍ SEZNAM',pdfPacked:(d,t)=>`sbaleno ${d} z ${t}`,pdfList:'Co zabalit',pdfByDay:'Po dnech',pdfDone:'PDF staženo.',pdfFail:'PDF se nepodařilo vytvořit.',coffee:'Buy me a coffee',
   info:'Nápověda',helpTitle:'Jak používat Packed',close:'Rozumím',helpLinks:'Ťukni na krok a jsi rovnou tam.',
   help:[['Inventář','Přidej do inventáře věci, které běžně bereš.'],
@@ -941,7 +985,7 @@ const L={
   dlBackup:'Download full backup',ulBackup:'Upload file…',
   importQ:(i,t)=>`Upload backup (${i} items, ${t} trips)? Your current data will be replaced.`,upload:'Upload',
   imported:'Backup uploaded.',noDl:'File downloads aren’t available here.',dlDone:'Backup downloaded.',dlFail:'Couldn’t download the backup.',
-  badFile:'This file isn’t a Packed backup.',fileName:'packed-backup-',appName:'Packed',piecesPacked:'Pieces packed',showMore:'Show more',showLess:'Show less',edit:'Edit',saveChanges:'Save changes',saveAnyway:'Save anyway',editNote:'If you change the dates, your plan moves with the day order: day 1 stays day 1.',shortenWarn:n=>`The trip gets shorter: ${n} ${enPl(n,'day','days')} at the end will be removed with their items. Tap “Save anyway” to continue.`,moveTo:'Move to category',newCat:'New category',newCatOpt:'+ New category…',newCatPh:'New category name',ok:'OK',collapseAll:'Collapse all',expandAll:'Expand all',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Switch to light mode',toDark:'Switch to dark mode',madeBy:'Made by',
+  badFile:'This file isn’t a Packed backup.',fileName:'packed-backup-',appName:'Packed',piecesPacked:'Pieces packed',palLabel:'Colour theme',palLantern:'Lantern',palOcean:'Ocean',showMore:'Show more',showLess:'Show less',edit:'Edit',saveChanges:'Save changes',saveAnyway:'Save anyway',editNote:'If you change the dates, your plan moves with the day order: day 1 stays day 1.',shortenWarn:n=>`The trip gets shorter: ${n} ${enPl(n,'day','days')} at the end will be removed with their items. Tap “Save anyway” to continue.`,moveTo:'Move to category',newCat:'New category',newCatOpt:'+ New category…',newCatPh:'New category name',ok:'OK',collapseAll:'Collapse all',expandAll:'Expand all',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Switch to light mode',toDark:'Switch to dark mode',madeBy:'Made by',
   pdfBtn:'Download PDF',share:'Share list',shareTitle:'Share packing list',shareSys:'Share…',shareSysSub:'AirDrop, Messages and other apps',email:'Email',copyText:'Copy text',copied:'Copied ✓',shareMade:'Made with Packed',pdfLabel:'PACKING LIST',pdfPacked:(d,t)=>`${d} of ${t} packed`,pdfList:'What to pack',pdfByDay:'Day by day',pdfDone:'PDF downloaded.',pdfFail:'Couldn’t create the PDF.',coffee:'Buy me a coffee',
   info:'Help',helpTitle:'How to use Packed',close:'Got it',helpLinks:'Tap any step to go straight there.',
   help:[['Inventory','Add to inventory things you usually take.'],
@@ -1012,7 +1056,7 @@ function starter(lg){
 function mergeDays(p){const all={};Object.values(p&&typeof p==='object'?p:{}).forEach(o=>{if(o&&typeof o==='object')Object.entries(o).forEach(([id,q])=>{if(q)all[id]=Math.min(99,(all[id]||0)+(+q||1))})});return {all}}
 function sanitize(d){
   if(!d||typeof d!=='object')return starter();
-  return {v:1,tutorialDone:!!d.tutorialDone,hidePacked:!!d.hidePacked,wholeOpen:!!d.wholeOpen,dayOpen:!!d.dayOpen,open:(d.open&&typeof d.open==='object')?JSON.parse(JSON.stringify(d.open)):{},theme:d.theme==='light'?'light':'dark',lang:d.lang==='en'?'en':'cs',catColors:(d.catColors&&typeof d.catColors==='object')?{...d.catColors}:{},cats:Array.isArray(d.cats)?d.cats.slice():[],items:Array.isArray(d.items)?d.items.map(x=>({...x})):[],
+  return {v:1,tutorialDone:!!d.tutorialDone,hidePacked:!!d.hidePacked,palette:d.palette==='ocean'?'ocean':'lantern',wholeOpen:!!d.wholeOpen,dayOpen:!!d.dayOpen,open:(d.open&&typeof d.open==='object')?JSON.parse(JSON.stringify(d.open)):{},theme:d.theme==='light'?'light':'dark',lang:d.lang==='en'?'en':'cs',catColors:(d.catColors&&typeof d.catColors==='object')?{...d.catColors}:{},cats:Array.isArray(d.cats)?d.cats.slice():[],items:Array.isArray(d.items)?d.items.map(x=>({...x})):[],
     trips:Array.isArray(d.trips)?d.trips.map(t=>({...t,picks:mergeDays(t.picks),packed:{...(t.packed||{})}})):[]};
 }
 function loadLocal(){try{const s=localStorage.getItem(KEY);return s?sanitize(JSON.parse(s)):null}catch(e){return null}}
@@ -1098,7 +1142,9 @@ const INSTALLED=(()=>{ /* true only inside the Google Play / App Store apps, nev
 const credit=()=>`<span class="by">${esc(T.madeBy)} <button class="ig" type="button" aria-haspopup="dialog" title="@i.vertalyot">Vert Alyot</button></span>${INSTALLED?'':`<span class="sep" aria-hidden="true">·</span><a class="coffee" href="${BMC}" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">☕</span> ${esc(T.coffee)}</a>`}`;
 function applyTheme(){const t=state.theme==='light'?'light':'dark';document.documentElement.setAttribute('data-app-theme',t);
   try{localStorage.setItem('sbaleno-theme',t)}catch(e){}
-  const m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',t==='dark'?'#26271A':'#583617');
+  const pl=state.palette==='ocean'?'ocean':'lantern';document.documentElement.setAttribute('data-palette',pl);try{localStorage.setItem('sbaleno-palette',pl)}catch(e){}
+  const m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',pl==='ocean'?(t==='dark'?'#000C11':'#001219'):(t==='dark'?'#26271A':'#583617'));
+  const ps=document.getElementById('palSw');if(ps){ps.setAttribute('aria-label',T.palLabel);ps.querySelectorAll('[role=radio]').forEach(x=>{const on=x.dataset.v===pl;x.setAttribute('aria-checked',on);x.tabIndex=on?0:-1;const l=x.dataset.v==='ocean'?T.palOcean:T.palLantern;x.setAttribute('aria-label',l);x.title=l})}
   const b=document.getElementById('themeBtn');if(b){const l=t==='dark'?T.toLight:T.toDark;b.setAttribute('aria-label',l);b.title=l}}
 const CHEV='<svg class="chev" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>';
 /* most views start folded and remember what you opened; Packing starts open and remembers what you closed */
@@ -1627,7 +1673,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')endCeleb()});
 
 /* edit-trip popup: tap outside or press Escape to close */
 document.addEventListener('click',e=>{if(e.target.id==='delModal'){ui.delTrip=false;render();return}if(e.target.id==='clearModal'){ui.clearAsk=false;render();return}if(e.target.id==='shareModal'){ui.share=false;render();return}if(e.target.id==='editModal'){ui.delTrip=false;ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;render()}});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ui.delTrip){ui.delTrip=false;render();return}if(e.key==='Escape'&&ui.clearAsk){ui.clearAsk=false;render();return}if(e.key==='Escape'&&ui.share){ui.share=false;render();return}if(e.key==='Escape'&&ui.editId){ui.delTrip=false;ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;render()}});
+document.addEventListener('keydown',e=>{const rg=e.target.closest&&e.target.closest('#palSw');if(rg&&/^Arrow(Left|Right|Up|Down)$/.test(e.key)){e.preventDefault();state.palette=state.palette==='ocean'?'lantern':'ocean';save();render();const n=document.querySelector('#palSw [aria-checked="true"]');if(n)n.focus();return}if(e.key==='Escape'&&ui.delTrip){ui.delTrip=false;render();return}if(e.key==='Escape'&&ui.clearAsk){ui.clearAsk=false;render();return}if(e.key==='Escape'&&ui.share){ui.share=false;render();return}if(e.key==='Escape'&&ui.editId){ui.delTrip=false;ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;render()}});
 
 /* category popups close on an outside tap or Escape */
 function closeCatPops(){document.querySelectorAll('.cp-pop').forEach(p=>{if(!p.hidden){p.hidden=true;const bt=p.parentElement.querySelector('.cp-btn');if(bt)bt.setAttribute('aria-expanded','false')}})}
@@ -1694,6 +1740,7 @@ document.addEventListener('click',e=>{
     case 'fold':{const v=b.dataset.v,c=b.dataset.c,k=foldKey(v);state.open=state.open||{};const l=new Set(state.open[k]||[]);l.has(c)?l.delete(c):l.add(c);state.open[k]=[...l];save();break}
     case 'foldall':{const v=b.dataset.v,k=foldKey(v);state.open=state.open||{};state.open[k]=(!!b.dataset.all)!==foldInv(v)?catOrder():[];save();break}
     case 'theme':state.theme=state.theme==='light'?'dark':'light';save();break;
+    case 'palette':state.palette=b.dataset.v==='ocean'?'ocean':'lantern';save();break;
     case 'lang':{const to=b.dataset.v;if(to===lang())return;translateStarter(to);state.lang=to;save();break}
     case 'tab':ui.tab=b.dataset.v;ui.delItem=null;break;
     case 'new-trip':ui.newTrip=!ui.newTrip;ui.tripErr='';break;
