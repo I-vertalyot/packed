@@ -841,6 +841,13 @@ input[type=date].inp::-webkit-calendar-picker-indicator:hover{opacity:1;backgrou
 :root[data-palette="ocean"] .brand-icon path{stroke:#001219}
 :root[data-palette="ocean"] .t-new{box-shadow:0 0 12px rgba(238,155,0,.45)}
 :root[data-palette="ocean"][data-app-theme="dark"] .pgroup .pflow>.pick,:root[data-palette="ocean"][data-app-theme="dark"] .chip.on{color:#001219}
+
+/* slide-in when switching Collecting / Packing by swipe */
+@keyframes swR{from{transform:translateX(26px);opacity:.35}to{transform:none;opacity:1}}
+@keyframes swL{from{transform:translateX(-26px);opacity:.35}to{transform:none;opacity:1}}
+.swipe-from-right{animation:swR .22s ease-out}
+.swipe-from-left{animation:swL .22s ease-out}
+@media (prefers-reduced-motion:reduce){.swipe-from-right,.swipe-from-left{animation:none}}
 </style>
 </head>
 <body>
@@ -923,7 +930,7 @@ const L={
   wholeTrip:'celá cesta',everyDay:'každý den',
   noPicks:'Zatím nemáš vybrané žádné věci. Přepni na „Sbírání“ a poskládej si, co bereš.',
   allPacked:'Všechno sbaleno. Šťastnou cestu!',celebTitle:'Sbaleno!',celebSub:'Šťastnou cestu!',
-  tut:[['Vítej v Packed','Balicí seznam na cesty. Už nikdy nic nezapomeneš.'],['Inventář','Sepiš si věci, které běžně bereš, roztříděné do barevných kategorií.'],['Sbírání','Vytvoř cestu a přidej do ní věci z inventáře.'],['Balení','Jeden seznam pro celou cestu. Odškrtej, co je v kufru.']],
+  tut:[['Vítej v Packed','Balicí seznam na cesty. Už nikdy nic nezapomeneš.'],['Inventář','Sepiš si věci, které běžně bereš, roztříděné do barevných kategorií.'],['Sbírání','Vytvoř cestu a přidej do ní věci z inventáře.'],['Balení','Jeden seznam pro celou cestu. Odškrtej, co je v kufru. Přejetím do strany přepneš na Sbírání.']],
   undo:'Zpět',undoRemoved:n=>`Odebráno: ${n}`,undoCleared:'Seznam vymazán',undoTripDel:'Cesta smazána',delTripSub:'Cesta i její seznam věcí zmizí. Tohle nejde vrátit zpět.',undoUnchecked:'Odškrtnuto vše',
   tutSkip:'Přeskočit',tutNext:'Další',tutBack:'Zpět',tutGo:'Jdeme na to!',tutAgain:'Zobrazit průvodce',tutLabel:'Průvodce aplikací',packedOf:'věcí sbaleno',resetPack:'Zrušit odškrtnutí',
   inv:'Inventář',thing:'Věc',thingPh:'např. Čelovka',add:'Přidat',
@@ -940,7 +947,7 @@ const L={
   help:[['Inventář','Přidej do inventáře věci, které běžně bereš.'],
     ['Nová cesta','Cesty → „+ Nová cesta“: kam a kdy.'],
     ['Sbírání','Přidej věci z inventáře níže.'],
-    ['Balení','Jeden seznam pro celou cestu. Odškrtej, co je v kufru.'],
+    ['Balení','Jeden seznam pro celou cestu. Odškrtej, co je v kufru. Přejetím do strany přepneš na Sbírání.'],
     ['PDF','„Stáhnout PDF“ = seznam k tisku.'],
     ['Jiné zařízení','Inventář → Export a záloha → „Exportovat inventář“, pak „Nahrát soubor…“.']],
   about:'Balicí seznam na cesty: vyber věci, při balení odškrtávej.',
@@ -991,7 +998,7 @@ const L={
   help:[['Inventory','Add to inventory things you usually take.'],
     ['New trip','Trips → “+ New trip”: where and when.'],
     ['Collecting','Add items from inventory below.'],
-    ['Packing','One list for the whole trip. Tick off what’s in your bag.'],
+    ['Packing','One list for the whole trip. Tick off what’s in your bag. Swipe sideways to switch with Collecting.'],
     ['PDF','“Download PDF” = printable checklist.'],
     ['Another device','Inventory → Export & backup → “Export inventory”, then “Upload file…”.']],
   about:'Your travel packing list: pick your things, tick them off as you pack.',
@@ -1923,6 +1930,22 @@ function quickAdd(pre){
     const act=el.getAttribute('data-act')||'';
     tick(ITEM.test(act)||el.matches('input[type=checkbox],label')?28:20);
   },true);
+})();
+/* swipe sideways inside a trip to switch Collecting <-> Packing */
+(function(){
+  let sx=0,sy=0,st=0,ok=false;
+  const blocked=el=>!!(el.closest&&el.closest('input,textarea,select,.cp-pop,.menu-pop,.modal,[aria-modal="true"],.tut,#help,.help,.pstep,.hp-sw'));
+  document.addEventListener('touchstart',e=>{ok=false;if(e.touches.length!==1||!ui.tripId||ui.share||ui.editId||ui.clearAsk||ui.delTrip)return;
+    const t=e.touches[0];if(t.clientX<24||t.clientX>innerWidth-24)return;/* leave the screen edges to the phone's back gesture */
+    if(blocked(e.target))return;sx=t.clientX;sy=t.clientY;st=Date.now();ok=true},{passive:true});
+  document.addEventListener('touchend',e=>{if(!ok)return;ok=false;const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;
+    if(Date.now()-st>700||Math.abs(dx)<70||Math.abs(dx)<Math.abs(dy)*1.7)return;
+    const to=dx<0?'pack':'days';if(ui.mode===to)return;
+    const btn=document.querySelector('.modebar [data-act="mode"][data-v="'+to+'"]');if(!btn)return;btn.click();
+    const cls=dx<0?'swipe-from-right':'swipe-from-left';
+    document.querySelectorAll('.modebox,.modebox2,.progpanel~.panel').forEach(el=>{el.classList.remove('swipe-from-right','swipe-from-left');void el.offsetWidth;el.classList.add(cls)});
+  },{passive:true});
+  document.addEventListener('touchcancel',()=>{ok=false},{passive:true});
 })();
 render();
 /* first start: show the tutorial (no opening animation) */
