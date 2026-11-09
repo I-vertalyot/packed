@@ -928,6 +928,13 @@ body{transition:background-color .35s ease}
 .qchip:not(.on){padding:0}
 .qchip.on{border-width:1px}
 
+/* Collecting is red (palette red), Packing stays teal: a strong change when switching */
+:root:not([data-app-theme="dark"]){--mode-days:#A3361B;--on-days:#FFFFFF}
+:root[data-app-theme="dark"]{--mode-days:#E07A5F;--on-days:#1A1A10}
+:root[data-palette="ocean"]:not([data-app-theme="dark"]){--mode-days:#AE2012;--on-days:#FFFFFF}
+:root[data-palette="ocean"][data-app-theme="dark"]{--mode-days:#E8705F;--on-days:#001219}
+:root[data-mode="days"]{--page:color-mix(in srgb,var(--mode-days) 6%,var(--bg))}
+
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
 :root[data-mode="days"]{--page:var(--bg)}
@@ -975,6 +982,7 @@ body{transition:background-color .35s ease}
 [style*="--cc"]{--cct:var(--cc)}
 :root[data-app-theme="dark"] [style*="--cc"]{--cct:var(--cc)}
 .palsw button[aria-checked="true"]{background:transparent}
+:root[data-mode="days"]{--page:var(--bg)}
 }
 </style>
 </head>
@@ -1609,7 +1617,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.09-2008';
+const APP_BUILD='2026.11.09-2011';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
