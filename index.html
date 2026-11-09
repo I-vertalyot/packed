@@ -1038,6 +1038,11 @@ body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;bac
 :root[data-app-theme="dark"] .modebar .seg button[aria-pressed="false"] .seg-badge{background:rgba(255,255,255,.08)!important}
 .modebar .seg button[aria-pressed="false"] svg{color:inherit}
 
+/* credit footer always at the very bottom: on short pages it sits at the bottom of the screen, on long pages after the content */
+body{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
+body>main{flex:1 0 auto;width:100%;box-sizing:border-box}
+body>.credit{flex:none;width:100%;box-sizing:border-box;padding-bottom:calc(14px + env(safe-area-inset-bottom,0px))}
+
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
 :root[data-mode="days"]{--page:var(--bg)}
@@ -1753,7 +1758,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.09-2345';
+const APP_BUILD='2026.11.09-2347';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
