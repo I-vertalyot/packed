@@ -1053,6 +1053,7 @@ main>.modebox,main>.modebox2{margin-top:-10px!important}
 .bar .space{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;display:block}
 .bar>*:not(.space){position:relative;z-index:1}
 body::before{background:#05060F!important}
+.bar .brand,.bar .brand *:not(svg):not(svg *){color:#FFFFFF!important}
 .bar .tabs button[aria-selected="true"],.bar .tabs button.on{color:#fff}
 
 /* plain colours for browsers without color-mix() */
@@ -1770,7 +1771,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.10-0001';
+const APP_BUILD='2026.11.10-0023';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
