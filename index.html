@@ -711,6 +711,12 @@ h2{font-size:13px}
 /* one lamp: the primary action glows */
 .btn.primary{box-shadow:0 0 0 4px rgba(226,128,46,.14),0 0 22px rgba(226,128,46,.38)}
 .credit .credit-box{border-radius:var(--r-md)}
+
+/* "New" flag on a just-created trip (a few minutes) */
+.t-new{display:inline-block;vertical-align:2px;margin-right:8px;padding:2px 8px;border-radius:999px;background:var(--sign);color:var(--sign-ink);font-family:var(--f-mono);font-size:10.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;line-height:1.4;box-shadow:0 0 12px rgba(226,128,46,.45);animation:tnew 1.6s ease-in-out 3}
+@keyframes tnew{50%{box-shadow:0 0 0 4px rgba(226,128,46,.18),0 0 18px rgba(226,128,46,.6)}}
+.trip-w:has(.t-new) .trip{border-color:color-mix(in srgb,var(--sign) 55%,var(--line))}
+@media (prefers-reduced-motion:reduce){.t-new{animation:none}}
 </style>
 </head>
 <body>
@@ -774,7 +780,7 @@ const L={
   st:{ok:'Uloženo v účtu',saving:'Ukládám…',err:'Nepodařilo se uložit, zkusím znovu',local:'Uloženo v tomto zařízení',load:'Načítám…'},
   save:'Uložit',saving:'Ukládám…',saved:'Uloženo ✓',retry:'Zkusit znovu',
   tabTrips:'Cesty',tabInv:'Inventář',other:'Ostatní',
-  trips:'Cesty',newTrip:'+ Nová cesta',cancel:'Zrušit',where:'Kam jedeš',wherePh:'např. Chorvatsko 2027',depart:'Odjezd',ret:'Návrat',create:'Vytvořit cestu',
+  trips:'Cesty',newTrip:'+ Nová cesta',cancel:'Zrušit',where:'Kam jedeš',wherePh:'např. Chorvatsko 2027',depart:'Odjezd',ret:'Návrat',create:'Vytvořit cestu',newBadge:'Nová',
   tripNote:'Každá cesta dostane vlastní seznam věcí z inventáře.',
   noTrips:'Zatím žádná cesta. Klikni na „+ Nová cesta“, zadej kam a kdy, a pak si poskládej věci z inventáře.',
   errOrder:'Návrat musí být stejný den nebo po odjezdu.',errLong:'Cesta může mít nejvýš 60 dní.',
@@ -825,7 +831,7 @@ const L={
   st:{ok:'Saved to your account',saving:'Saving…',err:'Couldn’t save, retrying',local:'Saved on this device',load:'Loading…'},
   save:'Save',saving:'Saving…',saved:'Saved ✓',retry:'Try again',
   tabTrips:'Trips',tabInv:'Inventory',other:'Other',
-  trips:'Trips',newTrip:'+ New trip',cancel:'Cancel',where:'Where to',wherePh:'e.g. Croatia 2027',depart:'Departure',ret:'Return',create:'Create trip',
+  trips:'Trips',newTrip:'+ New trip',cancel:'Cancel',where:'Where to',wherePh:'e.g. Croatia 2027',depart:'Departure',ret:'Return',create:'Create trip',newBadge:'New',
   tripNote:'Every trip gets its own list of items from your inventory.',
   noTrips:'No trips yet. Click “+ New trip”, enter where and when, then pick items from your inventory.',
   errOrder:'Return must be on or after the departure day.',errLong:'A trip can be at most 60 days.',
@@ -1109,18 +1115,22 @@ function viewTrips(){
       ${ui.tripErr?`<p class="err">${esc(T[ui.tripErr])}</p>`:''}
       <p class="note">${esc(T.tripNote)}</p>
     </form>`:'';
+  const NEW_MS=5*60*1000,nowMs=Date.now();let soonest=Infinity;
   const cards=trips.map(t=>{
+    const fresh=t.created&&nowMs-t.created<NEW_MS;if(fresh)soonest=Math.min(soonest,t.created+NEW_MS-nowMs);
     const n=tripDays(t).length;const p=progress(t);const pct=p.total?Math.round(p.done/p.total*100):0;
     const d=parseD(t.start);const past=t.end<today;
     return `<div class="trip-w" style="${past?'opacity:.65':''}"><button class="trip" data-act="open-trip" data-id="${t.id}">
       <span class="when"><b>${T.dayNum(d)}</b><span>${d.toLocaleDateString(T.locale,{month:'short'}).replace('.','')}</span></span>
       <span style="min-width:0">
-        <span class="t-name">${esc(t.name)}</span>
+        <span class="t-name">${fresh?`<span class="t-new">${esc(T.newBadge)}</span>`:''}${esc(t.name)}</span>
         <span class="t-meta mono" style="display:block">${dm(t.start)} – ${dm(t.end)} · ${T.days(n)}</span>
         <span class="meter" aria-hidden="true" style="display:block"><i style="width:${pct}%"></i></span>
       </span>
       <span class="pct">${p.done}/${p.total}</span>
     </button><button class="trip-edit" data-act="edit-trip-open" data-id="${t.id}" aria-label="${esc(T.editTrip)}: ${esc(t.name)}" title="${esc(T.editTrip)}"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></button></div>`}).join('');
+  /* drop the "New" flag on its own once its few minutes are up */
+  clearTimeout(window.__newFlagT);if(soonest<Infinity)window.__newFlagT=setTimeout(()=>{if(!ui.tripId&&ui.tab==='trips')render()},soonest+100);
   return `<div class="row"><h1>${T.trips}</h1><span class="spacer"></span>
       <button class="btn ${ui.newTrip?'':'primary'}" data-act="new-trip">${ui.newTrip?T.cancel:T.newTrip}</button></div>
     ${form}
@@ -1664,7 +1674,10 @@ document.addEventListener('submit',e=>{
     if(en<s){ui.tripErr='errOrder';render();return}
     if(Math.round((parseD(en)-parseD(s))/864e5)>59){ui.tripErr='errLong';render();return}
     const t={id:uid(),name,start:s,end:en,picks:{all:{}},packed:{}};
-    state.trips.push(t);ui.newTrip=false;ui.tripErr='';ui.tripId=t.id;ui.mode='days';ui.day='all';save();render();window.scrollTo(0,0);
+    t.created=Date.now();
+    state.trips.push(t);ui.newTrip=false;ui.tripErr='';save();render();
+    /* stay on the home page; bring the new card into view */
+    requestAnimationFrame(()=>{const el=document.querySelector('.trip[data-id="'+t.id+'"]');if(el)el.scrollIntoView({behavior:'smooth',block:'center'})});
   }
   if(f.classList.contains('newcat')){const it=item(f.dataset.id);const v=String(fd.get('newcat')||'').trim();
     if(it&&v){it.cat=v;addCat(v);openCat('inv',v)}ui.newCatFor=null;save();const y=window.scrollY;render();window.scrollTo(0,y);return}
