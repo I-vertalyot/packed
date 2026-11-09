@@ -897,6 +897,9 @@ body{transition:background-color .35s ease}
 .pgroup.folded .pflow{display:none}
 .pgroup.folded>.pg-h{border-bottom-color:transparent}
 
+/* "Tap a category, select items" matches the "Search or add" title */
+.modebox .fold-row>h2,.modebox2 .fold-row>h2{font-family:var(--f-mono);font-size:17px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--sign-text);margin:0}
+
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
 :root[data-mode="days"]{--page:var(--bg)}
