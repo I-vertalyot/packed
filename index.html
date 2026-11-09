@@ -1216,6 +1216,7 @@ const L={
   privacy:'Ochrana soukromí',
   helpTip:'Ukládá se samo · jazyk: CS / EN',
   invExp:'Exportovat inventář',invXNote:'Inventář si vyexportuj do souboru a na jiném zařízení ho nahraj přes „Nahrát soubor…“. Věci se přidají k těm, které tam už máš.',invFileName:'packed-inventar-',
+  invSend:'Exportovat a odeslat',invSent:'Inventář odeslán.',sendNo:'Sdílení tu není k dispozici, soubor se proto stáhl.',
   invDone:'Inventář stažen. Soubor si pošli do druhého zařízení (e-mailem, přes cloud…) a nahraj ho tam.',
   invQ:(n,k)=>`Přidat ${n} ${csPl(n,'novou věc','nové věci','nových věcí')} do inventáře?${k?` ${k} už máš, ty se přeskočí.`:''} Cesty zůstanou beze změny.`,
   invImported:'Věci přidány do inventáře.',invNothing:'Všechny věci z tohoto souboru už v inventáři máš.',
@@ -1267,6 +1268,7 @@ const L={
   privacy:'Privacy policy',
   helpTip:'Saves automatically · language: CS / EN',
   invExp:'Export inventory',invXNote:'Export your inventory to a file, then load it on another device with “Upload file…”. The items are added to whatever is already there.',invFileName:'packed-inventory-',
+  invSend:'Export and send',invSent:'Inventory sent.',sendNo:'Sharing isn’t available here, so the file was downloaded instead.',
   invDone:'Inventory downloaded. Send the file to your other device (email, cloud…) and upload it there.',
   invQ:(n,k)=>`Add ${n} new ${enPl(n,'item','items')} to your inventory?${k?` ${k} you already have will be skipped.`:''} Your trips stay the same.`,
   invImported:'Items added to your inventory.',invNothing:'You already have every item from this file.',
@@ -1691,8 +1693,8 @@ function viewInv(){
     <section class="panel">
       <h2>${T.backup}</h2>
       <p class="note">${esc(T.invXNote)}</p>
-      <div class="row"><button class="btn primary" data-act="export-inv">${T.invExp}</button><button class="btn" data-act="import-pick">${T.ulBackup}</button>
-        <input type="file" id="importFile" accept=".json,application/json" hidden></div>
+      <div class="row"><button class="btn primary" data-act="export-inv">${T.invExp}</button><button class="btn" data-act="export-inv-send"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>${T.invSend}</button><button class="btn" data-act="import-pick">${T.ulBackup}</button>
+        <input type="file" id="importFile" accept=".json,.txt,application/json,text/plain" hidden></div>
       ${pendingInv?(()=>{const n=invNew(pendingInv).length,k=pendingInv.items.length-n;return `<div class="confirm">${esc(T.invQ(n,k))} <span class="spacer"></span><button class="btn" data-act="inv-no">${T.cancel}</button><button class="btn primary" data-act="inv-yes">${T.add}</button></div>`})():''}
       <p class="note">${esc(T.backupNote)}</p>
       <div class="row"><button class="btn" data-act="export">${T.dlBackup}</button></div>
@@ -1718,6 +1720,18 @@ if(FRESH)try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}
 function saveOnLeave(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}if(timer){clearTimeout(timer);timer=null;flush()}}
 addEventListener('pagehide',saveOnLeave);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')saveOnLeave()});
+/* export the inventory and hand it straight to the phone's share sheet (WhatsApp, e-mail, Telegram, Drive…) */
+async function sendInventory(){
+  const base=T.invFileName+iso(new Date()),data=JSON.stringify(invPayload(),null,2);
+  const mk=(ext,type)=>{try{return new File([data],base+ext,{type})}catch(e){return null}};
+  let file=mk('.json','application/json');
+  if(navigator.canShare&&file&&!navigator.canShare({files:[file]}))file=mk('.txt','text/plain');
+  if(navigator.share&&navigator.canShare&&file&&navigator.canShare({files:[file]})){
+    try{await navigator.share({files:[file],title:T.appName+' – '+T.inv});ui.importMsg='invSent'}
+    catch(e){if(e&&e.name==='AbortError'){ui.importMsg=''}else{await exportBackup(true);if(ui.importMsg==='invDone')ui.importMsg='sendNo';return}}
+    render();return}
+  await exportBackup(true);if(ui.importMsg==='invDone'){ui.importMsg='sendNo';render()}
+}
 async function exportBackup(inv){
   const fname=(inv?T.invFileName:T.fileName)+iso(new Date())+'.json',data=JSON.stringify(inv?invPayload():state,null,2),okMsg=inv?'invDone':'dlDone';
   const dl=window.claude&&window.claude.use?await window.claude.use('downloads'):null;
@@ -1739,7 +1753,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.09-2342';
+const APP_BUILD='2026.11.09-2345';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
@@ -2092,6 +2106,7 @@ document.addEventListener('click',e=>{
     case 'tut-again':ui.help=false;render();openTut();return;
     case 'export':exportBackup(false);return;
     case 'export-inv':exportBackup(true);return;
+    case 'export-inv-send':sendInventory();return;
     case 'inv-yes':if(pendingInv){mergeInv(pendingInv);pendingInv=null;ui.importMsg='invImported';save()}break;
     case 'inv-no':pendingInv=null;ui.importMsg='';break;
     case 'import-pick':document.getElementById('importFile').click();return;
