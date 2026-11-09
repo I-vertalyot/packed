@@ -858,6 +858,12 @@ input[type=date].inp::-webkit-calendar-picker-indicator:hover{opacity:1;backgrou
 /* the mode buttons cross-fade their colour */
 .modebar .seg button{transition:background-color .25s ease,color .25s ease,border-color .25s ease,box-shadow .25s ease}
 body{transition:background-color .35s ease}
+
+/* compact trip dates: narrow date box, one-line range in both languages */
+.trip .when{min-width:46px;padding:5px 7px;border-radius:8px}
+.trip .when b{font-size:22px}
+.trip .when span{font-size:10px;letter-spacing:.06em}
+.trip .t-meta{font-family:var(--f-body);font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
 </style>
 </head>
 <body>
@@ -920,7 +926,7 @@ const enPl=(n,a,b)=>n===1?a:b;
 const L={
  cs:{
   wd:['Ne','Po','Út','St','Čt','Pá','So'],wdl:['neděle','pondělí','úterý','středa','čtvrtek','pátek','sobota'],
-  locale:'cs-CZ',dm:d=>d.getDate()+'. '+(d.getMonth()+1)+'.',dayNum:d=>d.getDate()+'.',
+  locale:'cs-CZ',dm:d=>d.getDate()+'\u00a0'+['led','úno','bře','dub','kvě','čvn','čvc','srp','zář','říj','lis','pro'][d.getMonth()],dayNum:d=>String(d.getDate()),
   days:n=>n+' '+csPl(n,'den','dny','dní'),things:n=>n+' '+csPl(n,'věc','věci','věcí'),
   st:{ok:'Uloženo v účtu',saving:'Ukládám…',err:'Nepodařilo se uložit, zkusím znovu',local:'Uloženo v tomto zařízení',load:'Načítám…'},
   save:'Uložit',saving:'Ukládám…',saved:'Uloženo ✓',retry:'Zkusit znovu',
@@ -971,7 +977,7 @@ const L={
  },
  en:{
   wd:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],wdl:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
-  locale:'en-GB',dm:d=>d.toLocaleDateString('en-GB',{day:'numeric',month:'short'}),dayNum:d=>String(d.getDate()),
+  locale:'en-GB',dm:d=>d.getDate()+'\u00a0'+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()],dayNum:d=>String(d.getDate()),
   days:n=>n+' '+enPl(n,'day','days'),things:n=>n+' '+enPl(n,'item','items'),
   st:{ok:'Saved to your account',saving:'Saving…',err:'Couldn’t save, retrying',local:'Saved on this device',load:'Loading…'},
   save:'Save',saving:'Saving…',saved:'Saved ✓',retry:'Try again',
@@ -1276,7 +1282,7 @@ function viewTrips(){
       <span class="when"><b>${T.dayNum(d)}</b><span>${d.toLocaleDateString(T.locale,{month:'short'}).replace('.','')}</span></span>
       <span style="min-width:0">
         <span class="t-name">${fresh?`<span class="t-new">${esc(T.newBadge)}</span>`:''}${esc(t.name)}</span>
-        <span class="t-meta mono" style="display:block">${dm(t.start)} – ${dm(t.end)} · ${T.days(n)}</span>
+        <span class="t-meta" style="display:block">${dm(t.start)}–${dm(t.end)} · ${T.days(n).replace(' ','\u00a0')}</span>
         ${(()=>{if(past)return '';if(t.start<=today)return `<span class="t-count now">${esc(t.start===today?T.cdToday:T.cdNow)}</span>`;const dd=Math.round((parseD(t.start)-parseD(today))/864e5);return `<span class="t-count">${esc(dd===1?T.cdTomorrow:T.cdIn(dd))}</span>`})()}
         ${p.total?'':`<span class="t-empty">${esc(T.noItemsYet)}</span>`}
       </span>
