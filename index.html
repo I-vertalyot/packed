@@ -897,6 +897,21 @@ body{transition:background-color .35s ease}
 .pgroup.folded .pflow{display:none}
 .pgroup.folded>.pg-h{border-bottom-color:transparent}
 
+/* selected chip carries its own quantity: [− name ×2 +] */
+.qchip{padding:0;gap:0;overflow:hidden}
+.qchip .qn{border:0;background:none;color:inherit;font:inherit;font-weight:600;padding:6px 6px;display:inline-flex;align-items:center;gap:5px;cursor:pointer}
+.qchip .qx{font-family:var(--f-mono);font-size:12px;font-weight:700;opacity:.85}
+.qchip .pm{border:0;color:inherit;font:inherit;font-weight:700;font-size:16px;line-height:1;width:32px;align-self:stretch;min-height:34px;display:grid;place-items:center;cursor:pointer;background:rgba(0,0,0,.14)}
+.qchip .pm:hover{background:rgba(0,0,0,.24)}
+.qchip .pm:first-child{border-radius:999px 0 0 999px}
+.qchip .pm:last-child{border-radius:0 999px 999px 0}
+.fold-row .clearbtn{padding:6px 12px;min-height:38px;font-size:13.5px}
+.fold-row{gap:8px}
+.fold-row>h2{flex:1 1 auto;min-width:0}
+.fold-row .clearbtn{flex:none;white-space:nowrap}
+.fold-row>.spacer{display:none}
+.modebox .pick-title{color:var(--sign-text);font-size:17px;letter-spacing:.07em}
+
 /* "Tap a category, select items" matches the "Search or add" title */
 .modebox .fold-row>h2,.modebox2 .fold-row>h2{font-family:var(--f-mono);font-size:17px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--sign-text);margin:0}
 
@@ -1466,10 +1481,8 @@ function viewDays(t,days){
       ${k!=='all'&&days.length>1?`<button class="btn" data-act="to-all-days">${T.toAll}</button>`:''}
       ${`<button class="btn clearbtn" data-act="clear-ask" ${grouped.length?'':'disabled'}><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>${T.clearAll}</button>`}</div>`;
   const picker=byCat(state.items).map(([c,l])=>`<div class="cat${fold('pick',c)}" data-cat><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pick',c,esc(c),T.nPicked(l.filter(it=>picks[it.id]).length,l.length))}</h3><div class="chips pick-box" style="--cc:var(--c-${catColor(c)})">${
-      l.slice().sort((a,b)=>cmp(a.name,b.name)).map(it=>`<button class="chip ${picks[it.id]?'on':''}" style="--cc:var(--c-${catColor(it.cat||OTHER())})" data-act="toggle-pick" data-id="${it.id}" data-name="${esc(it.name.toLowerCase())}">${esc(it.name)}</button>`).join('')}</div></div>`).join('');
-  return `${(()=>{const isAll=k==='all',can=grouped.length>WHOLE_FOLD_MIN,fold=can&&!(isAll?state.wholeOpen:state.dayOpen);
-      return `<section class="panel wholepanel${fold?' folded':''}">${can?`<h2 class="wholehead"><button class="fold" type="button" data-act="fold-whole" data-k="${isAll?'all':'day'}" data-folded="${fold?1:''}" aria-expanded="${!fold}"><span class="fold-l">${title}</span><span class="fold-n">${esc(T.things(grouped.reduce((s,x)=>s+(+x.q||1),0)))}</span>${CHEV}</button></h2>`:`<div class="row"><h2>${title}</h2></div>`}<div class="wholebody">${list}</div>${can?`<button class="showmore" type="button" data-act="fold-whole" data-k="${isAll?'all':'day'}" data-folded="${fold?1:''}" aria-expanded="${!fold}">${fold?T.showMore:T.showLess}${CHEV}</button>`:''}${actions}</section>`})()}
-    <!--split-->
+      l.slice().sort((a,b)=>cmp(a.name,b.name)).map(it=>{const q=+picks[it.id]||0;return q?`<span class="chip on qchip" style="--cc:var(--c-${catColor(it.cat||OTHER())})" data-name="${esc(it.name.toLowerCase())}"><button type="button" class="pm" data-act="qty" data-id="${it.id}" data-d="-1" aria-label="${T.less}: ${esc(it.name)}">−</button><button type="button" class="qn" data-act="toggle-pick" data-id="${it.id}" aria-pressed="true">${esc(it.name)}${q>1?`<span class="qx">×${q}</span>`:''}</button><button type="button" class="pm" data-act="qty" data-id="${it.id}" data-d="1" aria-label="${T.more}: ${esc(it.name)}">+</button></span>`:`<button class="chip" style="--cc:var(--c-${catColor(it.cat||OTHER())})" data-act="toggle-pick" data-id="${it.id}" data-name="${esc(it.name.toLowerCase())}">${esc(it.name)}</button>`}).join('')}</div></div>`).join('');
+  return `
     <section class="panel">
       <h2 class="pick-title">${T.addOrSearch}</h2>
       <div class="row pickhead">
@@ -1483,7 +1496,7 @@ function viewDays(t,days){
         </div>
         <input class="inp newcat-in" id="ad-newcat" name="newcat" placeholder="${esc(T.newCatPh)}" autocomplete="off" aria-label="${esc(T.newCat)}" hidden>
       </form>
-      ${picker?`<div class="fold-row"><h2>${T.addFromInv}</h2>${foldAll('pick',byCat(state.items).map(g=>g[0]))}</div>`:''}
+      ${picker?`<div class="fold-row"><h2>${T.addFromInv}</h2><span class="spacer"></span><button class="btn clearbtn" data-act="clear-ask" ${grouped.length?'':'disabled'}><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>${T.clearAll}</button>${foldAll('pick',byCat(state.items).map(g=>g[0]))}</div>`:''}
       ${picker||`<p class="note">${esc(T.invEmptyPick)}</p>`}
     </section>`;
 }
