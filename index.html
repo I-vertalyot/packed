@@ -1450,7 +1450,7 @@ function viewDays(t,days){
   const actions=`<div class="row">
       ${idx>0?`<button class="btn" data-act="copy-prev">${T.copyPrev}</button>`:''}
       ${k!=='all'&&days.length>1?`<button class="btn" data-act="to-all-days">${T.toAll}</button>`:''}
-      ${grouped.length?`<button class="btn clearbtn" data-act="clear-ask"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>${T.clearAll}</button>`:''}</div>`;
+      ${`<button class="btn clearbtn" data-act="clear-ask" ${grouped.length?'':'disabled'}><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>${T.clearAll}</button>`}</div>`;
   const picker=byCat(state.items).map(([c,l])=>`<div class="cat${fold('pick',c)}" data-cat><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pick',c,esc(c),T.nPicked(l.filter(it=>picks[it.id]).length,l.length))}</h3><div class="chips pick-box" style="--cc:var(--c-${catColor(c)})">${
       l.slice().sort((a,b)=>cmp(a.name,b.name)).map(it=>`<button class="chip ${picks[it.id]?'on':''}" style="--cc:var(--c-${catColor(it.cat||OTHER())})" data-act="toggle-pick" data-id="${it.id}" data-name="${esc(it.name.toLowerCase())}">${esc(it.name)}</button>`).join('')}</div></div>`).join('');
   return `${(()=>{const isAll=k==='all',can=grouped.length>WHOLE_FOLD_MIN,fold=can&&!(isAll?state.wholeOpen:state.dayOpen);
