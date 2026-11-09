@@ -916,6 +916,10 @@ body{transition:background-color .35s ease}
 /* "Tap a category, select items" matches the "Search or add" title */
 .modebox .fold-row>h2,.modebox2 .fold-row>h2{font-family:var(--f-mono);font-size:17px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--sign-text);margin:0}
 
+/* Clear inventory: quiet red link under the categories */
+.inv-clear-row{justify-content:center;margin-top:6px}
+.inv-clear{display:inline-flex;align-items:center;gap:7px}
+
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
 :root[data-mode="days"]{--page:var(--bg)}
@@ -1062,7 +1066,7 @@ const L={
   tutSkip:'Přeskočit',tutNext:'Další',tutBack:'Zpět',tutGo:'Jdeme na to!',tutAgain:'Zobrazit průvodce',tutLabel:'Průvodce aplikací',packedOf:'věcí sbaleno',resetPack:'Zrušit odškrtnutí',
   inv:'Inventář',thing:'Věc',thingPh:'např. Čelovka',add:'Přidat',
   invNote:'Kategorii vyber v nabídce vedle názvu. Název věci přepíšeš klepnutím, klepnutím na kategorii u věci ji přesuneš jinam. Barvu kategorie změníš kliknutím na barevné kolečko.',
-  invEmpty:'Inventář je prázdný. Přidej první věc výše.',name:'Název',
+  invEmpty:'Inventář je prázdný. Přidej první věc výše.',invClear:'Vymazat inventář',invClearQ:'Vymazat celý inventář?',invClearSub:n=>`Zmizí ${n} a všechny kategorie. Seznamy ve tvých cestách se tím vyprázdní. Hned potom to můžeš vrátit zpět.`,undoInvCleared:'Inventář vymazán',name:'Název',
   delItemQ:(n,u)=>`Smazat „${n}“${u?` (je ve ${u} ${csPl(u,'cestě','cestách','cestách')})`:''}?`,
   backup:'Export a záloha',backupNote:'Všechno se ukládá automaticky v tomto zařízení. Zálohou do souboru si data pojistíš nebo je přeneseš do jiného telefonu či počítače.',
   dlBackup:'Stáhnout celou zálohu',ulBackup:'Nahrát soubor…',
@@ -1113,7 +1117,7 @@ const L={
   tutSkip:'Skip',tutNext:'Next',tutBack:'Back',tutGo:'Let’s go!',tutAgain:'Show the tutorial',tutLabel:'App tutorial',packedOf:'items packed',resetPack:'Uncheck all',
   inv:'Inventory',thing:'Item',thingPh:'e.g. Headlamp',add:'Add',
   invNote:'Pick a category from the menu next to the name. Tap an item’s name to rename it; tap its category to move it to another one. Click a category’s colour dot to change its colour.',
-  invEmpty:'Your inventory is empty. Add the first item above.',name:'Name',
+  invEmpty:'Your inventory is empty. Add the first item above.',invClear:'Clear inventory',invClearQ:'Clear your whole inventory?',invClearSub:n=>`This removes ${n} and all categories. The lists in your trips will be emptied too. You can undo it right after.`,undoInvCleared:'Inventory cleared',name:'Name',
   delItemQ:(n,u)=>`Delete “${n}”${u?` (used in ${u} ${enPl(u,'trip','trips')})`:''}?`,
   backup:'Export & backup',backupNote:'Everything saves automatically on this device. Download a backup file to keep your data safe or move it to another phone or computer.',
   dlBackup:'Download full backup',ulBackup:'Upload file…',
@@ -1531,7 +1535,7 @@ function viewInv(){
         <label class="movebtn" title="${esc(T.moveTo)}" style="--cc:var(--c-${catColor(it.cat||OTHER())})"><span class="mv-l">${esc(it.cat||OTHER())}</span><svg width="10" height="10" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg><select class="recat-sel" id="mv-${it.id}" data-id="${it.id}" aria-label="${esc(T.moveTo)}: ${esc(it.name)}">${catOptions(it.cat||OTHER())}</select></label>
         <button class="x" data-act="del-item" data-id="${it.id}" aria-label="${T.del} ${esc(it.name)}">×</button></div>
         ${ui.newCatFor===it.id?`<form class="newcat" data-id="${it.id}"><input class="inp" id="nc-${it.id}" name="newcat" required placeholder="${esc(T.newCatPh)}" autocomplete="off" aria-label="${esc(T.newCat)}"><button class="btn primary" type="submit">${T.ok}</button><button class="btn ghost" type="button" data-act="newcat-cancel">${T.cancel}</button></form>`:''}`}).join('')}</div>`).join('');
-  return `<div class="row"><h1>${T.inv}</h1><span class="spacer"></span><span class="muted">${T.things(state.items.length)}</span></div>
+  return `${ui.invClear?invClearModal():''}<div class="row"><h1>${T.inv}</h1><span class="spacer"></span><span class="muted">${T.things(state.items.length)}</span></div>
     <section class="panel addpanel">
       <h2 class="pick-title">${T.addOrSearch}</h2>
       <div class="row pickhead"><input class="inp" id="invsearch" type="search" placeholder="${T.search}" autocomplete="off" aria-label="${T.search}"></div>
@@ -1545,7 +1549,7 @@ function viewInv(){
         <input class="inp newcat-in" id="ai-newcat" name="newcat" placeholder="${esc(T.newCatPh)}" autocomplete="off" aria-label="${esc(T.newCat)}" hidden>
       </form>
     </section>
-    <section class="panel">${groups?`<div class="row packhead"><h2 class="pick-title list-title">${esc(T.yourCats)}</h2><span class="spacer"></span>${foldAll('inv',byCat(state.items).map(g=>g[0]))}</div>`+groups:`<div class="empty">${esc(T.invEmpty)}</div>`}</section>
+    <section class="panel">${groups?`<div class="row packhead"><h2 class="pick-title list-title">${esc(T.yourCats)}</h2><span class="spacer"></span>${foldAll('inv',byCat(state.items).map(g=>g[0]))}</div>`+groups+`<div class="row inv-clear-row"><button class="btn ghost danger-link inv-clear" data-act="inv-clear-ask"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>${esc(T.invClear)}</button></div>`:`<div class="empty">${esc(T.invEmpty)}</div>`}</section>
     <section class="panel">
       <h2>${T.backup}</h2>
       <p class="note">${esc(T.invXNote)}</p>
@@ -1561,7 +1565,8 @@ function viewInv(){
 
 /* ---------- save & backup ---------- */
 let pendingImport=null,pendingInv=null;
-const invKey=i=>(String(i.name).trim()+'|'+(i.cat||'')).toLowerCase();
+/* the same item = the same name, ignoring capitals, extra spaces and accents (its category may differ) */
+const invKey=i=>String(i.name).normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().replace(/\s+/g,' ').toLowerCase();
 function invPayload(){return {type:'sbaleno-inventory',v:1,cats:state.cats,catColors:state.catColors||{},items:state.items.map(i=>({name:i.name,cat:i.cat}))}}
 function invNew(d){const have=new Set(state.items.map(invKey));const out=[];d.items.forEach(i=>{if(!i||typeof i.name!=='string'||!i.name.trim())return;const k=invKey(i);if(have.has(k))return;have.add(k);out.push(i)});return out}
 function mergeInv(d){
@@ -1596,7 +1601,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.09-1950';
+const APP_BUILD='2026.11.09-1955';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
@@ -1720,6 +1725,12 @@ function shareText(t){const a=aggregate(t),p=pieces(t,a),groups={};
   const lines=[`🧳 ${t.name}`,`${dm(t.start)} – ${dm(t.end)} · ${T.pdfPacked(p.done,p.total)}`,''];
   cats.forEach(c=>{lines.push(c.toUpperCase());groups[c].forEach(x=>lines.push(`${isDone(t,x)?'✅':'⬜'} ${x.it.name}${x.qty>1?' ×'+x.qty:''}`));lines.push('')});
   lines.push(`${T.shareMade}: ${APP_URL}`);return lines.join('\n')}
+function invClearModal(){
+  return `<div class="modal" id="invClearModal" role="dialog" aria-modal="true" aria-labelledby="icTitle" aria-describedby="icSub"><div class="modal-card confirm-card">
+    <h2 id="icTitle">${esc(T.invClearQ)}</h2>
+    <p id="icSub" class="muted">${esc(T.invClearSub(T.things(state.items.length)))}</p>
+    <div class="row confirm-actions"><button type="button" class="btn" data-act="inv-clear-no">${esc(T.cancel)}</button><button type="button" class="btn danger" data-act="inv-clear-yes">${esc(T.invClear)}</button></div>
+  </div></div>`}
 function delModal(){const t=state.trips.find(x=>x.id===(ui.editId||ui.tripId));if(!t)return '';
   return `<div class="modal" id="delModal" role="dialog" aria-modal="true" aria-labelledby="delTitle" aria-describedby="delSub"><div class="modal-card confirm-card">
     <h2 id="delTitle">${esc(T.delTripQ(t.name))}</h2>
@@ -1811,8 +1822,8 @@ document.addEventListener('pointerdown',e=>{if(e.target.closest('#celeb'))endCel
 document.addEventListener('keydown',e=>{if(e.key==='Escape')endCeleb()});
 
 /* edit-trip popup: tap outside or press Escape to close */
-document.addEventListener('click',e=>{if(e.target.id==='delModal'){ui.delTrip=false;render();return}if(e.target.id==='clearModal'){ui.clearAsk=false;render();return}if(e.target.id==='shareModal'){ui.share=false;render();return}if(e.target.id==='editModal'){ui.delTrip=false;ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;render()}});
-document.addEventListener('keydown',e=>{const rg=e.target.closest&&e.target.closest('#palSw');if(rg&&/^Arrow(Left|Right|Up|Down)$/.test(e.key)){e.preventDefault();state.palette=state.palette==='ocean'?'lantern':'ocean';save();render();const n=document.querySelector('#palSw [aria-checked="true"]');if(n)n.focus();return}if(e.key==='Escape'&&ui.delTrip){ui.delTrip=false;render();return}if(e.key==='Escape'&&ui.clearAsk){ui.clearAsk=false;render();return}if(e.key==='Escape'&&ui.share){ui.share=false;render();return}if(e.key==='Escape'&&ui.editId){ui.delTrip=false;ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;render()}});
+document.addEventListener('click',e=>{if(e.target.id==='invClearModal'){ui.invClear=false;render();return}if(e.target.id==='delModal'){ui.delTrip=false;render();return}if(e.target.id==='clearModal'){ui.clearAsk=false;render();return}if(e.target.id==='shareModal'){ui.share=false;render();return}if(e.target.id==='editModal'){ui.delTrip=false;ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;render()}});
+document.addEventListener('keydown',e=>{const rg=e.target.closest&&e.target.closest('#palSw');if(rg&&/^Arrow(Left|Right|Up|Down)$/.test(e.key)){e.preventDefault();state.palette=state.palette==='ocean'?'lantern':'ocean';save();render();const n=document.querySelector('#palSw [aria-checked="true"]');if(n)n.focus();return}if(e.key==='Escape'&&ui.invClear){ui.invClear=false;render();return}if(e.key==='Escape'&&ui.delTrip){ui.delTrip=false;render();return}if(e.key==='Escape'&&ui.clearAsk){ui.clearAsk=false;render();return}if(e.key==='Escape'&&ui.share){ui.share=false;render();return}if(e.key==='Escape'&&ui.editId){ui.delTrip=false;ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;render()}});
 
 /* category popups close on an outside tap or Escape */
 function closeCatPops(){document.querySelectorAll('.cp-pop').forEach(p=>{if(!p.hidden){p.hidden=true;const bt=p.parentElement.querySelector('.cp-btn');if(bt)bt.setAttribute('aria-expanded','false')}})}
@@ -1832,7 +1843,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){const pop=document.
 
 /* phone Back / browser Back: close the top layer (share, edit popup, help), then leave the trip; only the trip list exits the app */
 let popSkip=0;
-const navDepth=()=>(ui.tab==='trips'&&ui.tripId?1:0)+(ui.help?1:0)+(ui.editId?1:0)+(ui.share?1:0)+(ui.clearAsk?1:0)+(ui.delTrip?1:0);
+const navDepth=()=>(ui.tab==='trips'&&ui.tripId?1:0)+(ui.help?1:0)+(ui.editId?1:0)+(ui.share?1:0)+(ui.clearAsk?1:0)+(ui.delTrip?1:0)+(ui.invClear?1:0);
 function syncHistory(){try{const w=navDepth(),cur=(history.state&&history.state.pk)||0;
   if(w>cur){for(let i=cur+1;i<=w;i++)history.pushState({pk:i},'')}
   else if(w<cur){popSkip++;history.go(w-cur)}}catch(e){}}
@@ -1840,6 +1851,7 @@ try{if(!history.state||history.state.pk==null)history.replaceState({pk:0},'')}ca
 addEventListener('popstate',e=>{if(popSkip>0){popSkip--;return}
   const target=(e.state&&e.state.pk)||0;let guard=8;
   while(navDepth()>target&&guard--){
+    if(ui.invClear){ui.invClear=false;continue}
     if(ui.delTrip){ui.delTrip=false;continue}
     if(ui.clearAsk){ui.clearAsk=false;continue}
     if(ui.share){ui.share=false;continue}
@@ -1949,6 +1961,11 @@ document.addEventListener('click',e=>{
       state.trips.push(cp);ui.tripId=null;ui.share=false;ui.mode='days';ui.editId=cp.id;ui.editVals=null;save();render();window.scrollTo(0,0);return}
     case 'del-trip':toggleTripMenu(false);ui.delTrip=true;render();requestAnimationFrame(()=>{const c=document.querySelector('#delModal [data-act="del-trip-no"]');if(c)c.focus({preventScroll:true})});return;
     case 'del-trip-no':ui.delTrip=false;break;
+    case 'inv-clear-ask':ui.invClear=true;render();requestAnimationFrame(()=>{const c=document.querySelector('#invClearModal [data-act="inv-clear-no"]');if(c)c.focus({preventScroll:true})});return;
+    case 'inv-clear-no':ui.invClear=false;break;
+    case 'inv-clear-yes':{const snap=JSON.stringify({items:state.items,cats:state.cats,trips:state.trips.map(x=>({id:x.id,picks:x.picks,packed:x.packed}))});
+      state.items=[];state.cats=[];state.trips.forEach(x=>{x.picks={all:{}};x.packed={}});ui.invClear=false;save();
+      showUndo(T.undoInvCleared,()=>{const o=JSON.parse(snap);state.items=o.items;state.cats=o.cats;o.trips.forEach(b=>{const x=state.trips.find(y=>y.id===b.id);if(x){x.picks=b.picks;x.packed=b.packed}});save();render()});break}
     case 'del-trip-yes':{const did=ui.editId||ui.tripId,idx=state.trips.findIndex(x=>x.id===did),gone=state.trips[idx];state.trips=state.trips.filter(x=>x.id!==did);ui.tripId=null;ui.editId=null;ui.editVals=null;ui.delTrip=false;ui.share=false;save();break}
     case 'pick-color':ui.colorCat=ui.colorCat===b.dataset.c?null:b.dataset.c;break;
     case 'set-color':state.catColors=state.catColors||{};state.catColors[b.dataset.c]=b.dataset.v;ui.colorCat=null;save();break;
