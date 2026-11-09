@@ -1014,6 +1014,14 @@ body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;bac
 .progpanel .hp-sw{flex:none}
 @media (max-width:370px){.progpanel .progress>.muted{display:none}}
 
+/* light theme: both page buttons in full colour — the chosen one solid, the other a rich tint of its own colour */
+:root:not([data-app-theme="dark"]) .modebar .seg button[aria-pressed="false"]{background:color-mix(in srgb,var(--mc) 26%,var(--surface));color:color-mix(in srgb,var(--mc) 72%,var(--ink));border-color:var(--mc)}
+:root:not([data-app-theme="dark"]) .modebar .seg button[aria-pressed="false"] .seg-badge{background:color-mix(in srgb,var(--mc) 22%,transparent);color:inherit}
+:root[data-mode="days"]:not([data-app-theme="dark"]) .modebar .seg button[data-v="days"][aria-pressed="true"]{background:var(--mode-days);color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.9),0 0 18px rgba(255,255,255,.35)}
+:root[data-mode="days"]:not([data-app-theme="dark"]) .modebar .seg button[data-v="days"][aria-pressed="true"] .seg-badge{background:rgba(255,255,255,.22)}
+
+:root[data-mode="days"]:not([data-app-theme="dark"]) .modebar .seg button[data-v="pack"][aria-pressed="false"]{background:color-mix(in srgb,var(--mc) 62%,var(--surface));color:color-mix(in srgb,var(--mc) 30%,var(--ink));border-color:var(--mc)}
+
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
 :root[data-mode="days"]{--page:var(--bg)}
@@ -1070,6 +1078,9 @@ body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,rgba(
 .modebar::before,.modebar .seg::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.132 -0.012'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),linear-gradient(180deg,transparent 0,transparent 26%,rgba(0,0,0,0.16) 100%),radial-gradient(130% 70% at 85% 0%,color-mix(in srgb,#fff var(--hl),transparent),transparent 60%)}
 :root:not([data-app-theme="dark"]) .modebar::before,:root:not([data-app-theme="dark"]) .modebar .seg::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.286 -0.026'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),linear-gradient(180deg,transparent 0,transparent 26%,rgba(59,37,17,0.09) 100%),radial-gradient(130% 70% at 85% 0%,color-mix(in srgb,#fff var(--hl),transparent),transparent 60%)}
 .modebar .seg button[aria-pressed="false"]{box-shadow:0 0 12px var(--mc),0 0 26px transparent,inset 0 0 10px transparent;border-color:var(--mc)}
+:root:not([data-app-theme="dark"]) .modebar .seg button[aria-pressed="false"]{background:var(--surface);color:var(--mc)}
+:root:not([data-app-theme="dark"]) .modebar .seg button[aria-pressed="false"] .seg-badge{background:transparent}
+:root[data-mode="days"]:not([data-app-theme="dark"]) .modebar .seg button[data-v="pack"][aria-pressed="false"]{background:var(--mc);color:var(--ink)}
 }
 </style>
 </head>
@@ -1712,7 +1723,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.09-2205';
+const APP_BUILD='2026.11.09-2208';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
