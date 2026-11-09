@@ -752,6 +752,7 @@ input[type=date].inp::-webkit-calendar-picker-indicator{opacity:.85;cursor:point
 input[type=date].inp::-webkit-calendar-picker-indicator:hover{opacity:1;background:color-mix(in srgb,var(--ink) 8%,transparent)}
 /* Clear all row sits below the list and Show more, always visible */
 .wholepanel>.row.wh-actions,.wholepanel>.row:last-child{margin-top:12px}
+.help-ver{margin:6px 0 0;text-align:center;font-family:var(--f-mono);font-size:11px;color:var(--muted);opacity:.8}
 /* confirm popup (Clear all) */
 .confirm-card h2{font-family:var(--f-display);font-stretch:normal;text-transform:none;letter-spacing:0;font-size:24px;line-height:1.15;font-weight:600;color:var(--ink);margin:4px 0 8px}
 .confirm-card p{margin:0 0 18px;font-size:15px;line-height:1.45}
@@ -1365,7 +1366,8 @@ function render(){
     <p class="note help-foot"><span>${esc(T.helpTip)}</span><button type="button" class="linkbtn" data-act="tut-again">${esc(T.tutAgain)}</button></p>
     <button class="btn primary" data-act="help-close" id="helpClose" style="justify-content:center">${esc(T.close)}</button>
     <p class="help-credit">${credit()}</p>
-    <p class="help-credit" style="font-size:13px"><a href="${PRIVACY}" target="_blank" rel="noopener noreferrer" style="font-weight:500;border-bottom-width:1px">${esc(T.privacy)}</a></p>`;
+    <p class="help-credit" style="font-size:13px"><a href="${PRIVACY}" target="_blank" rel="noopener noreferrer" style="font-weight:500;border-bottom-width:1px">${esc(T.privacy)}</a></p>
+    <p class="help-ver">v ${APP_BUILD}</p>`;
   document.getElementById('credit').innerHTML='<div class="credit-box">'+credit()+'</div>';
 }
 
@@ -1594,6 +1596,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
+const APP_BUILD='2026.11.09-1950';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
@@ -2088,7 +2091,7 @@ render();
 /* first start: show the tutorial (no opening animation) */
 setTimeout(()=>{if(!state.tutorialDone)openTut()},400);
 connect();
-if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')){const had=!!navigator.serviceWorker.controller;let reloaded=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had&&!reloaded){reloaded=true;try{saveOnLeave()}catch(e){}location.reload()}});navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>{try{r.update()}catch(e){}}).catch(()=>{})}
 })();
 </script>
 </body>

@@ -1,5 +1,5 @@
 // Offline support: keeps the app files cached so it opens without internet.
-const CACHE = 'sbaleno-v4';
+const CACHE = 'sbaleno-v5';
 const FILES = ['./', './index.html', './privacy.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './pdf-fonts.js'];
 
 self.addEventListener('install', e => {
@@ -22,7 +22,8 @@ self.addEventListener('fetch', e => {
   if (url.origin !== location.origin) return;
   // App files: network first so updates arrive, cache when offline.
   e.respondWith(
-    fetch(e.request).then(res => {
+    // always revalidate with GitHub, never reuse a stale copy from the browser's HTTP cache
+    fetch(e.request, { cache: 'no-cache' }).then(res => {
       if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)); }
       return res;
     }).catch(() => caches.match(e.request, { ignoreSearch: true }).then(r => r || caches.match('./index.html')))
