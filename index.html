@@ -707,7 +707,7 @@ h2{font-size:13px}
 /* shape: pill buttons, 14px cards, 8px inputs, soft brown shadows (outlines at night) */
 .trip,.cat,.addpanel,.modal-card,.wholepanel,.progress{border-radius:var(--r-md)}
 .inp,input[type=text],input[type=search],input[type=date],select{border-radius:var(--r-sm)}
-.trip,.progress{box-shadow:var(--shadow-card)}
+.trip{box-shadow:var(--shadow-card)}
 /* one lamp: the primary action glows */
 .btn.primary{box-shadow:0 0 0 4px rgba(226,128,46,.14),0 0 22px rgba(226,128,46,.38)}
 .credit .credit-box{border-radius:var(--r-md)}
@@ -753,6 +753,9 @@ h2{font-size:13px}
 .confirm-actions .btn{flex:1 1 0;min-height:46px;justify-content:center;text-align:center}
 .confirm-actions .btn.danger{background:var(--danger);border-color:var(--danger);color:#fff;font-weight:600}
 :root[data-app-theme="dark"] .confirm-actions .btn.danger{color:#1A1A10}
+
+/* Uncheck all: a real button, left of the expand/collapse icon */
+.packhead{align-items:center;gap:10px}
 </style>
 </head>
 <body>
@@ -1276,10 +1279,10 @@ function viewPack(t){
   if(!a.length)return `<div class="empty">${esc(T.noPicks)}</div>`;
   return `<div class="pp-sent" aria-hidden="true"></div><section class="panel progpanel">
       <div class="progress"><span class="big">${done}<span class="muted">/${total}</span></span><span class="muted">${done===total?T.allPacked:T.packedOf}</span>
-        <span class="spacer"></span>${done?`<button class="btn ghost" data-act="reset-pack">${T.resetPack}</button>`:''}</div>
+</div>
       <div class="meter"><i style="width:${pct}%"></i></div>
     </section>
-    <section class="panel"><div class="row" style="justify-content:flex-end">${foldAll('pack',byCat(a).map(g=>g[0]))}</div>${byCat(a).map(([c,l])=>`<div class="cat cardcat${fold('pack',c)}" style="--cc:var(--c-${catColor(c)})"><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pack',c,esc(c),(p=>T.nPacked(p.done,p.total))(pieces(t,l)))}</h3>${l.map(x=>`
+    <section class="panel"><div class="row packhead">${done?`<button class="btn clearbtn" data-act="reset-pack"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>${T.resetPack}</button>`:''}<span class="spacer"></span>${foldAll('pack',byCat(a).map(g=>g[0]))}</div>${byCat(a).map(([c,l])=>`<div class="cat cardcat${fold('pack',c)}" style="--cc:var(--c-${catColor(c)})"><h3 style="--cc:var(--c-${catColor(c)})">${foldBtn('pack',c,esc(c),(p=>T.nPacked(p.done,p.total))(pieces(t,l)))}</h3>${l.map(x=>`
       ${(()=>{const pn=packedN(t,x),dn=pn>=x.qty,part=pn>0&&!dn;return `<div class="pk ${dn?'done':''}${part?' part':''}"><label class="pk-l"><input type="checkbox" id="pk-${x.it.id}" data-pack="${x.it.id}" ${dn?'checked':''} ${part?'data-partial="1"':''}>
         <span class="nm">${esc(x.it.name)}${daysTxt(x)?`<span class="days">${esc(daysTxt(x))}</span>`:''}</span></label>${x.qty>1?`<span class="pstep" aria-label="${esc(T.piecesPacked)}"><button type="button" data-act="pk-dec" data-id="${x.it.id}" aria-label="${T.less}" ${pn<=0?'disabled':''}>−</button><span class="pn">${pn}/${x.qty}</span><button type="button" data-act="pk-inc" data-id="${x.it.id}" aria-label="${T.more}" ${dn?'disabled':''}>+</button></span>`:`<span class="q">×1</span>`}</div>`})()}`).join('')}</div>`).join('')}
     </section>`;
