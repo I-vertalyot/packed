@@ -933,12 +933,13 @@ body{transition:background-color .35s ease}
 :root[data-palette="ocean"][data-app-theme="dark"]{--mode-days:#E8705F;--on-days:#001219}
 :root[data-mode="days"]{--page:color-mix(in srgb,var(--mode-days) 6%,var(--bg))}
 
-/* ===== Collecting page filled with the Collecting colour ===== */
-:root[data-mode="days"]{--page:var(--mode-days);--mcol:color-mix(in srgb,var(--on-days) 75%,transparent)}
-:root[data-mode="days"] main>.head,:root[data-mode="days"] main>.head h1{color:var(--on-days)}
-:root[data-mode="days"] main>.head .menubtn{color:var(--on-days)}
-:root[data-mode="days"] .modebar .seg button[data-v="days"][aria-pressed="true"]{background:var(--on-days);color:var(--mode-days);box-shadow:0 0 14px color-mix(in srgb,var(--on-days) 35%,transparent)}
-:root[data-mode="days"] .modebar .seg button[data-v="days"][aria-pressed="true"] .seg-badge{background:color-mix(in srgb,var(--mode-days) 15%,transparent)}
+/* ===== Collecting page: deep wine background ===== */
+:root{--wine-page:#8C1F25;--on-wine:#FFFFFF}
+:root[data-app-theme="dark"]{--wine-page:#3E1418;--on-wine:#F3E3DE}
+:root[data-mode="days"]{--page:var(--wine-page);--mcol:color-mix(in srgb,var(--on-wine) 70%,transparent)}
+:root[data-mode="days"] main>.head,:root[data-mode="days"] main>.head h1,:root[data-mode="days"] main>.head .menubtn{color:var(--on-wine)}
+:root[data-mode="days"]:not([data-app-theme="dark"]) .modebar .seg button[data-v="days"][aria-pressed="true"]{background:#FFFFFF;color:var(--wine-page);box-shadow:0 0 14px rgba(255,255,255,.3)}
+:root[data-mode="days"]:not([data-app-theme="dark"]) .modebar .seg button[data-v="days"][aria-pressed="true"] .seg-badge{background:color-mix(in srgb,var(--wine-page) 14%,transparent)}
 :root[data-mode="days"] .modebar .seg button[data-v="pack"][aria-pressed="false"]{background:var(--surface);color:var(--ink)}
 :root[data-mode="days"] .modebar .seg button[aria-pressed="true"]::after{background:var(--mcol)}
 :root[data-mode="days"] .credit .credit-box{box-shadow:none}
@@ -991,9 +992,8 @@ body{transition:background-color .35s ease}
 :root[data-app-theme="dark"] [style*="--cc"]{--cct:var(--cc)}
 .palsw button[aria-checked="true"]{background:transparent}
 :root[data-mode="days"]{--page:var(--bg)}
-:root[data-mode="days"]{--mcol:var(--on-days)}
-:root[data-mode="days"] .modebar .seg button[data-v="days"][aria-pressed="true"]{box-shadow:0 0 14px var(--on-days)}
-:root[data-mode="days"] .modebar .seg button[data-v="days"][aria-pressed="true"] .seg-badge{background:transparent}
+:root[data-mode="days"]{--mcol:var(--on-wine)}
+:root[data-mode="days"]:not([data-app-theme="dark"]) .modebar .seg button[data-v="days"][aria-pressed="true"] .seg-badge{background:transparent}
 }
 </style>
 </head>
@@ -1628,7 +1628,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.09-2034';
+const APP_BUILD='2026.11.09-2037';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
