@@ -995,6 +995,13 @@ body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;bac
 .seg-l::after{content:attr(data-l);font-weight:700;height:0;visibility:hidden;overflow:hidden;pointer-events:none}
 .seg-badge{font-variant-numeric:tabular-nums}
 
+/* light theme: deeper aurora colours, blended in so they read clearly on the pale background */
+:root:not([data-app-theme="dark"]){--au1:#C2560E;--au2:#1F7C80;--au3:#7A1C21;--au-op:.42}
+:root[data-palette="ocean"]:not([data-app-theme="dark"]){--au1:#006E73;--au2:#C47A00;--au3:#2E8A6E}
+:root[data-mode="pack"]:not([data-app-theme="dark"]){--au1:#00777A;--au2:#2E8A6E;--au3:#C2560E;--au-op:.40}
+:root[data-mode="days"]:not([data-app-theme="dark"]){--au1:#E07A5F;--au2:#EE9B00;--au3:#3A0F14;--au-op:.34}
+:root:not([data-app-theme="dark"]) .aurora i{mix-blend-mode:multiply}
+
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
 :root[data-mode="days"]{--page:var(--bg)}
@@ -1693,7 +1700,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.09-2154';
+const APP_BUILD='2026.11.09-2157';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
