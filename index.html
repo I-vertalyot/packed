@@ -1278,7 +1278,7 @@ function viewTrips(){
         <span class="t-name">${fresh?`<span class="t-new">${esc(T.newBadge)}</span>`:''}${esc(t.name)}</span>
         <span class="t-meta mono" style="display:block">${dm(t.start)} – ${dm(t.end)} · ${T.days(n)}</span>
         ${(()=>{if(past)return '';if(t.start<=today)return `<span class="t-count now">${esc(t.start===today?T.cdToday:T.cdNow)}</span>`;const dd=Math.round((parseD(t.start)-parseD(today))/864e5);return `<span class="t-count">${esc(dd===1?T.cdTomorrow:T.cdIn(dd))}</span>`})()}
-        ${p.total?`<span class="meter" aria-hidden="true" style="display:block"><i style="width:${pct}%"></i></span>`:`<span class="t-empty">${esc(T.noItemsYet)}</span>`}
+        ${p.total?'':`<span class="t-empty">${esc(T.noItemsYet)}</span>`}
       </span>
       ${p.total?`<span class="pct">${p.done}/${p.total}</span>`:'<span class="pct" aria-hidden="true"></span>'}
     </button><button class="trip-edit" data-act="edit-trip-open" data-id="${t.id}" aria-label="${esc(T.editTrip)}: ${esc(t.name)}" title="${esc(T.editTrip)}"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></button></div>`}).join('');
