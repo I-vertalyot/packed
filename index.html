@@ -1770,7 +1770,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.09-2357';
+const APP_BUILD='2026.11.09-2358';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
@@ -2287,8 +2287,8 @@ function quickAdd(pre){
   const tints=['255,255,255','255,255,255','210,225,255','255,236,210','190,255,245'];
   const mk=z=>({x:(Math.random()*2-1),y:(Math.random()*2-1),z:z==null?Math.random():z,t:tints[Math.random()*tints.length|0],px:null,py:null});
   function size(){const r=cv.getBoundingClientRect();D=Math.min(2,devicePixelRatio||1);W=Math.max(1,r.width);H=Math.max(1,r.height);cv.width=W*D|0;cv.height=H*D|0;cx.setTransform(D,0,0,D,0,0);
-    const n=Math.round(Math.min(220,W*H/420));while(stars.length<n)stars.push(mk());stars.length=n;if(still)draw(0)}
-  function draw(dt){cx.clearRect(0,0,W,H);const fx=W*0.62,fy=H*0.55,f=Math.max(W,H)*0.55,sp=dt*0.00016;
+    const n=Math.round(Math.min(420,W*H/190));while(stars.length<n)stars.push(mk());stars.length=n;if(still)draw(0)}
+  function draw(dt){cx.clearRect(0,0,W,H);const fx=W*0.62,fy=H*0.55,f=Math.max(W,H)*0.55,sp=dt*0.00006;
     for(const s of stars){
       if(!still){s.z-=sp*(0.6+0.4*(1-s.z));}
       if(s.z<=0.02){Object.assign(s,mk(1));continue}
