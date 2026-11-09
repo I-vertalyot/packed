@@ -1026,6 +1026,11 @@ body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;bac
 :root:not([data-app-theme="dark"]),:root[data-palette="ocean"]:not([data-app-theme="dark"]){--mode-pack:#1E7A55;--on-pack:#FFFFFF}
 :root[data-mode="pack"]:not([data-app-theme="dark"]) .modebar .seg button[data-v="pack"][aria-pressed="true"]{color:#fff}
 
+/* ===== no big coloured frame around the boxes (outline, glow, rounded top, connector line all removed) ===== */
+.modebox,.modebox2{border:0!important;box-shadow:none!important;padding:0!important;margin-top:4px!important}
+.modebox::after,.modebox2::before,.modebox2::after{display:none!important}
+.modebar .seg::after,.modebar .seg button[aria-pressed="true"]::after,.modebar .seg button::after{display:none!important}
+
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
 :root[data-mode="days"]{--page:var(--bg)}
@@ -1442,7 +1447,7 @@ function updateCap(){const mb=document.querySelector('.modebar');if(!mb)return;c
   /* the frame trims its own content at the rounded top under the switch, so nothing shows behind the buttons and no background band is needed */
   const seg=mb.querySelector('.seg');const cut=seg?seg.getBoundingClientRect().bottom:capTop;
   document.querySelectorAll('main>.modebox,main>.modebox2').forEach(x=>{const h=Math.round((cut-x.getBoundingClientRect().top)*10)/10;
-    const v=h>0?'inset('+h+'px -40px -40px -40px round 56px 56px 0 0)':'';if(x.style.clipPath!==v)x.style.clipPath=v});
+    const v=h>0?'inset('+h+'px -40px -40px -40px)':'';if(x.style.clipPath!==v)x.style.clipPath=v});
   /* Packing: the list also stops at the bottom of the stuck progress box */
   const pp=document.querySelector('.progpanel');if(pp){const pb=pp.classList.contains('stuck')?pp.getBoundingClientRect().bottom:-1;
     let n=pp.nextElementSibling;while(n){if(!n.classList.contains('pp-sent')){const h=pb<0?0:Math.round((pb-n.getBoundingClientRect().top)*10)/10;const v=h>0?'inset('+h+'px -20px -20px -20px)':'';if(n.style.clipPath!==v)n.style.clipPath=v}n=n.nextElementSibling}}}
@@ -1727,7 +1732,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.09-2211';
+const APP_BUILD='2026.11.09-2339';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
