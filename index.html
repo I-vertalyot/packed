@@ -787,12 +787,13 @@ input[type=date].inp::-webkit-calendar-picker-indicator:hover{opacity:1;backgrou
 
 /* ===== palette tune-up: modes differ in lightness, a clear "packed" colour, categories spaced by lightness ===== */
 :root:not([data-app-theme="dark"]){
-  --mode-days:#8AC6C7;--on-days:#1F3536;--mode-pack:#006590;--on-pack:#FFFFFF;--ok:#00785C;
+  --mode-days:#006590;--on-days:#FFFFFF;--mode-pack:#8AC6C7;--on-pack:#1F3536;--ok:#00785C;
   --c-purple:#5A497F;--c-red:#993F38;--c-blue:#006D9B;--c-green:#4F7A41;--c-pink:#B35A7E;--c-gray:#867D75;--c-teal:#2C9493;--c-orange:#CE783D;--c-yellow:#C19437}
 :root[data-app-theme="dark"]{
-  --mode-days:#539698;--on-days:#0E1D1E;--mode-pack:#84BCE7;--on-pack:#0E1A26;--ok:#58C39B;
+  --mode-days:#84BCE7;--on-days:#0E1A26;--mode-pack:#539698;--on-pack:#0E1D1E;--ok:#58C39B;
   --c-purple:#9A88BC;--c-red:#D88176;--c-blue:#6EA7D0;--c-green:#8BB37C;--c-pink:#E69BB7;--c-gray:#C0B7B0;--c-teal:#7ECFCC;--c-orange:#FFBB88;--c-yellow:#F6D37F}
-:root[data-mode="pack"]{--mcol:var(--mode-pack);--page:color-mix(in srgb,var(--mode-pack) 9%,var(--bg))}
+:root[data-mode="pack"]{--mcol:var(--mode-pack);--page:color-mix(in srgb,var(--mode-pack) 12%,var(--bg))}
+:root[data-mode="days"]{--page:color-mix(in srgb,var(--mode-days) 9%,var(--bg))}
 .seg button[data-v="pack"]{--mc:var(--mode-pack)}
 /* category text: a readable shade of the category colour in each theme */
 [style*="--cc"]{--cct:color-mix(in srgb,var(--cc) 58%,var(--ink))}
