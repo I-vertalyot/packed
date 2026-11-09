@@ -887,6 +887,15 @@ body{transition:background-color .35s ease}
 .am-help:hover{background:var(--chip)}
 .am-help .am-i{display:grid;place-items:center;width:24px;height:24px;border-radius:7px;border:1.5px solid currentColor;font-family:Georgia,serif;font-style:italic;font-weight:700;font-size:14px;color:var(--sign-text)}
 
+/* fold / unfold a category inside Collected items */
+.pgroup>.pg-h{padding:0}
+.pg-fold{display:flex;align-items:center;gap:7px;width:100%;min-height:40px;padding:6px 12px;border:0;background:none;color:inherit;font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer;text-align:left}
+.pg-fold .chev{flex:none;color:var(--muted);transition:transform .2s ease}
+.pg-fold:hover .chev{color:var(--ink)}
+.pgroup.folded .pg-fold .chev{transform:rotate(-90deg)}
+.pgroup.folded .pflow{display:none}
+.pgroup.folded>.pg-h{border-bottom-color:transparent}
+
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
 :root[data-mode="days"]{--page:var(--bg)}
@@ -1254,7 +1263,7 @@ function applyTheme(){const t=state.theme==='light'?'light':'dark';document.docu
   document.querySelectorAll('#palSw .ps-n').forEach(n=>{n.textContent=n.parentElement.dataset.v==='ocean'?T.palOcean:T.palLantern})}
 const CHEV='<svg class="chev" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>';
 /* most views start folded and remember what you opened; Packing starts open and remembers what you closed */
-const foldInv=v=>v==='pack',foldKey=v=>foldInv(v)?'packClosed':v;
+const foldInv=v=>v==='pack'||v==='whole',foldKey=v=>v==='pack'?'packClosed':v==='whole'?'wholeClosed':v;
 const isFolded=(v,c)=>{const l=state.open&&state.open[foldKey(v)];const has=Array.isArray(l)&&l.includes(c);return foldInv(v)?has:!has};
 function openCat(v,c){state.open=state.open||{};const k=foldKey(v);const l=new Set(state.open[k]||[]);foldInv(v)?l.delete(c):l.add(c);state.open[k]=[...l]}
 const fold=(v,c)=>isFolded(v,c)?' folded':'';
@@ -1445,7 +1454,8 @@ function viewDays(t,days){
   let rowNo=0;
   const list=grouped.length?`<div class="picked">${byCat(chosen).map(([c,l])=>{const rows=l.slice().sort((a,b)=>cmp(a.it.name,b.it.name)).map(x=>{const extra=rowNo++>=WHOLE_FOLD_MIN;return pickRow(x).replace('<div class="pick">',`<div class="pick${extra?' extra':''}">`)});
       const allExtra=rows.every(r=>r.startsWith('<div class="pick extra">'));
-      return `<div class="pgroup${allExtra?' extra':''}" style="--cc:var(--c-${catColor(c)})"><h4 class="pg-h" style="--cc:var(--c-${catColor(c)})"><span>${esc(c)}</span><span class="pg-n">${l.length}</span></h4><div class="pflow">${rows.join('')}</div></div>`}).join('')}</div>`
+      const pf=isFolded('whole',c);
+      return `<div class="pgroup${allExtra?' extra':''}${pf?' folded':''}" style="--cc:var(--c-${catColor(c)})"><h4 class="pg-h" style="--cc:var(--c-${catColor(c)})"><button type="button" class="pg-fold" data-act="fold" data-v="whole" data-c="${esc(c)}" aria-expanded="${!pf}"><span>${esc(c)}</span><span class="pg-n">${l.length}</span><span class="spacer"></span>${CHEV}</button></h4><div class="pflow">${rows.join('')}</div></div>`}).join('')}</div>`
     :`<div class="empty empty-slim">${esc(k==='all'?T.emptyWhole:T.emptyDay)}</div>`;
   const actions=`<div class="row">
       ${idx>0?`<button class="btn" data-act="copy-prev">${T.copyPrev}</button>`:''}
