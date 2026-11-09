@@ -854,10 +854,8 @@ input[type=date].inp::-webkit-calendar-picker-indicator:hover{opacity:1;backgrou
 @media (prefers-reduced-motion:reduce){.swipe-from-right,.swipe-from-left{animation:none}}
 
 /* smooth page change between Collecting and Packing */
-@keyframes modeInR{from{transform:translate3d(48px,0,0);opacity:0}to{transform:none;opacity:1}}
-@keyframes modeInL{from{transform:translate3d(-48px,0,0);opacity:0}to{transform:none;opacity:1}}
-.mode-in-r{animation:modeInR .34s cubic-bezier(.22,.8,.24,1) both}
-.mode-in-l{animation:modeInL .34s cubic-bezier(.22,.8,.24,1) both}
+@keyframes modeFade{from{opacity:0}to{opacity:1}}
+.mode-in-r,.mode-in-l{animation:modeFade .32s ease-out both}
 @media (prefers-reduced-motion:reduce){.mode-in-r,.mode-in-l{animation:fadeOnly .2s ease-out both}@keyframes fadeOnly{from{opacity:0}to{opacity:1}}}
 /* the mode buttons cross-fade their colour */
 .modebar .seg button{transition:background-color .25s ease,color .25s ease,border-color .25s ease,box-shadow .25s ease}
@@ -1617,7 +1615,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.09-2011';
+const APP_BUILD='2026.11.09-2014';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
