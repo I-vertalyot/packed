@@ -1162,7 +1162,7 @@ body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,rgba(
 </style>
 </head>
 <body>
-<script>(function(){var t='dark';try{t=localStorage.getItem('sbaleno-theme')||'dark'}catch(e){}document.documentElement.setAttribute('data-app-theme',t==='light'?'light':'dark');var pl='lantern';try{pl=localStorage.getItem('sbaleno-palette')||'lantern'}catch(e){}document.documentElement.setAttribute('data-palette',pl==='ocean'?'ocean':'lantern')})();</script>
+<script>(function(){var t='dark';try{t=localStorage.getItem('sbaleno-theme')||'dark'}catch(e){}document.documentElement.setAttribute('data-app-theme',t==='light'?'light':'dark');var pl='ocean';try{pl=localStorage.getItem('sbaleno-palette')||'ocean'}catch(e){}document.documentElement.setAttribute('data-palette',pl==='ocean'?'ocean':'lantern')})();</script>
 
 <div class="aurora" aria-hidden="true"><i></i></div>
 <header class="bar"><canvas class="space" id="space" aria-hidden="true"></canvas>
@@ -1378,7 +1378,7 @@ function starter(lg){
   Object.entries(cats).forEach(([c,list])=>list.forEach(n=>{const id=uid();items.push({id,name:n,cat:c});by[n]=id}));
   const all={};['Pas','Peněženka','Platební karta','Telefon','Nabíječka','Kartáček na zuby','Zubní pasta','Deodorant','Klíče'].forEach(n=>all[by[n]]=1);
   const day=extra=>{const o={};o[by['Tričko']]=1;o[by['Spodní prádlo']]=1;o[by['Ponožky']]=1;(extra||[]).forEach(n=>o[by[n]]=1);return o};
-  return {v:1,theme:(()=>{try{return localStorage.getItem('sbaleno-theme')==='light'?'light':'dark'}catch(e){return 'dark'}})(),lang:'cs',catColors:{},cats:Object.keys(cats),items,trips:[{
+  return {v:1,theme:'dark',palette:'ocean',lang:'en',catColors:{},cats:Object.keys(cats),items,trips:[{
     id:uid(),name:'Ukázka: víkend ve Vídni',start:'2026-10-30',end:'2026-11-01',
     picks:{all,'2026-10-30':day(['Kalhoty','Mikina','Bunda']),'2026-10-31':day(['Deštník']),'2026-11-01':day()},
     packed:{[by['Pas']]:true,[by['Telefon']]:true}
@@ -1395,7 +1395,8 @@ function loadLocal(){try{const s=localStorage.getItem(KEY);return s?sanitize(JSO
 
 let state=loadLocal();
 const FRESH=!state;
-if(!state){state=starter();state.trips.forEach(t=>{t.picks=mergeDays(t.picks)});try{const nl=(navigator.languages&&navigator.languages[0])||navigator.language||'';if(!/^(cs|sk)\b/i.test(nl)){translateStarter('en');state.lang='en'}}catch(e){}}
+/* first start defaults: English, dark mode, Ocean colours */
+if(!state){state=starter();state.trips.forEach(t=>{t.picks=mergeDays(t.picks)});translateStarter('en');state.lang='en';state.theme='dark';state.palette='ocean'}
 const ui={tab:'trips',tripId:null,mode:'days',day:'all',newTrip:false,tripErr:'',delTrip:false,delItem:null,importMsg:''};
 let statusKey='load';
 
@@ -1817,7 +1818,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.10-0126';
+const APP_BUILD='2026.11.10-0136';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
