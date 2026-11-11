@@ -1108,6 +1108,23 @@ main>.modebox,main>.modebox2{margin-top:-25px!important}
 .datef input.dfmt::-webkit-datetime-edit{opacity:0}
 .datef .dtxt{position:absolute;left:14px;right:40px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--ink);font:inherit;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
+/* NEW: a red ribbon flag fixed to the left side of the newest trip card, folded around its edge */
+.trip-w.is-new .trip{border-color:color-mix(in srgb,#C62828 55%,var(--line))}
+.t-flag{position:absolute;left:-7px;top:12px;z-index:2;pointer-events:none;
+  padding:3px 10px 3px 9px;background:#C62828;color:#fff;font-family:var(--f-mono);font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;line-height:1.4;
+  clip-path:polygon(0 0,100% 0,calc(100% - 7px) 50%,100% 100%,0 100%);padding-right:16px;
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
+.t-flag::after{content:"";position:absolute;left:0;top:100%;border-top:6px solid #7A1414;border-left:7px solid transparent}
+:root[data-app-theme="dark"] .t-flag{background:#E5484D}
+:root[data-app-theme="dark"] .t-flag::after{border-top-color:#8E1F22}
+.t-flag{overflow:visible}
+
+/* ribbon body drawn behind the text so the folded corner underneath is not clipped */
+.t-flag{background:none!important;clip-path:none!important;filter:none!important;top:8px!important;isolation:isolate}
+.t-flag::before{content:"";position:absolute;inset:0;z-index:-1;background:#C62828;clip-path:polygon(0 0,100% 0,calc(100% - 7px) 50%,100% 100%,0 100%);filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
+:root[data-app-theme="dark"] .t-flag::before{background:#E5484D}
+.t-flag::after{z-index:-2}
+
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
 :root[data-mode="days"]{--page:var(--bg)}
@@ -1168,6 +1185,7 @@ body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,rgba(
 :root:not([data-app-theme="dark"]) .modebar .seg button[aria-pressed="false"] .seg-badge{background:transparent}
 :root[data-mode="days"]:not([data-app-theme="dark"]) .modebar .seg button[data-v="pack"][aria-pressed="false"]{background:var(--mc);color:var(--ink)}
 .trip-w:has(.t-new) .trip{border-color:#C62828!important}
+.trip-w.is-new .trip{border-color:#C62828}
 }
 </style>
 </head>
@@ -1609,16 +1627,17 @@ function viewTrips(){
       ${ui.tripErr?`<p class="err">${esc(T[ui.tripErr])}</p>`:''}
       <p class="note">${esc(T.tripNote)}</p>
     </form>`:'';
-  const NEW_MS=5*60*1000,nowMs=Date.now();let soonest=Infinity;
+  /* the NEW flag sits only on the most recently created trip, until a newer one is made */
+  const newestId=(state.trips.filter(x=>x.created).sort((a,b)=>b.created-a.created)[0]||{}).id;let soonest=Infinity;
   const cards=trips.map(t=>{
-    const fresh=t.created&&nowMs-t.created<NEW_MS;if(fresh)soonest=Math.min(soonest,t.created+NEW_MS-nowMs);
+    const fresh=t.id===newestId;
     const n=tripDays(t).length;const p=progress(t);const pct=p.total?Math.round(p.done/p.total*100):0;
     const d=parseD(t.start);const past=t.end<today;
     const pastHead='';
-    return `${pastHead}<div class="trip-w${past?' past':''}"><button class="trip" data-act="open-trip" data-id="${t.id}">
+    return `${pastHead}<div class="trip-w${past?' past':''}${fresh?' is-new':''}">${fresh?`<span class="t-flag" aria-label="${esc(T.newBadge)}">${esc(T.newBadge)}</span>`:''}<button class="trip" data-act="open-trip" data-id="${t.id}">
       <span class="when"><b>${T.dayNum(d)}</b><span>${d.toLocaleDateString(T.locale,{month:'short'}).replace('.','')}</span></span>
       <span style="min-width:0">
-        <span class="t-name">${fresh?`<span class="t-new">${esc(T.newBadge)}</span>`:''}${esc(t.name)}</span>
+        <span class="t-name">${esc(t.name)}</span>
         <span class="t-meta" style="display:block">${drange(t.start,t.end)} · ${T.days(n).replace(' ','\u00a0')}</span>
         ${(()=>{if(past)return '';if(t.start<=today)return `<span class="t-count now">${esc(t.start===today?T.cdToday:T.cdNow)}</span>`;const dd=Math.round((parseD(t.start)-parseD(today))/864e5);return `<span class="t-count">${esc(dd===1?T.cdTomorrow:T.cdIn(dd))}</span>`})()}
         ${p.total?'':`<span class="t-empty">${esc(T.noItemsYet)}</span>`}
@@ -1832,7 +1851,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.11-1940';
+const APP_BUILD='2026.11.11-1945';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
