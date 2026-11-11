@@ -1146,6 +1146,19 @@ main>.modebox,main>.modebox2{margin-top:-25px!important}
 /* categories as labelled shelves: a strip in each category's colour */
 .cat.cardcat{border-left:5px solid var(--cc)!important;border-radius:10px!important}
 
+/* ===== one designer radius for every button: 8px rounded rectangles (small tags 6px, cards 12px); round only for switches and colour dots ===== */
+:root{--rbtn:8px;--rtag:6px}
+.btn,.btn.small,.btn.pdfbtn.small,.btn.ghost.foldall,.tut-nav .btn,.savebtn,.linkbtn,.movebtn,.showmore,.share-opt,.tr-confirm,.tut-skip,.tut-lang,
+.seg button,.modebar .seg button,.bar .tabs button,.appmenu-pop .am-seg,.appmenu-pop .am-seg button,.appmenubtn,.menubtn,.themebtn,.infobtn,.x,.trip-edit,.totop,
+.chip,.qchip,.pgroup .pflow>.pick,.catpick,.cp-opt,.quickadd .qa-btn,.quickadd .qa-cat,.quickadd .qa-plus,.pstep,.step,.pflow .pick .step,.holo-btn,.holo-x,
+.credit .credit-box a.coffee,.lang,.palsw,.palsw button,.am-help,.clearbtn,.inv-clear{border-radius:var(--rbtn)!important}
+.seg-badge,.fold-n,.status b,.trip .t-count,.sw{border-radius:var(--rtag)!important}
+.qchip .pm:first-child,.pgroup .pflow>.pick .pm:first-child{border-radius:var(--rbtn) 0 0 var(--rbtn)!important}
+.qchip .pm:last-child,.pgroup .pflow>.pick .pm:last-child{border-radius:0 var(--rbtn) var(--rbtn) 0!important}
+.trip,.cat,.panel,.modal-card,.progpanel,.addpanel{border-radius:12px}
+/* stay round: toggle switches and colour swatches */
+.hp-track,.hp-track i,.dot,.palsw i,.colorbtn{border-radius:999px!important}
+
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
 :root[data-mode="days"]{--page:var(--bg)}
@@ -1875,7 +1888,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.11-1950';
+const APP_BUILD='2026.11.11-1955';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
