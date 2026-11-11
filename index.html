@@ -1170,6 +1170,13 @@ html.poster-open,html.poster-open body{overflow:hidden}
 @keyframes posterZoom{from{transform:scale(.94);opacity:0}to{transform:none;opacity:1}}
 @media (prefers-reduced-motion:reduce){.poster,.poster img{animation:none}}
 
+.poster-next{position:absolute;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border-radius:8px;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.5);color:#fff;font:600 15px var(--f-body);cursor:pointer}
+.poster-next[hidden]{display:none}
+.poster{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+.poster.loading img{opacity:.35}
+.poster img{transition:opacity .2s}
+.poster img.swap{animation:posterZoom .3s cubic-bezier(.2,.8,.2,1)}
+
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
 :root[data-mode="days"]{--page:var(--bg)}
@@ -1272,7 +1279,7 @@ body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,rgba(
 </header>
 <main id="main"></main>
 <footer class="credit" id="credit"></footer>
-<div class="poster" id="poster" role="dialog" aria-modal="true" aria-label="Your attention is your currency" hidden><button type="button" class="poster-x" data-act="poster-close" aria-label="Close">✕</button><img alt="Poster: Your attention is your currency — a hand holding a coin with an eye on it" decoding="async"></div>
+<div class="poster" id="poster" role="dialog" aria-modal="true" aria-label="Your attention is your currency" hidden><button type="button" class="poster-x" data-act="poster-close" aria-label="Close">✕</button><img alt="Photo" decoding="async"><button type="button" class="poster-next" data-act="poster-next"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg><span>Next photo</span></button></div>
 <div class="undo-toast" id="undoToast" role="status" aria-live="polite" hidden><span></span><button type="button" id="undoBtn"></button></div>
 <button class="totop" id="toTop" type="button" aria-label="Back to top" title="Back to top"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg></button>
 <div class="holo" id="holo" hidden role="dialog" aria-modal="true" aria-label="i.vertalyot on Instagram">
@@ -1552,12 +1559,30 @@ const INSTALLED=(()=>{ /* true only inside the Google Play / App Store apps, nev
     try{return sessionStorage.getItem('sbaleno-store')==='1'}catch(e){return false}}catch(e){return false}})();
 /* info poster in the footer: opens full screen, tap anywhere / ✕ / Back / Esc closes */
 const POSTER_SRC='poster.jpg';
-function showPoster(on){const pv=document.getElementById('poster');if(!pv)return;const img=pv.querySelector('img');
-  if(on&&!img.getAttribute('src'))img.src=POSTER_SRC;pv.hidden=!on;document.documentElement.classList.toggle('poster-open',on);
+/* photo generator: every tap shows a random picture from the photos/ folder of the GitHub repository (new uploads appear automatically) */
+const PHOTO_REPO='I-vertalyot/packed',PHOTO_DIR='photos',PHOTO_RX=/\.(jpe?g|png|webp|gif|avif)$/i;
+let photoList=null,photoLast='';
+async function loadPhotos(){if(photoList)return photoList;
+  let names=[];
+  try{const r=await fetch('https://api.github.com/repos/'+PHOTO_REPO+'/contents/'+PHOTO_DIR,{cache:'no-store'});if(r.ok){const a=await r.json();names=a.filter(x=>x.type==='file'&&PHOTO_RX.test(x.name)).map(x=>PHOTO_DIR+'/'+x.name)}}catch(e){}
+  if(!names.length){try{const r=await fetch(PHOTO_DIR+'/list.json',{cache:'no-store'});if(r.ok)names=(await r.json()).filter(n=>PHOTO_RX.test(n)).map(n=>n.includes('/')?n:PHOTO_DIR+'/'+n)}catch(e){}}
+  if(!names.length)names=[POSTER_SRC];
+  try{sessionStorage.setItem('pk-photos',JSON.stringify(names))}catch(e){}
+  return photoList=names}
+function pickPhoto(list){if(list.length<2)return list[0];let n;do{n=list[Math.random()*list.length|0]}while(n===photoLast);return n}
+async function nextPhoto(){const pv=document.getElementById('poster');if(!pv)return;const img=pv.querySelector('img');
+  pv.classList.add('loading');const list=await loadPhotos();const src=pickPhoto(list);photoLast=src;
+  img.onload=()=>{pv.classList.remove('loading');img.classList.remove('swap');void img.offsetWidth;img.classList.add('swap')};
+  img.onerror=()=>{photoList=list.filter(x=>x!==src);if(photoList.length&&photoList[0]!==src)nextPhoto();else{img.src=POSTER_SRC}};
+  img.src=src;pv.querySelector('.poster-next').hidden=list.length<2}
+function showPoster(on){const pv=document.getElementById('poster');if(!pv)return;
+  if(on)nextPhoto();pv.hidden=!on;document.documentElement.classList.toggle('poster-open',on);
   if(on)requestAnimationFrame(()=>pv.querySelector('.poster-x').focus({preventScroll:true}))}
-document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('[data-act="poster-open"],#poster');if(!t)return;
-  if(t.matches('[data-act="poster-open"]')){e.preventDefault();e.stopPropagation();ui.poster=true;showPoster(true);syncHistory();return}
-  e.preventDefault();e.stopPropagation();ui.poster=false;showPoster(false);syncHistory()},true);
+document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('[data-act="poster-open"],[data-act="poster-next"],#poster');if(!t)return;
+  e.preventDefault();e.stopPropagation();
+  if(t.matches('[data-act="poster-next"]')){nextPhoto();return}
+  if(t.matches('[data-act="poster-open"]')){ui.poster=true;showPoster(true);syncHistory();return}
+  ui.poster=false;showPoster(false);syncHistory()},true);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ui.poster){ui.poster=false;showPoster(false);syncHistory()}});
 const credit=()=>`<span class="by">${esc(T.madeBy)} <button class="ig" type="button" aria-haspopup="dialog" title="@i.vertalyot">Vert Alyot</button><button class="poster-i" type="button" data-act="poster-open" aria-haspopup="dialog" aria-label="Info" title="Info">i</button></span>${INSTALLED?'':`<span class="sep" aria-hidden="true">·</span><a class="coffee" href="${BMC}" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">☕</span> ${esc(T.coffee)}</a>`}`;
 function applyTheme(){const t=state.theme==='light'?'light':'dark';document.documentElement.setAttribute('data-app-theme',t);
@@ -1908,7 +1933,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.11-2228';
+const APP_BUILD='2026.11.11-2235';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
