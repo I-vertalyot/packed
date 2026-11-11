@@ -1109,7 +1109,6 @@ main>.modebox,main>.modebox2{margin-top:-25px!important}
 .datef .dtxt{position:absolute;left:14px;right:40px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--ink);font:inherit;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* NEW: a red ribbon flag fixed to the left side of the newest trip card, folded around its edge */
-.trip-w.is-new .trip{border-color:color-mix(in srgb,#C62828 55%,var(--line))}
 .t-flag{position:absolute;left:-7px;top:12px;z-index:2;pointer-events:none;
   padding:3px 10px 3px 9px;background:#C62828;color:#fff;font-family:var(--f-mono);font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;line-height:1.4;
   clip-path:polygon(0 0,100% 0,calc(100% - 7px) 50%,100% 100%,0 100%);padding-right:16px;
@@ -1219,7 +1218,6 @@ body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,rgba(
 :root:not([data-app-theme="dark"]) .modebar .seg button[aria-pressed="false"] .seg-badge{background:transparent}
 :root[data-mode="days"]:not([data-app-theme="dark"]) .modebar .seg button[data-v="pack"][aria-pressed="false"]{background:var(--mc);color:var(--ink)}
 .trip-w:has(.t-new) .trip{border-color:#C62828!important}
-.trip-w.is-new .trip{border-color:#C62828}
 :root[data-tab="inv"]{--page:var(--bg)}
 :root[data-tab="inv"]:not([data-app-theme="dark"]){--page:var(--bg)}
 }
@@ -1888,7 +1886,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.11-1955';
+const APP_BUILD='2026.11.11-1956';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
