@@ -1102,6 +1102,12 @@ body::before{background:#000!important}
 main>.modebox,main>.modebox2{margin-top:-25px!important}
 .progpanel{top:calc(env(safe-area-inset-top,0px) + var(--barh,108px) + var(--modeh,58px) - 5px)}
 
+/* date fields: the phone's own date text is hidden, "11 Nov 2026" is shown on top; the calendar picker still opens on tap */
+.datef{position:relative;display:block;min-width:0}
+.datef input.dfmt{color:transparent!important;width:100%}
+.datef input.dfmt::-webkit-datetime-edit{opacity:0}
+.datef .dtxt{position:absolute;left:14px;right:40px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--ink);font:inherit;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
 :root[data-mode="days"]{--page:var(--bg)}
@@ -1362,6 +1368,9 @@ let T=L.cs;
 const lang=()=>state.lang==='en'?'en':'cs';
 const WD=d=>T.wd[parseD(d).getDay()],WDL=d=>T.wdl[parseD(d).getDay()];
 const dm=s=>T.dm(parseD(s));
+/* day month year: "30 Oct 2026"; a range shows the year once when both dates share it */
+const dmy=s=>dm(s)+'\u00a0'+parseD(s).getFullYear();
+const drange=(a,b,sep)=>{sep=sep||'–';const ya=parseD(a).getFullYear(),yb=parseD(b).getFullYear();return ya===yb?dm(a)+sep+dm(b)+'\u00a0'+yb:dmy(a)+sep+dmy(b)};
 const OTHER=()=>T.other;
 const COLORS=['blue','green','orange','purple','red','teal','pink','yellow','gray'];
 const DEFC={'Doklady':'blue','Documents':'blue','Oblečení':'purple','Clothes':'purple','Hygiena':'teal','Toiletries':'teal','Elektronika':'orange','Electronics':'orange','Léky':'red','Medicine':'red','Ostatní':'gray','Other':'gray'};
@@ -1587,7 +1596,8 @@ function render(){
 function viewTrips(){
   const today=iso(new Date());
   /* upcoming (and ongoing) first, soonest on top; past trips below, most recent first */
-  const trips=state.trips.slice().sort((a,b)=>{const pa=a.end<today,pb=b.end<today;if(pa!==pb)return pa?1:-1;return pa?b.start.localeCompare(a.start):a.start.localeCompare(b.start)});
+  /* newest created trip on top (trips made before creation times were saved keep their list order) */
+  const trips=state.trips.map((t,i)=>[t,i]).sort((a,b)=>((b[0].created||0)-(a[0].created||0))||(b[1]-a[1])).map(x=>x[0]);
   const t0=new Date();const t1=new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+2);
   const form=ui.newTrip?`<form class="panel" id="newTrip">
       <div class="formgrid">
@@ -1604,12 +1614,12 @@ function viewTrips(){
     const fresh=t.created&&nowMs-t.created<NEW_MS;if(fresh)soonest=Math.min(soonest,t.created+NEW_MS-nowMs);
     const n=tripDays(t).length;const p=progress(t);const pct=p.total?Math.round(p.done/p.total*100):0;
     const d=parseD(t.start);const past=t.end<today;
-    const pastHead=past&&!trips.slice(0,trips.indexOf(t)).some(x=>x.end<today)?`<h2 class="past-h">${esc(T.pastTrips)}</h2>`:'';
+    const pastHead='';
     return `${pastHead}<div class="trip-w${past?' past':''}"><button class="trip" data-act="open-trip" data-id="${t.id}">
       <span class="when"><b>${T.dayNum(d)}</b><span>${d.toLocaleDateString(T.locale,{month:'short'}).replace('.','')}</span></span>
       <span style="min-width:0">
         <span class="t-name">${fresh?`<span class="t-new">${esc(T.newBadge)}</span>`:''}${esc(t.name)}</span>
-        <span class="t-meta" style="display:block">${dm(t.start)}–${dm(t.end)} · ${T.days(n).replace(' ','\u00a0')}</span>
+        <span class="t-meta" style="display:block">${drange(t.start,t.end)} · ${T.days(n).replace(' ','\u00a0')}</span>
         ${(()=>{if(past)return '';if(t.start<=today)return `<span class="t-count now">${esc(t.start===today?T.cdToday:T.cdNow)}</span>`;const dd=Math.round((parseD(t.start)-parseD(today))/864e5);return `<span class="t-count">${esc(dd===1?T.cdTomorrow:T.cdIn(dd))}</span>`})()}
         ${p.total?'':`<span class="t-empty">${esc(T.noItemsYet)}</span>`}
       </span>
@@ -1822,7 +1832,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.11-1707';
+const APP_BUILD='2026.11.11-1940';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
@@ -1901,7 +1911,7 @@ function tripPDF(t){
     if(!first){d.text(fit(t.name,'B',8,CW/2),M+CW-d.width(fit(t.name,'B',8,CW/2),'B',8),M,{font:'B',size:8,color:MUT});y=M+30;return}
     const tl=wrap(t.name,'B',24,CW);tl.forEach((l,i)=>d.text(l,M,M+38+i*28,{font:'B',size:24}));
     y=M+38+(tl.length-1)*28+20;
-    d.text(`${cap1(WDL(t.start))} ${dm(t.start)} – ${WDL(t.end)} ${dm(t.end)}   ·   ${T.days(n)}   ·   ${T.pdfPacked(done,pc.total)}`,M,y,{size:10,color:MUT});
+    d.text(`${cap1(WDL(t.start))} ${dm(t.start)} – ${WDL(t.end)} ${dmy(t.end)}   ·   ${T.days(n)}   ·   ${T.pdfPacked(done,pc.total)}`,M,y,{size:10,color:MUT});
     y+=16;d.line(M,y,M+CW,y,{color:INK,lw:1.2});y+=28};
   header(true);
   // 1) packing checklist, two columns
@@ -1943,7 +1953,7 @@ const APP_URL='https://i-vertalyot.github.io/packed/';
 function shareText(t){const a=aggregate(t),p=pieces(t,a),groups={};
   a.forEach(x=>{const c=x.it.cat||OTHER();(groups[c]=groups[c]||[]).push(x)});
   const cats=[...state.cats.filter(c=>groups[c]),...Object.keys(groups).filter(c=>!state.cats.includes(c))];
-  const lines=[`🧳 ${t.name}`,`${dm(t.start)} – ${dm(t.end)} · ${T.pdfPacked(p.done,p.total)}`,''];
+  const lines=[`🧳 ${t.name}`,`${drange(t.start,t.end,' – ')} · ${T.pdfPacked(p.done,p.total)}`,''];
   cats.forEach(c=>{lines.push(c.toUpperCase());groups[c].forEach(x=>lines.push(`${isDone(t,x)?'✅':'⬜'} ${x.it.name}${x.qty>1?' ×'+x.qty:''}`));lines.push('')});
   lines.push(`${T.shareMade}: ${APP_URL}`);return lines.join('\n')}
 function invClearModal(){
@@ -2357,6 +2367,17 @@ window.startSpace=cv=>{if(!cv||!cv.getContext||cv.__space)return;cv.__space=1;(f
   document.addEventListener('visibilitychange',()=>document.hidden?stop():start());start();
 })()};
 document.querySelectorAll('canvas.space').forEach(cv=>window.startSpace(cv));
+/* date fields show "11 Nov 2026" (day month year) whatever the phone's own date format; picking a start date sets the end to the next day */
+function fmtDateInputs(root){(root||document).querySelectorAll('input[type=date]').forEach(inp=>{
+  let w=inp.parentElement;if(!w.classList.contains('datef')){w=document.createElement('span');w.className='datef';inp.parentNode.insertBefore(w,inp);w.appendChild(inp);const t=document.createElement('span');t.className='dtxt';t.setAttribute('aria-hidden','true');w.appendChild(t);inp.classList.add('dfmt')}
+  const t=w.querySelector('.dtxt'),v=inp.value?dmy(inp.value):'';if(t.textContent!==v)t.textContent=v})}
+new MutationObserver(ms=>{if(ms.some(m=>[...m.addedNodes].some(n=>n.nodeType===1&&(n.matches('input[type=date]')||n.querySelector&&n.querySelector('input[type=date]:not(.dfmt)')))))fmtDateInputs()}).observe(document.body,{childList:true,subtree:true});
+document.addEventListener('input',e=>{const el=e.target;if(!(el instanceof HTMLInputElement)||el.type!=='date')return;
+  if(/-start$/.test(el.id)&&el.value){const end=document.getElementById(el.id.replace(/start$/,'end'));if(end){const d=parseD(el.value);d.setDate(d.getDate()+1);const v=iso(d);if(end.value!==v){end.value=v;end.dispatchEvent(new Event('input',{bubbles:true}));end.dispatchEvent(new Event('change',{bubbles:true}))}}}
+  fmtDateInputs()},true);
+document.addEventListener('change',e=>{if(e.target&&e.target.type==='date')fmtDateInputs()},true);
+document.addEventListener('click',e=>{const w=e.target.closest&&e.target.closest('.datef');if(!w)return;const inp=w.querySelector('input');try{inp.showPicker&&inp.showPicker()}catch(_){}} ,true);
+fmtDateInputs();
 render();
 /* the intro tutorial no longer opens by itself on first start; it stays available from the help screen ("Show the tutorial") */
 connect();
