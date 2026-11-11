@@ -1944,7 +1944,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.11-2327';
+const APP_BUILD='2026.11.11-2335';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
@@ -2242,12 +2242,13 @@ const FUN={
 const FUN_E=['🧦','🌴','🦙','🥐','🐧','🍍','🌮','🏝️','🎒','🚀','🍕','🥥','🐙','🌋','⛺','🛶'];
 let funLast='';
 function funPick(l){return l[Math.floor(Math.random()*l.length)]}
+const FUN_C=[['Italy','do Itálie'],['Greece','do Řecka'],['Croatia','do Chorvatska'],['Spain','do Španělska'],['Portugal','do Portugalska'],['France','do Francie'],['Iceland','na Island'],['Norway','do Norska'],['Japan','do Japonska'],['Thailand','do Thajska'],['Mexico','do Mexika'],['Peru','do Peru'],['Egypt','do Egypta'],['Morocco','do Maroka'],['Vietnam','do Vietnamu'],['Bali','na Bali'],['Malta','na Maltu'],['Cyprus','na Kypr'],['Austria','do Rakouska'],['Scotland','do Skotska'],['Ireland','do Irska'],['Turkey','do Turecka'],['Brazil','do Brazílie'],['Canada','do Kanady'],['Australia','do Austrálie'],['New Zealand','na Nový Zéland'],['Kenya','do Keni'],['Slovakia','na Slovensko'],['Montenegro','do Černé Hory'],['Albania','do Albánie'],['Finland','do Finska'],['Switzerland','do Švýcarska']];
 function funName(plain){const L=FUN[lang()==='cs'?'cs':'en'];let n,k=0;
-  do{const r=Math.random();
-    if(lang()==='cs'){const a=funPick(L.a),b=funPick(L.b),c=funPick(L.c);
-      n=(b==='dobrodružství'?a.replace(/á$/,'é'):a)+' '+b+(r<.6?' '+c:'')}
-    else{const a=funPick(L.a),b=funPick(L.b),c=funPick(L.c);
-      n=r<.4?a+' '+b+' '+c:r<.7?b+' '+c:'Mission: '+b+' '+c}
+  do{const r=Math.random(),C=funPick(FUN_C);
+    if(lang()==='cs'){const a=funPick(L.a),b=funPick(L.b);
+      n=(b==='dobrodružství'?a.replace(/á$/,'é'):a)+' '+b+' '+C[1]}
+    else{const a=funPick(L.a),b=funPick(L.b),c=funPick(L.c),X=C[0];
+      n=r<.3?b+' '+c+' in '+X:r<.55?X+' '+b+' '+c:r<.8?'Mission: '+X+' '+c:a+' '+X+' '+c}
     if(!plain&&Math.random()<.55)n+=' '+funPick(FUN_E)}while(n===funLast&&++k<9);
   funLast=n;return n}
 let funPhTxt='',funPhLang='';
