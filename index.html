@@ -1125,6 +1125,27 @@ main>.modebox,main>.modebox2{margin-top:-25px!important}
 :root[data-app-theme="dark"] .t-flag::before{background:#E5484D}
 .t-flag::after{z-index:-2}
 
+/* ===== Inventory has its own look: indigo page, filled tab, title with icon + counts, shelf-style categories ===== */
+:root{--inv:#5B5FD6}
+:root[data-app-theme="dark"]{--inv:#8B8FF5}
+:root[data-tab="inv"]{--page:color-mix(in srgb,var(--inv) 14%,var(--bg));--au1:#5B5FD6;--au2:#3E8ED0;--au3:#8A5BD6;--au-op:.35}
+:root[data-tab="inv"]:not([data-app-theme="dark"]){--page:color-mix(in srgb,var(--inv) 10%,var(--bg));--au-op:.28}
+:root[data-tab="inv"] body{background-color:var(--page)}
+/* active tab: rounded rectangle, filled in the page's colour (Trips orange, Inventory indigo) */
+.bar .tabs button{border-radius:10px;padding:7px 14px;margin-bottom:8px;border-bottom:0!important;transition:background-color .2s,color .2s,box-shadow .2s}
+.bar .tabs button::after{display:none!important}
+.bar .tabs button[aria-selected="true"]{color:#fff!important}
+:root[data-tab="trips"] .bar .tabs button[aria-selected="true"]{background:#C9711F;box-shadow:0 0 14px rgba(226,128,46,.45)}
+:root[data-tab="inv"] .bar .tabs button[aria-selected="true"]{background:#5B5FD6;box-shadow:0 0 14px rgba(91,95,214,.6)}
+/* title block */
+.invhero{display:flex;gap:14px;align-items:center;margin:4px 0 2px}
+.invhero .ic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;background:#5B5FD6;color:#fff;flex:none;box-shadow:0 6px 18px rgba(91,95,214,.45)}
+.invhero h1{margin:0!important}
+.invhero .meta{font-family:var(--f-mono);font-size:12.5px;letter-spacing:.06em;color:var(--inv);margin-top:2px;text-transform:uppercase}
+.invsub{color:var(--muted);margin:6px 0 4px;font-size:14.5px}
+/* categories as labelled shelves: a strip in each category's colour */
+.cat.cardcat{border-left:5px solid var(--cc)!important;border-radius:10px!important}
+
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
 :root[data-mode="days"]{--page:var(--bg)}
@@ -1186,6 +1207,8 @@ body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,rgba(
 :root[data-mode="days"]:not([data-app-theme="dark"]) .modebar .seg button[data-v="pack"][aria-pressed="false"]{background:var(--mc);color:var(--ink)}
 .trip-w:has(.t-new) .trip{border-color:#C62828!important}
 .trip-w.is-new .trip{border-color:#C62828}
+:root[data-tab="inv"]{--page:var(--bg)}
+:root[data-tab="inv"]:not([data-app-theme="dark"]){--page:var(--bg)}
 }
 </style>
 </head>
@@ -1284,7 +1307,7 @@ const L={
   tut:[['Vítej v Packed','Balicí seznam na cesty. Už nikdy nic nezapomeneš.'],['Inventář','Sepiš si věci, které běžně bereš, roztříděné do barevných kategorií.'],['Sbírání','Vytvoř cestu a přidej do ní věci z inventáře.'],['Balení','Jeden seznam pro celou cestu. Odškrtej, co je v kufru. Přejetím do strany přepneš na Sbírání.']],
   undo:'Zpět',undoRemoved:n=>`Odebráno: ${n}`,undoCleared:'Seznam vymazán',undoTripDel:'Cesta smazána',delTripSub:'Cesta i její seznam věcí zmizí. Tohle nejde vrátit zpět.',undoUnchecked:'Odškrtnuto vše',
   tutSkip:'Přeskočit',tutNext:'Další',tutBack:'Zpět',tutGo:'Jdeme na to!',tutAgain:'Zobrazit průvodce',tutLabel:'Průvodce aplikací',packedOf:'věcí sbaleno',resetPack:'Zrušit odškrtnutí',
-  inv:'Inventář',thing:'Věc',thingPh:'např. Čelovka',add:'Přidat',
+  inv:'Inventář',invSub:'Všechno, co bereš na cesty. V každé cestě si z toho vybíráš.',catsN:n=>n+' '+csPl(n,'kategorie','kategorie','kategorií'),thing:'Věc',thingPh:'např. Čelovka',add:'Přidat',
   invNote:'Kategorii vyber v nabídce vedle názvu. Název věci přepíšeš klepnutím, klepnutím na kategorii u věci ji přesuneš jinam. Barvu kategorie změníš kliknutím na barevné kolečko.',
   invEmpty:'Inventář je prázdný. Přidej první věc výše.',invClear:'Vymazat inventář',invClearQ:'Vymazat celý inventář?',invClearSub:n=>`Zmizí ${n} a všechny kategorie. Seznamy ve tvých cestách se tím vyprázdní. Hned potom to můžeš vrátit zpět.`,undoInvCleared:'Inventář vymazán',name:'Název',
   delItemQ:(n,u)=>`Smazat „${n}“${u?` (je ve ${u} ${csPl(u,'cestě','cestách','cestách')})`:''}?`,
@@ -1336,7 +1359,7 @@ const L={
   tut:[['Welcome to Packed','Your travel packing list. Never forget anything again.'],['Inventory','Keep a list of the things you usually take, sorted into coloured categories.'],['Collecting','Create a trip and add items from your inventory.'],['Packing','One checklist for the whole trip. Tick off what’s in your bag.']],
   undo:'Undo',undoRemoved:n=>`${n} removed`,undoCleared:'List cleared',undoTripDel:'Trip deleted',delTripSub:'The trip and its packing list will be removed. This can’t be undone.',undoUnchecked:'All unchecked',
   tutSkip:'Skip',tutNext:'Next',tutBack:'Back',tutGo:'Let’s go!',tutAgain:'Show the tutorial',tutLabel:'App tutorial',packedOf:'items packed',resetPack:'Uncheck all',
-  inv:'Inventory',thing:'Item',thingPh:'e.g. Headlamp',add:'Add',
+  inv:'Inventory',invSub:'Everything you take on trips. Pick from it in each trip.',catsN:n=>n+' '+enPl(n,'category','categories'),thing:'Item',thingPh:'e.g. Headlamp',add:'Add',
   invNote:'Pick a category from the menu next to the name. Tap an item’s name to rename it; tap its category to move it to another one. Click a category’s colour dot to change its colour.',
   invEmpty:'Your inventory is empty. Add the first item above.',invClear:'Clear inventory',invClearQ:'Clear your whole inventory?',invClearSub:n=>`This removes ${n} and all categories. The lists in your trips will be emptied too. You can undo it right after.`,undoInvCleared:'Inventory cleared',name:'Name',
   delItemQ:(n,u)=>`Delete “${n}”${u?` (used in ${u} ${enPl(u,'trip','trips')})`:''}?`,
@@ -1568,6 +1591,7 @@ function render(){
   T=L[lang()];
   document.documentElement.lang=lang();
   if(ui.tab==='trips'&&ui.tripId)document.documentElement.setAttribute('data-mode',ui.mode==='pack'?'pack':'days');else document.documentElement.removeAttribute('data-mode');
+  document.documentElement.setAttribute('data-tab',ui.tab==='inv'?'inv':'trips');
   applyTheme();
   document.getElementById('brandName').textContent=T.appName;document.title=T.appName;
   document.getElementById('lang-cs').setAttribute('aria-pressed',lang()==='cs');
@@ -1773,7 +1797,7 @@ function viewInv(){
         <label class="movebtn" title="${esc(T.moveTo)}" style="--cc:var(--c-${catColor(it.cat||OTHER())})"><span class="mv-l">${esc(it.cat||OTHER())}</span><svg width="10" height="10" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg><select class="recat-sel" id="mv-${it.id}" data-id="${it.id}" aria-label="${esc(T.moveTo)}: ${esc(it.name)}">${catOptions(it.cat||OTHER())}</select></label>
         <button class="x" data-act="del-item" data-id="${it.id}" aria-label="${T.del} ${esc(it.name)}">×</button></div>
         ${ui.newCatFor===it.id?`<form class="newcat" data-id="${it.id}"><input class="inp" id="nc-${it.id}" name="newcat" required placeholder="${esc(T.newCatPh)}" autocomplete="off" aria-label="${esc(T.newCat)}"><button class="btn primary" type="submit">${T.ok}</button><button class="btn ghost" type="button" data-act="newcat-cancel">${T.cancel}</button></form>`:''}`}).join('')}</div>`).join('');
-  return `${ui.invClear?invClearModal():''}<div class="row"><h1>${T.inv}</h1><span class="spacer"></span><span class="muted">${T.things(state.items.length)}</span></div>
+  return `${ui.invClear?invClearModal():''}<div class="invhero"><div class="ic" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg></div><div><h1>${T.inv}</h1><div class="meta">${T.things(state.items.length)} · ${T.catsN(new Set(state.items.map(i=>i.cat||OTHER())).size)}</div></div></div><p class="invsub">${esc(T.invSub)}</p>
     <section class="panel addpanel">
       <h2 class="pick-title">${T.addOrSearch}</h2>
       <div class="row pickhead"><input class="inp" id="invsearch" type="search" placeholder="${T.search}" autocomplete="off" aria-label="${T.search}"></div>
@@ -1851,7 +1875,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.11-1945';
+const APP_BUILD='2026.11.11-1950';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
