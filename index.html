@@ -1103,6 +1103,14 @@ main>.modebox,main>.modebox2{margin-top:-25px!important}
 .progpanel{top:calc(env(safe-area-inset-top,0px) + var(--barh,108px) + var(--modeh,58px) - 5px)}
 
 /* date fields: the phone's own date text is hidden, "11 Nov 2026" is shown on top; the calendar picker still opens on tap */
+.namef{position:relative;display:block;min-width:0}
+.namef .inp{padding-right:46px}
+.fun-b{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:36px;height:32px;border:0;border-radius:var(--rbtn,8px);background:color-mix(in srgb,currentColor 12%,transparent);font-size:18px;line-height:1;cursor:pointer;display:grid;place-items:center;padding:0}
+.fun-b:active{transform:translateY(-50%) scale(.9)}
+.fun-b.roll{animation:funroll .45s ease}
+@keyframes funroll{0%{rotate:0deg}100%{rotate:360deg}}
+.namef .inp.fun-pop{animation:funpop .35s ease}
+@keyframes funpop{0%{opacity:.3}100%{opacity:1}}
 .datef{position:relative;display:block;min-width:0}
 .datef input.dfmt{color:transparent!important;width:100%}
 .datef input.dfmt::-webkit-datetime-edit{opacity:0}
@@ -1237,6 +1245,7 @@ body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,rgba(
 :root:not([data-app-theme="dark"]) .modebar .seg button[aria-pressed="false"] .seg-badge{background:transparent}
 :root[data-mode="days"]:not([data-app-theme="dark"]) .modebar .seg button[data-v="pack"][aria-pressed="false"]{background:var(--mc);color:var(--ink)}
 .trip-w:has(.t-new) .trip{border-color:#C62828!important}
+.fun-b{background:transparent}
 :root[data-tab="inv"]{--page:var(--bg)}
 :root[data-tab="inv"]:not([data-app-theme="dark"]){--page:var(--bg)}
 }
@@ -1320,7 +1329,7 @@ const L={
   st:{ok:'Uloženo v účtu',saving:'Ukládám…',err:'Nepodařilo se uložit, zkusím znovu',local:'Uloženo v tomto zařízení',load:'Načítám…'},
   save:'Uložit',saving:'Ukládám…',saved:'Uloženo ✓',retry:'Zkusit znovu',
   tabTrips:'Cesty',tabInv:'Inventář',other:'Ostatní',
-  trips:'Cesty',newTrip:'+ Nová cesta',cancel:'Zrušit',where:'Kam jedeš',wherePh:'např. Chorvatsko 2027',depart:'Odjezd',ret:'Návrat',create:'Vytvořit cestu',newBadge:'Nová',
+  trips:'Cesty',newTrip:'+ Nová cesta',cancel:'Zrušit',where:'Kam jedeš',wherePh:'např. Chorvatsko 2027',funName:'Vymysli vtipný název',depart:'Odjezd',ret:'Návrat',create:'Vytvořit cestu',newBadge:'Nová',
   tripNote:'Každá cesta dostane vlastní seznam věcí z inventáře.',
   noTrips:'Zatím žádná cesta. Klikni na „+ Nová cesta“, zadej kam a kdy, a pak si poskládej věci z inventáře.',
   errOrder:'Návrat musí být stejný den nebo po odjezdu.',errLong:'Cesta může mít nejvýš 60 dní.',
@@ -1372,7 +1381,7 @@ const L={
   st:{ok:'Saved to your account',saving:'Saving…',err:'Couldn’t save, retrying',local:'Saved on this device',load:'Loading…'},
   save:'Save',saving:'Saving…',saved:'Saved ✓',retry:'Try again',
   tabTrips:'Trips',tabInv:'Inventory',other:'Other',
-  trips:'Trips',newTrip:'+ New trip',cancel:'Cancel',where:'Where to',wherePh:'e.g. Croatia 2027',depart:'Departure',ret:'Return',create:'Create trip',newBadge:'New',
+  trips:'Trips',newTrip:'+ New trip',cancel:'Cancel',where:'Where to',wherePh:'e.g. Croatia 2027',funName:'Make up a funny name',depart:'Departure',ret:'Return',create:'Create trip',newBadge:'New',
   tripNote:'Every trip gets its own list of items from your inventory.',
   noTrips:'No trips yet. Click “+ New trip”, enter where and when, then pick items from your inventory.',
   errOrder:'Return must be on or after the departure day.',errLong:'A trip can be at most 60 days.',
@@ -1701,7 +1710,7 @@ function viewTrips(){
   const t0=new Date();const t1=new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+2);
   const form=ui.newTrip?`<form class="panel" id="newTrip">
       <div class="formgrid">
-        <div class="field wide"><label for="nt-name">${T.where}</label><input class="inp" id="nt-name" name="name" required placeholder="${esc(T.wherePh)}" autocomplete="off"></div>
+        <div class="field wide"><label for="nt-name">${T.where}</label><div class="namef"><input class="inp" id="nt-name" name="name" required placeholder="${esc(T.wherePh)}" autocomplete="off"><button type="button" class="fun-b" data-fun="nt-name" aria-label="${esc(T.funName)}" title="${esc(T.funName)}">🎲</button></div></div>
         <div class="field"><label for="nt-start">${T.depart}</label><input class="inp" type="date" id="nt-start" name="start" value="${iso(t0)}" required></div>
         <div class="field"><label for="nt-end">${T.ret}</label><input class="inp" type="date" id="nt-end" name="end" value="${iso(t1)}" required></div>
         <button class="btn primary" type="submit">${T.create}</button>
@@ -1743,7 +1752,7 @@ const WHOLE_FOLD_MIN=2;
 function editForm(t){const v=ui.editVals||{name:t.name,start:t.start,end:t.end};
   return `<form class="panel" id="editTrip">
       <div class="formgrid">
-        <div class="field wide"><label for="et-name">${T.where}</label><input class="inp" id="et-name" name="name" required value="${esc(v.name)}" autocomplete="off"></div>
+        <div class="field wide"><label for="et-name">${T.where}</label><div class="namef"><input class="inp" id="et-name" name="name" required value="${esc(v.name)}" autocomplete="off"><button type="button" class="fun-b" data-fun="et-name" aria-label="${esc(T.funName)}" title="${esc(T.funName)}">🎲</button></div></div>
         <div class="field"><label for="et-start">${T.depart}</label><input class="inp" type="date" id="et-start" name="start" value="${v.start}" required></div>
         <div class="field"><label for="et-end">${T.ret}</label><input class="inp" type="date" id="et-end" name="end" value="${v.end}" required></div>
       </div>
@@ -1933,7 +1942,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.11-2235';
+const APP_BUILD='2026.11.11-2317';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
@@ -2221,6 +2230,29 @@ function helpGo(k){
   if(sel!=='#tab-inv'&&!sel.includes('mode'))el.scrollIntoView({block:'center'});
   el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),1900)}
 
+const FUN={
+ en:{a:['Operation','Mission','The Great','Project','Secret','Epic','Tiny','Legendary','Accidental','Totally Chill','Very Serious','Unplanned','Overpacked','Midnight','Sleepy','Spicy','Ultimate','Mostly Harmless'],
+     b:['Sock','Sunscreen','Snack','Flip-Flop','Suitcase','Charger','Croissant','Backpack','Pancake','Pineapple','Penguin','Llama','Noodle','Mosquito','Toothbrush','Coconut','Taco','Hammock'],
+     c:['Panic','Quest','Escape','Odyssey','Expedition','Adventure','Safari','Getaway','Shenanigans','Heist','Marathon','Party','Fiasco','Tour','Rescue','Retreat']},
+ cs:{a:['Tajná','Velká','Epická','Ponožková','Opalovací','Svačinová','Kufrová','Legendární','Ospalá','Náhodná','Totálně chillová','Přebalená','Půlnoční','Lamí','Palačinková','Nudlová','Nečekaná','Pohodová'],
+     b:['výprava','mise','expedice','operace','odysea','jízda','šňůra','akce','pouť','eskapáda','záchrana','dobrodružství'],
+     c:['za sluncem','za mořem','bez nabíječky','s komáry','do neznáma','za palačinkou','s batohem','na pláž','bez ponožek','do hor','za pizzou','na lehátko','pro kokos','s tučňákem']}};
+const FUN_E=['🧦','🌴','🦙','🥐','🐧','🍍','🌮','🏝️','🎒','🚀','🍕','🥥','🐙','🌋','⛺','🛶'];
+let funLast='';
+function funPick(l){return l[Math.floor(Math.random()*l.length)]}
+function funName(){const L=FUN[lang()==='cs'?'cs':'en'];let n,k=0;
+  do{const r=Math.random();
+    if(lang()==='cs'){const a=funPick(L.a),b=funPick(L.b),c=funPick(L.c);
+      n=(b==='dobrodružství'?a.replace(/á$/,'é'):a)+' '+b+(r<.6?' '+c:'')}
+    else{const a=funPick(L.a),b=funPick(L.b),c=funPick(L.c);
+      n=r<.4?a+' '+b+' '+c:r<.7?b+' '+c:'Mission: '+b+' '+c}
+    if(Math.random()<.55)n+=' '+funPick(FUN_E)}while(n===funLast&&++k<9);
+  funLast=n;return n}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-fun]');if(!b)return;
+  e.preventDefault();e.stopPropagation();const inp=document.getElementById(b.dataset.fun);if(!inp)return;
+  inp.value=funName();inp.dispatchEvent(new Event('input',{bubbles:true}));
+  b.classList.remove('roll');inp.classList.remove('fun-pop');void b.offsetWidth;b.classList.add('roll');inp.classList.add('fun-pop');
+  try{navigator.vibrate&&navigator.vibrate(12)}catch(_){}},true);
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-act]');if(!b)return;
   const a=b.dataset.act,id=b.dataset.id,t=trip();
