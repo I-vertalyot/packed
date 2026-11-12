@@ -1112,6 +1112,20 @@ main>.modebox,main>.modebox2{margin-top:-25px!important}
 /* date fields: the phone's own date text is hidden, "11 Nov 2026" is shown on top; the calendar picker still opens on tap */
 #nt-name::placeholder{transition:opacity .4s ease}
 #nt-name.ph-out::placeholder{opacity:0}
+.lblrow{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.fun-edit{background:none;border:0;padding:2px 0;font:inherit;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;gap:5px;position:relative}
+.fun-edit::after{content:"";position:absolute;inset:-10px -6px}
+.fun-edit:hover{color:var(--ink)}
+.fun-n{font-family:var(--f-mono);font-size:11px;background:var(--chip);border-radius:999px;padding:1px 7px}
+#funDlg[hidden]{display:none}
+.fun-card{display:flex;flex-direction:column;gap:12px}
+.fun-card .modal-head{margin:0}
+.fun-help{margin:0;color:var(--muted);font-size:14px}
+.fun-ta{resize:vertical;min-height:140px;font:inherit;line-height:1.5}
+.fun-only{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;cursor:pointer}
+.fun-only input{width:18px;height:18px;accent-color:var(--sign)}
+.fun-try{display:flex;align-items:center;gap:10px;min-height:40px}
+.fun-try #funOut{font-weight:600;color:var(--ink);min-width:0;overflow-wrap:anywhere}
 .namef{position:relative;display:block;min-width:0}
 .namef .inp{padding-right:46px}
 .fun-b{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:36px;height:32px;border:0;border-radius:var(--rbtn,8px);background:color-mix(in srgb,currentColor 12%,transparent);font-size:18px;line-height:1;cursor:pointer;display:grid;place-items:center;padding:0}
@@ -1298,6 +1312,7 @@ body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,rgba(
 </header>
 <main id="main"></main>
 <footer class="credit" id="credit"></footer>
+<div class="modal" id="funDlg" hidden></div>
 <div class="poster" id="poster" role="dialog" aria-modal="true" aria-label="Your attention is your currency" hidden><button type="button" class="poster-x" data-act="poster-close" aria-label="Close">✕</button><img alt="Photo" decoding="async"></div>
 <div class="undo-toast" id="undoToast" role="status" aria-live="polite" hidden><span></span><button type="button" id="undoBtn"></button></div>
 <button class="totop" id="toTop" type="button" aria-label="Back to top" title="Back to top"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg></button>
@@ -1349,7 +1364,7 @@ const L={
   emptyWhole:'Zatím nic. Vyber věci níže.',pastTrips:'Proběhlé cesty',noItemsYet:'Zatím prázdné',yourList:'Tvůj seznam',yourCats:'Tvoje kategorie',hidePacked:'Skrýt sbalené',allHidden:'Všechno je sbalené. Vypni „Skrýt sbalené“, ať je vidíš.',dupTrip:'Duplikovat cestu',copySuffix:' (kopie)',cdToday:'dnes',cdTomorrow:'zítra',cdIn:n=>`za ${n} ${n<5?'dny':'dní'}`,cdNow:'probíhá',emptyDay:'Vyber věci z inventáře níže. Klikni na kategorii a vyber věci.',
   less:'Méně',more:'Více',remove:'Odebrat',
   copyPrev:'Zkopírovat z předchozího dne',toAll:'Tento den do všech dnů',clear:'Vyčistit',clearAll:'Vymazat vše',clearQ:'Vymazat všechny sesbírané věci?',clearSub:n=>`Ze seznamu zmizí ${n}. Hned potom to můžeš vrátit zpět.`,
-  addFromInv:'Vyber věci',search:'Hledat…',qaPre:'Přidat',qaPick:'Kategorie:',qaTo:'do kategorie',noFound:'Nic nenalezeno.',invEmptyPick:'Inventář je prázdný. Přidej věci níže nebo na kartě Inventář.',
+  addFromInv:'Vyber věci',search:'Hledat…',qaPre:'Přidat',qaPick:'Kategorie:',funMine:'Moje názvy',funTitle:'Moje vtipné názvy',funHelp:'Jeden název na řádek. Napiš {země} a doplní se náhodná země (např. „do Itálie“).',funOnlyL:'Používat jen moje názvy',funPh2:'Pivní výprava {země}\nOperace Ztracený pas',funSave:'Uložit',funCancel:'Zrušit',funTry:'Zkusit',qaTo:'do kategorie',noFound:'Nic nenalezeno.',invEmptyPick:'Inventář je prázdný. Přidej věci níže nebo na kartě Inventář.',
   newThing:'Nová věc',newThingPh:'Přidej novou věc…',or:'nebo',addOrSearch:'Hledej nebo přidej',toTop:'Nahoru',category:'Kategorie',addBoth:'Přidat do inventáře i dne',
   wholeTrip:'celá cesta',everyDay:'každý den',
   noPicks:'Zatím nemáš vybrané žádné věci. Přepni na „Sbírání“ a poskládej si, co bereš.',
@@ -1401,7 +1416,7 @@ const L={
   emptyWhole:'Nothing yet. Pick items below.',pastTrips:'Past trips',noItemsYet:'No items yet',yourList:'Your list',yourCats:'Your categories',hidePacked:'Hide packed',allHidden:'Everything is packed. Turn off “Hide packed” to see it.',dupTrip:'Duplicate trip',copySuffix:' (copy)',cdToday:'today',cdTomorrow:'tomorrow',cdIn:n=>`in ${n} days`,cdNow:'happening now',emptyDay:'Pick items from the inventory below. Click a category and choose the items.',
   less:'Less',more:'More',remove:'Remove',
   copyPrev:'Copy from previous day',toAll:'Use this day for all days',clear:'Clear',clearAll:'Clear all',clearQ:'Clear all collected items?',clearSub:n=>`This removes ${n} from your list. You can undo it right after.`,
-  addFromInv:'Select items',search:'Search…',qaPre:'Add',qaPick:'Category:',qaTo:'to',noFound:'Nothing found.',invEmptyPick:'Your inventory is empty. Add items below or on the Inventory tab.',
+  addFromInv:'Select items',search:'Search…',qaPre:'Add',qaPick:'Category:',funMine:'My names',funTitle:'My funny names',funHelp:'One name per line. Write {country} to drop in a random country.',funOnlyL:'Use only my names',funPh2:'Beer Tour in {country}\nOperation Lost Passport',funSave:'Save',funCancel:'Cancel',funTry:'Try',qaTo:'to',noFound:'Nothing found.',invEmptyPick:'Your inventory is empty. Add items below or on the Inventory tab.',
   newThing:'New item',newThingPh:'Add new item…',or:'or',addOrSearch:'Search or add',toTop:'Back to top',category:'Category',addBoth:'Add to inventory and this day',
   wholeTrip:'whole trip',everyDay:'every day',
   noPicks:'You haven’t picked anything yet. Switch to “Collecting” and choose what you’re taking.',
@@ -1492,7 +1507,7 @@ function starter(lg){
 function mergeDays(p){const all={};Object.values(p&&typeof p==='object'?p:{}).forEach(o=>{if(o&&typeof o==='object')Object.entries(o).forEach(([id,q])=>{if(q)all[id]=Math.min(99,(all[id]||0)+(+q||1))})});return {all}}
 function sanitize(d){
   if(!d||typeof d!=='object')return starter();
-  return {v:1,tutorialDone:!!d.tutorialDone,hidePacked:!!d.hidePacked,palette:d.palette==='ocean'?'ocean':'lantern',wholeOpen:!!d.wholeOpen,dayOpen:!!d.dayOpen,open:(d.open&&typeof d.open==='object')?JSON.parse(JSON.stringify(d.open)):{},theme:d.theme==='light'?'light':'dark',lang:d.lang==='en'?'en':'cs',catColors:(d.catColors&&typeof d.catColors==='object')?{...d.catColors}:{},cats:Array.isArray(d.cats)?d.cats.slice():[],items:Array.isArray(d.items)?d.items.map(x=>({...x})):[],
+  return {v:1,funMine:Array.isArray(d.funMine)?d.funMine.filter(x=>typeof x==='string'&&x.trim()).map(x=>x.trim().slice(0,80)).slice(0,200):[],funOnly:!!d.funOnly,tutorialDone:!!d.tutorialDone,hidePacked:!!d.hidePacked,palette:d.palette==='ocean'?'ocean':'lantern',wholeOpen:!!d.wholeOpen,dayOpen:!!d.dayOpen,open:(d.open&&typeof d.open==='object')?JSON.parse(JSON.stringify(d.open)):{},theme:d.theme==='light'?'light':'dark',lang:d.lang==='en'?'en':'cs',catColors:(d.catColors&&typeof d.catColors==='object')?{...d.catColors}:{},cats:Array.isArray(d.cats)?d.cats.slice():[],items:Array.isArray(d.items)?d.items.map(x=>({...x})):[],
     trips:Array.isArray(d.trips)?d.trips.map(t=>({...t,picks:mergeDays(t.picks),packed:{...(t.packed||{})}})):[]};
 }
 function loadLocal(){try{const s=localStorage.getItem(KEY);return s?sanitize(JSON.parse(s)):null}catch(e){return null}}
@@ -1720,7 +1735,7 @@ function viewTrips(){
   const t0=new Date();const t1=new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+2);
   const form=ui.newTrip?`<form class="panel" id="newTrip">
       <div class="formgrid">
-        <div class="field wide"><label for="nt-name">${T.where}</label><div class="namef"><input class="inp" id="nt-name" name="name" required placeholder="${esc(funPh())}" autocomplete="off"><button type="button" class="fun-b" data-fun="nt-name" aria-label="${esc(T.funName)}" title="${esc(T.funName)}">🎲</button></div></div>
+        <div class="field wide"><div class="lblrow"><label for="nt-name">${T.where}</label><button type="button" class="fun-edit" data-act="fun-edit">✎ ${esc(T.funMine)}${(state.funMine||[]).length?` <span class="fun-n">${state.funMine.length}</span>`:''}</button></div><div class="namef"><input class="inp" id="nt-name" name="name" required placeholder="${esc(funPh())}" autocomplete="off"><button type="button" class="fun-b" data-fun="nt-name" aria-label="${esc(T.funName)}" title="${esc(T.funName)}">🎲</button></div></div>
         <div class="field"><label for="nt-start">${T.depart}</label><input class="inp" type="date" id="nt-start" name="start" value="${iso(t0)}" required></div>
         <div class="field"><label for="nt-end">${T.ret}</label><input class="inp" type="date" id="nt-end" name="end" value="${iso(t1)}" required></div>
         <button class="btn primary" type="submit">${T.create}</button>
@@ -1952,7 +1967,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.12-1919';
+const APP_BUILD='2026.11.12-2149';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
@@ -2194,7 +2209,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){const pop=document.
 
 /* phone Back / browser Back: close the top layer (share, edit popup, help), then leave the trip; only the trip list exits the app */
 let popSkip=0;
-const navDepth=()=>(ui.poster?1:0)+(ui.tab==='trips'&&ui.tripId?1:0)+(ui.help?1:0)+(ui.editId?1:0)+(ui.share?1:0)+(ui.clearAsk?1:0)+(ui.delTrip?1:0)+(ui.invClear?1:0);
+const navDepth=()=>(ui.funEdit?1:0)+(ui.poster?1:0)+(ui.tab==='trips'&&ui.tripId?1:0)+(ui.help?1:0)+(ui.editId?1:0)+(ui.share?1:0)+(ui.clearAsk?1:0)+(ui.delTrip?1:0)+(ui.invClear?1:0);
 function syncHistory(){try{const w=navDepth(),cur=(history.state&&history.state.pk)||0;
   if(w>cur){for(let i=cur+1;i<=w;i++)history.pushState({pk:i},'')}
   else if(w<cur){popSkip++;history.go(w-cur)}}catch(e){}}
@@ -2202,6 +2217,7 @@ try{if(!history.state||history.state.pk==null)history.replaceState({pk:0},'')}ca
 addEventListener('popstate',e=>{if(popSkip>0){popSkip--;return}
   const target=(e.state&&e.state.pk)||0;let guard=8;
   while(navDepth()>target&&guard--){
+    if(ui.funEdit){ui.funEdit=false;funDlg(false);continue}
     if(ui.poster){ui.poster=false;showPoster(false);continue}
     if(ui.invClear){ui.invClear=false;continue}
     if(ui.delTrip){ui.delTrip=false;continue}
@@ -2249,10 +2265,34 @@ const FUN={
      c:['za sluncem','za mořem','bez nabíječky','s komáry','do neznáma','za palačinkou','s batohem','na pláž','bez ponožek','do hor','za pizzou','na lehátko','pro kokos','s tučňákem']}};
 const FUN_E=['🧦','🌴','🦙','🥐','🐧','🍍','🌮','🏝️','🎒','🚀','🍕','🥥','🐙','🌋','⛺','🛶'];
 let funLast='';
+function funMine(t,C){const cs=lang()==='cs';return t.replace(/\{(country|země|zeme)\}/gi,()=>cs?C[1]:C[0]).replace(/\s+/g,' ').trim()}
+function funDlg(on){const d=document.getElementById('funDlg');if(!d)return;
+  if(!on){d.hidden=true;d.innerHTML='';return}
+  d.innerHTML=`<div class="modal-card fun-card" role="dialog" aria-modal="true" aria-labelledby="funT"><div class="row modal-head"><h2 id="funT">${esc(T.funTitle)}</h2><span class="spacer"></span><button type="button" class="x" data-act="fun-close" aria-label="${esc(T.funCancel)}">✕</button></div>
+    <p class="fun-help">${esc(T.funHelp)}</p>
+    <textarea class="inp fun-ta" id="funTa" rows="7" placeholder="${esc(T.funPh2)}">${esc((state.funMine||[]).join('\n'))}</textarea>
+    <label class="fun-only"><input type="checkbox" id="funOnly"${state.funOnly?' checked':''}> ${esc(T.funOnlyL)}</label>
+    <div class="fun-try"><button type="button" class="btn" data-act="fun-try">🎲 ${esc(T.funTry)}</button><span id="funOut" class="muted"></span></div>
+    <div class="row fun-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-act="fun-close">${esc(T.funCancel)}</button><button type="button" class="btn primary" data-act="fun-save">${esc(T.funSave)}</button></div></div>`;
+  d.hidden=false;requestAnimationFrame(()=>{const t=document.getElementById('funTa');if(t)t.focus({preventScroll:true})})}
+function funRead(){const t=document.getElementById('funTa');return t?t.value.split('\n').map(x=>x.trim()).filter(Boolean).map(x=>x.slice(0,80)).slice(0,200):[]}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-act^="fun-"],#funDlg');if(!b)return;
+  const a=b.dataset&&b.dataset.act;
+  if(b.id==='funDlg'){if(e.target===b){e.stopPropagation();ui.funEdit=false;funDlg(false);syncHistory()}return}
+  e.preventDefault();e.stopPropagation();
+  if(a==='fun-edit'){ui.funEdit=true;funDlg(true);syncHistory();return}
+  if(a==='fun-close'){ui.funEdit=false;funDlg(false);syncHistory();return}
+  if(a==='fun-try'){const keep=[state.funMine,state.funOnly];state.funMine=funRead();state.funOnly=document.getElementById('funOnly').checked;
+    const o=document.getElementById('funOut');if(o)o.textContent=funName(1);state.funMine=keep[0];state.funOnly=keep[1];return}
+  if(a==='fun-save'){state.funMine=funRead();state.funOnly=document.getElementById('funOnly').checked;funPhTxt='';save();ui.funEdit=false;funDlg(false);
+    const v=(document.getElementById('nt-name')||{}).value;const y=window.scrollY;render();window.scrollTo(0,y);const n=document.getElementById('nt-name');if(n&&v)n.value=v;return}},true);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ui.funEdit){ui.funEdit=false;funDlg(false);syncHistory()}});
+
 function funPick(l){return l[Math.floor(Math.random()*l.length)]}
 const FUN_C=[['Italy','do Itálie'],['Greece','do Řecka'],['Croatia','do Chorvatska'],['Spain','do Španělska'],['Portugal','do Portugalska'],['France','do Francie'],['Iceland','na Island'],['Norway','do Norska'],['Japan','do Japonska'],['Thailand','do Thajska'],['Mexico','do Mexika'],['Peru','do Peru'],['Egypt','do Egypta'],['Morocco','do Maroka'],['Vietnam','do Vietnamu'],['Bali','na Bali'],['Malta','na Maltu'],['Cyprus','na Kypr'],['Austria','do Rakouska'],['Scotland','do Skotska'],['Ireland','do Irska'],['Turkey','do Turecka'],['Brazil','do Brazílie'],['Canada','do Kanady'],['Australia','do Austrálie'],['New Zealand','na Nový Zéland'],['Kenya','do Keni'],['Slovakia','na Slovensko'],['Montenegro','do Černé Hory'],['Albania','do Albánie'],['Finland','do Finska'],['Switzerland','do Švýcarska']];
-function funName(plain){const L=FUN[lang()==='cs'?'cs':'en'];let n,k=0;
+function funName(plain){const L=FUN[lang()==='cs'?'cs':'en'];let n,k=0;const M=(state.funMine||[]);
   do{const r=Math.random(),C=funPick(FUN_C);
+    if(M.length&&(state.funOnly||Math.random()<.5)){n=funMine(funPick(M),C);if(M.length===1)break;continue}
     if(lang()==='cs'){const a=funPick(L.a),b=funPick(L.b);
       n=(b==='dobrodružství'?a.replace(/á$/,'é'):a)+' '+b+' '+C[1]}
     else{const a=funPick(L.a),b=funPick(L.b),c=funPick(L.c),X=C[0];
