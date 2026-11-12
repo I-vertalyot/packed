@@ -1290,7 +1290,7 @@ body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,rgba(
 </header>
 <main id="main"></main>
 <footer class="credit" id="credit"></footer>
-<div class="poster" id="poster" role="dialog" aria-modal="true" aria-label="Your attention is your currency" hidden><button type="button" class="poster-x" data-act="poster-close" aria-label="Close">✕</button><img alt="Photo" decoding="async"><button type="button" class="poster-next" data-act="poster-next"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg><span>Next photo</span></button></div>
+<div class="poster" id="poster" role="dialog" aria-modal="true" aria-label="Your attention is your currency" hidden><button type="button" class="poster-x" data-act="poster-close" aria-label="Close">✕</button><img alt="Photo" decoding="async"></div>
 <div class="undo-toast" id="undoToast" role="status" aria-live="polite" hidden><span></span><button type="button" id="undoBtn"></button></div>
 <button class="totop" id="toTop" type="button" aria-label="Back to top" title="Back to top"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg></button>
 <div class="holo" id="holo" hidden role="dialog" aria-modal="true" aria-label="i.vertalyot on Instagram">
@@ -1585,7 +1585,7 @@ async function nextPhoto(){const pv=document.getElementById('poster');if(!pv)ret
   pv.classList.add('loading');const list=await loadPhotos();const src=pickPhoto(list);photoLast=src;
   img.onload=()=>{pv.classList.remove('loading');img.classList.remove('swap');void img.offsetWidth;img.classList.add('swap')};
   img.onerror=()=>{photoList=list.filter(x=>x!==src);if(photoList.length&&photoList[0]!==src)nextPhoto();else{img.src=POSTER_SRC}};
-  img.src=src;pv.querySelector('.poster-next').hidden=list.length<2}
+  img.src=src}
 function showPoster(on){const pv=document.getElementById('poster');if(!pv)return;
   if(on)nextPhoto();pv.hidden=!on;document.documentElement.classList.toggle('poster-open',on);
   if(on)requestAnimationFrame(()=>pv.querySelector('.poster-x').focus({preventScroll:true}))}
@@ -1944,7 +1944,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.11-2335';
+const APP_BUILD='2026.11.12-1539';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
