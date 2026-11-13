@@ -14,7 +14,7 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&display=swap">
 <style>
 /* Layout: airport-wayfinding app — dark sign bar on top, yellow "gate" chips for days, single column max 720px */
 :root{
@@ -1208,6 +1208,85 @@ html.poster-open,html.poster-open body{overflow:hidden}
 .poster img{transition:opacity .2s}
 .poster img.swap{animation:posterZoom .3s cubic-bezier(.2,.8,.2,1)}
 
+/* ===== Nigella theme: copper bokeh, icy-blue petals, teal heart, ladybug red ===== */
+:root[data-palette="nigella"]{--bg:#3B1D10 !important;--surface:rgba(255,236,214,.09) !important;--ink:#FBEFE2 !important;--muted:#E2C3A3 !important;
+  --line:rgba(244,214,180,.22) !important;--chip:rgba(255,236,214,.12) !important;
+  --bar:transparent !important;--bar-fg:#FBEFE2 !important;--bar-muted:#E2C3A3 !important;--bar-line:rgba(244,214,180,.3) !important;
+  --sign:#A9DDF2 !important;--sign-ink:#0D3644 !important;--gold:#A9DDF2 !important;--sign-text:#BFE6F6 !important;
+  --ok:#7CC7E6 !important;--danger:#E2463A !important;
+  --mode-days:#D9392B !important;--on-days:#FFF6EE !important;--mode-pack:#8FD0EC !important;--on-pack:#0D3644 !important;
+  --wine-page:#3B1D10 !important;--inv:#2E8BA8 !important;
+  --c-blue:#8FD0EC;--c-teal:#3FA3B8;--c-green:#9CC9B0;--c-yellow:#E9C48F;--c-orange:#E59A5C;--c-red:#E2463A;--c-pink:#E8A7A0;--c-purple:#2B6E85;--c-gray:#CDB59B;
+  --au1:#E0915A !important;--au2:#F2B98A !important;--au3:#7A3A1E !important;--au-op:.55 !important;
+  --f-display:"Cormorant Garamond",Georgia,serif;--hl:4% !important}
+:root[data-palette="nigella"] body{background-color:#3B1D10 !important;font-family:"DM Sans",system-ui,sans-serif}
+:root[data-palette="nigella"] .aurora{-webkit-mask-image:none !important;mask-image:none !important}
+:root[data-palette="nigella"] .aurora i{background:
+  radial-gradient(30% 22% at 20% 18%,#D88A55,transparent 70%),
+  radial-gradient(34% 26% at 82% 34%,#C06C3C,transparent 70%),
+  radial-gradient(40% 30% at 40% 70%,#B4693E,transparent 70%),
+  radial-gradient(26% 20% at 85% 86%,#E7A877,transparent 70%),
+  radial-gradient(20% 14% at 12% 92%,#9C4E2A,transparent 70%) !important;filter:blur(18px);opacity:.8 !important}
+:root[data-palette="nigella"] body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.32;background:
+ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400' fill='none' stroke='%23F3D2AC' stroke-width='1.3' stroke-linecap='round'%3E%3Cpath d='M0 120 L120 150 L200 120 M120 150 L150 230 L140 300 M150 230 L230 260 M60 135 L40 70 M60 135 L90 60 M200 120 L260 60 M200 120 L280 150 M140 300 L90 360 M140 300 L190 360 M230 260 L300 240 M230 260 L260 330 M40 70 L10 40 M90 60 L110 20 M260 60 L250 10 M260 60 L320 40 M280 150 L340 130 M280 150 L330 200'/%3E%3C/svg%3E") right -120px bottom -60px/420px no-repeat,
+ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400' fill='none' stroke='%23F3D2AC' stroke-width='1.1' stroke-linecap='round'%3E%3Cpath d='M400 60 L300 110 L230 90 M300 110 L280 190 L310 260 M280 190 L200 220 M350 85 L370 20 M350 85 L330 30 M230 90 L190 30 M230 90 L150 110 M310 260 L360 320 M310 260 L270 330 M200 220 L130 200 M200 220 L170 290'/%3E%3C/svg%3E") left -150px top 140px/380px no-repeat}
+:root[data-palette="nigella"] .bar{background:linear-gradient(180deg,rgba(32,14,6,.78),rgba(32,14,6,.35)) !important;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid rgba(244,214,180,.14)}
+:root[data-palette="nigella"] .bar canvas.space,:root[data-palette="nigella"] .credit canvas.space{display:none !important}
+:root[data-palette="nigella"] .brand{font-family:"Cormorant Garamond",Georgia,serif !important;font-stretch:normal;text-transform:uppercase;letter-spacing:.22em !important;font-weight:600 !important;font-size:22px !important;color:#FBEFE2}
+:root[data-palette="nigella"] .brand-icon rect:first-child{fill:#D9392B !important}
+:root[data-palette="nigella"] .brand-icon rect:nth-child(2){fill:#BFE6F6 !important}
+:root[data-palette="nigella"] .brand-icon path{stroke:#0D3644 !important}
+:root[data-palette="nigella"] h1,:root[data-palette="nigella"] .tut-body h2,:root[data-palette="nigella"] .modal-head h2{font-family:"Cormorant Garamond",Georgia,serif !important;font-weight:600 !important;letter-spacing:.02em}
+:root[data-palette="nigella"] h1{font-size:38px !important;font-style:italic;text-transform:none !important}
+:root[data-palette="nigella"] h2,:root[data-palette="nigella"] .wholehead,:root[data-palette="nigella"] .pick-title{font-family:"Cormorant Garamond",Georgia,serif !important;letter-spacing:.24em !important;font-weight:700 !important;color:#F3D2AC !important}
+:root[data-palette="nigella"] .panel,:root[data-palette="nigella"] .trip,:root[data-palette="nigella"] .modebox,:root[data-palette="nigella"] .modebox2,:root[data-palette="nigella"] .pgroup,:root[data-palette="nigella"] .progpanel,:root[data-palette="nigella"] .menu-pop,:root[data-palette="nigella"] .appmenu-pop,:root[data-palette="nigella"] .modal-card,:root[data-palette="nigella"] .quickadd{background:rgba(255,238,220,.08) !important;-webkit-backdrop-filter:blur(16px) saturate(1.2);backdrop-filter:blur(16px) saturate(1.2);
+  border-color:rgba(244,214,180,.22) !important;box-shadow:0 10px 30px rgba(30,10,2,.28),inset 0 1px 0 rgba(255,255,255,.08) !important}
+:root[data-palette="nigella"] .modebox,:root[data-palette="nigella"] .modebox2{background:rgba(255,238,220,.06) !important}
+:root[data-palette="nigella"] .trip{border-radius:16px !important}
+:root[data-palette="nigella"] .trip:hover{border-color:rgba(169,221,242,.6) !important}
+:root[data-palette="nigella"] .trip .when{background:linear-gradient(160deg,#E8F6FC,#9FD6EE 70%,#4FA9CC) !important;color:#0D3644 !important;border-radius:12px !important}
+:root[data-palette="nigella"] .trip .when span{color:#1F5A6C !important}
+:root[data-palette="nigella"] .btn.primary,:root[data-palette="nigella"] .savebtn,:root[data-palette="nigella"] .showmore,:root[data-palette="nigella"] .btn.back,:root[data-palette="nigella"] .share-opt.wide{background:linear-gradient(135deg,#F4FBFE 0%,#BFE6F6 40%,#6FBFE0 100%) !important;background-size:100% 100% !important;animation:none !important;color:#0D3644 !important;border-color:transparent !important;box-shadow:0 0 0 1px rgba(255,255,255,.35) inset,0 6px 20px rgba(111,191,224,.35) !important}
+:root[data-palette="nigella"][data-tab="trips"] .bar .tabs button[aria-selected="true"]{background:linear-gradient(135deg,#F4FBFE,#8FD0EC) !important;color:#0D3644 !important;box-shadow:0 0 16px rgba(143,208,236,.45) !important}
+:root[data-palette="nigella"][data-tab="inv"] .bar .tabs button[aria-selected="true"]{background:linear-gradient(135deg,#3FA3B8,#1E5F74) !important;color:#FBEFE2 !important;box-shadow:0 0 16px rgba(63,163,184,.5) !important}
+:root[data-palette="nigella"][data-tab="inv"]{--page:#2C1A12 !important}
+:root[data-palette="nigella"] .invhero .ic{background:linear-gradient(135deg,#3FA3B8,#1E5F74) !important;box-shadow:0 6px 18px rgba(30,95,116,.5) !important}
+:root[data-palette="nigella"] .modebar .seg button[data-v="days"][aria-pressed="true"]{background:linear-gradient(135deg,#F05A44,#C1271B) !important;color:#FFF6EE !important;box-shadow:0 0 18px rgba(217,57,43,.5) !important}
+:root[data-palette="nigella"] .modebar .seg button[data-v="pack"][aria-pressed="true"]{background:linear-gradient(135deg,#F4FBFE,#8FD0EC) !important;color:#0D3644 !important;box-shadow:0 0 18px rgba(143,208,236,.5) !important}
+:root[data-palette="nigella"][data-app-theme] .modebar .seg button[aria-pressed="false"]{background:rgba(255,238,220,.08) !important;color:#E2C3A3 !important;border-color:rgba(244,214,180,.3) !important;box-shadow:none !important}
+:root[data-palette="nigella"] .meter i,:root[data-palette="nigella"] .progress .bar i,:root[data-palette="nigella"] .prog i{background:linear-gradient(90deg,#BFE6F6,#4FA9CC) !important}
+:root[data-palette="nigella"] .t-flag::before{background:radial-gradient(circle at 30% 35%,#111 0 2px,transparent 2.5px),radial-gradient(circle at 62% 68%,#111 0 2px,transparent 2.5px),#D9392B !important}
+:root[data-palette="nigella"] .credit .credit-box{background:rgba(32,14,6,.55) !important;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid rgba(244,214,180,.18) !important}
+:root[data-palette="nigella"] .credit a.coffee,:root[data-palette="nigella"] .credit .credit-box a.coffee{background:linear-gradient(135deg,#F4FBFE,#8FD0EC) !important;color:#0D3644 !important}
+:root[data-palette="nigella"] .dot{box-shadow:0 0 0 1.5px rgba(255,255,255,.35)}
+:root[data-palette="nigella"] .panel,:root[data-palette="nigella"] .modebox,:root[data-palette="nigella"] .modebox2{background:rgba(36,14,5,.30) !important}
+:root[data-palette="nigella"] .invhero{background:none !important;border:0 !important;box-shadow:none !important}
+:root[data-palette="nigella"] .invhero .invsub,:root[data-palette="nigella"] .invhero small,:root[data-palette="nigella"] .invhero .mono{color:#BFE6F6 !important}
+:root[data-palette="nigella"] .cat.cardcat{background:rgba(30,11,4,.42) !important;border-color:rgba(244,214,180,.18) !important;border-left:4px solid var(--cc) !important;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+:root[data-palette="nigella"] .cardcat>h3,:root[data-palette="nigella"] .cardcat>h3:hover{background:transparent !important;color:#FBEFE2 !important;font-family:"Cormorant Garamond",Georgia,serif !important;font-size:20px !important;letter-spacing:.14em !important;font-weight:700 !important}
+:root[data-palette="nigella"] .cardcat>h3 .fold-n{background:rgba(255,238,220,.12) !important;color:#F3D2AC !important}
+:root[data-palette="nigella"] .cardcat>h3::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--cc);box-shadow:0 0 10px var(--cc);flex:none}
+:root[data-palette="nigella"] .cardcat>h3>.colorbtn{display:none}
+:root[data-palette="nigella"] .pk{border-color:rgba(244,214,180,.14) !important}
+:root[data-palette="nigella"] .pk input{appearance:none;-webkit-appearance:none;width:22px;height:22px;border-radius:50%;border:1.5px solid #E2C3A3;background:rgba(255,238,220,.06);display:grid;place-items:center;cursor:pointer}
+:root[data-palette="nigella"] .pk input:checked{background:radial-gradient(circle,#0D3644 0 3px,transparent 3.5px),linear-gradient(135deg,#F4FBFE,#6FBFE0);border-color:#BFE6F6;box-shadow:0 0 10px rgba(143,208,236,.6)}
+:root[data-palette="nigella"] .pk input:checked+*{opacity:.6}
+:root[data-palette="nigella"] .inp,:root[data-palette="nigella"] #search,:root[data-palette="nigella"] #invsearch,:root[data-palette="nigella"] #ad-name,:root[data-palette="nigella"] #ai-name,:root[data-palette="nigella"] .catpick .cp-btn{background-color:rgba(24,9,3,.35) !important;color:#FBEFE2 !important;border-color:rgba(244,214,180,.25) !important}
+:root[data-palette="nigella"] .inp::placeholder{color:#C9A98A !important;opacity:1}
+:root[data-palette="nigella"] .catpick .cp-btn{color:#BFE6F6 !important;border-color:rgba(169,221,242,.4) !important}
+:root[data-palette="nigella"] .btn:not(.primary):not(.back):not(.pdfbtn){background:rgba(255,238,220,.07) !important;border-color:rgba(244,214,180,.28) !important;color:#FBEFE2 !important}
+:root[data-palette="nigella"] .trip-edit{background:rgba(255,238,220,.07) !important;border-color:rgba(244,214,180,.25) !important;color:#F3D2AC !important}
+:root[data-palette="nigella"] .trip .t-name{color:#FBEFE2 !important}
+:root[data-palette="nigella"] .trip .t-meta,:root[data-palette="nigella"] .trip .pct{color:#E2C3A3 !important}
+:root[data-palette="nigella"] .trip-w.past .trip,:root[data-palette="nigella"] .trip.past{opacity:.75}
+:root[data-palette="nigella"] .switch,:root[data-palette="nigella"] .tgl{filter:hue-rotate(0)}
+:root[data-palette="nigella"] .modebox .cat:not(.cardcat)>h3{background:rgba(30,11,4,.42) !important;border:1px solid rgba(244,214,180,.18) !important;border-left:4px solid var(--cc) !important;color:#FBEFE2 !important;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);font-family:"Cormorant Garamond",Georgia,serif !important;font-size:20px !important;letter-spacing:.14em !important}
+:root[data-palette="nigella"] .modebox .cat:not(.cardcat)>h3 .fold-l::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--cc);box-shadow:0 0 10px var(--cc);flex:none}
+:root[data-palette="nigella"] .modebox .cat:not(.cardcat)>h3 .fold-n{background:rgba(255,238,220,.12) !important;color:#F3D2AC !important}
+:root[data-palette="nigella"] .modebox .cat:not(.cardcat)>h3 .dot{display:none}
+.palsw .ps-nigella i{background:conic-gradient(#A9DDF2 0 50%,#9C4E2A 0)}
+:root[data-palette="nigella"] .appmenu-pop,:root[data-palette="nigella"] .menu-pop,:root[data-palette="nigella"] .modal-card,:root[data-palette="nigella"] .sheet-card{background:rgba(48,22,10,.94) !important;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
 :root[data-mode="days"]{--page:var(--bg)}
@@ -1276,7 +1355,7 @@ body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,rgba(
 </style>
 </head>
 <body>
-<script>(function(){var t='dark';try{t=localStorage.getItem('sbaleno-theme')||'dark'}catch(e){}document.documentElement.setAttribute('data-app-theme',t==='light'?'light':'dark');var pl='ocean';try{pl=localStorage.getItem('sbaleno-palette')||'ocean'}catch(e){}document.documentElement.setAttribute('data-palette',pl==='ocean'?'ocean':'lantern')})();</script>
+<script>(function(){var t='dark';try{t=localStorage.getItem('sbaleno-theme')||'dark'}catch(e){}document.documentElement.setAttribute('data-app-theme',t==='light'?'light':'dark');var pl='ocean';try{pl=localStorage.getItem('sbaleno-palette')||'ocean'}catch(e){}document.documentElement.setAttribute('data-palette',(pl==='ocean'||pl==='nigella')?pl:'lantern')})();</script>
 
 <div class="aurora" aria-hidden="true"><i></i></div>
 <header class="bar"><canvas class="space" id="space" aria-hidden="true"></canvas>
@@ -1304,6 +1383,7 @@ body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,rgba(
           <div class="am-seg palsw" id="palSw" role="radiogroup" aria-labelledby="amPal">
             <button type="button" role="radio" class="ps-lantern" data-act="palette" data-v="lantern" aria-checked="true"><i aria-hidden="true"></i><span class="ps-n"></span></button>
             <button type="button" role="radio" class="ps-ocean" data-act="palette" data-v="ocean" aria-checked="false"><i aria-hidden="true"></i><span class="ps-n"></span></button>
+            <button type="button" role="radio" class="ps-nigella" data-act="palette" data-v="nigella" aria-checked="false"><i aria-hidden="true"></i><span class="ps-n"></span></button>
           </div></div>
         <button class="am-help" id="infoBtn" type="button" data-act="info" aria-haspopup="dialog"><span class="am-i" aria-hidden="true">i</span><span id="amHelp"></span></button>
       </div>
@@ -1380,7 +1460,7 @@ const L={
   dlBackup:'Stáhnout celou zálohu',ulBackup:'Importovat inventář',
   importQ:(i,t)=>`Nahrát zálohu (${i} věcí, ${t} cest)? Současná data se přepíšou.`,upload:'Nahrát',
   imported:'Záloha nahrána.',noDl:'Stahování souborů tady není dostupné.',dlDone:'Záloha stažena.',dlFail:'Zálohu se nepodařilo stáhnout.',
-  badFile:'Tenhle soubor není záloha z aplikace Packed.',fileName:'packed-zaloha-',appName:'Packed',piecesPacked:'Sbalené kusy',palLabel:'Barvy',palLantern:'Lucerna',palOcean:'Oceán',mLang:'Jazyk',mTheme:'Vzhled',mDark:'Tmavý',mLight:'Světlý',mSettings:'Nastavení',showMore:'Zobrazit více',showLess:'Zobrazit méně',edit:'Upravit',saveChanges:'Uložit změny',saveAnyway:'Přesto uložit',editNote:'Věci se při změně termínu přesunou podle pořadí dnů: 1. den zůstane 1. dnem.',shortenWarn:n=>`Cesta se zkrátí a ${n} ${csPl(n,'den','dny','dní')} na konci se smaže i s vybranými věcmi. Klikni na „Přesto uložit“.`,moveTo:'Přesunout do kategorie',newCat:'Nová kategorie',newCatOpt:'+ Nová kategorie…',newCatPh:'Název nové kategorie',ok:'OK',collapseAll:'Sbalit vše',expandAll:'Rozbalit vše',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Přepnout na světlý vzhled',toDark:'Přepnout na tmavý vzhled',madeBy:'Made by',
+  badFile:'Tenhle soubor není záloha z aplikace Packed.',fileName:'packed-zaloha-',appName:'Packed',piecesPacked:'Sbalené kusy',palLabel:'Barvy',palLantern:'Lucerna',palOcean:'Oceán',palNigella:'Nigella',mLang:'Jazyk',mTheme:'Vzhled',mDark:'Tmavý',mLight:'Světlý',mSettings:'Nastavení',showMore:'Zobrazit více',showLess:'Zobrazit méně',edit:'Upravit',saveChanges:'Uložit změny',saveAnyway:'Přesto uložit',editNote:'Věci se při změně termínu přesunou podle pořadí dnů: 1. den zůstane 1. dnem.',shortenWarn:n=>`Cesta se zkrátí a ${n} ${csPl(n,'den','dny','dní')} na konci se smaže i s vybranými věcmi. Klikni na „Přesto uložit“.`,moveTo:'Přesunout do kategorie',newCat:'Nová kategorie',newCatOpt:'+ Nová kategorie…',newCatPh:'Název nové kategorie',ok:'OK',collapseAll:'Sbalit vše',expandAll:'Rozbalit vše',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Přepnout na světlý vzhled',toDark:'Přepnout na tmavý vzhled',madeBy:'Made by',
   pdfBtn:'Stáhnout PDF',share:'Sdílet seznam',shareTitle:'Sdílet balicí seznam',shareSys:'Sdílet…',shareSysSub:'AirDrop, Zprávy a další aplikace',email:'E-mail',copyText:'Kopírovat text',copied:'Zkopírováno ✓',shareMade:'Vytvořeno v aplikaci Packed',pdfLabel:'BALICÍ SEZNAM',pdfPacked:(d,t)=>`sbaleno ${d} z ${t}`,pdfList:'Co zabalit',pdfByDay:'Po dnech',pdfDone:'PDF staženo.',pdfFail:'PDF se nepodařilo vytvořit.',coffee:'Buy me a coffee',
   info:'Nápověda',helpTitle:'Jak používat Packed',close:'Rozumím',helpLinks:'Ťukni na krok a jsi rovnou tam.',
   help:[['Inventář','Přidej do inventáře věci, které běžně bereš.'],
@@ -1432,7 +1512,7 @@ const L={
   dlBackup:'Download full backup',ulBackup:'Import inventory',
   importQ:(i,t)=>`Upload backup (${i} items, ${t} trips)? Your current data will be replaced.`,upload:'Upload',
   imported:'Backup uploaded.',noDl:'File downloads aren’t available here.',dlDone:'Backup downloaded.',dlFail:'Couldn’t download the backup.',
-  badFile:'This file isn’t a Packed backup.',fileName:'packed-backup-',appName:'Packed',piecesPacked:'Pieces packed',palLabel:'Colours',palLantern:'Lantern',palOcean:'Ocean',mLang:'Language',mTheme:'Appearance',mDark:'Dark',mLight:'Light',mSettings:'Settings',showMore:'Show more',showLess:'Show less',edit:'Edit',saveChanges:'Save changes',saveAnyway:'Save anyway',editNote:'If you change the dates, your plan moves with the day order: day 1 stays day 1.',shortenWarn:n=>`The trip gets shorter: ${n} ${enPl(n,'day','days')} at the end will be removed with their items. Tap “Save anyway” to continue.`,moveTo:'Move to category',newCat:'New category',newCatOpt:'+ New category…',newCatPh:'New category name',ok:'OK',collapseAll:'Collapse all',expandAll:'Expand all',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Switch to light mode',toDark:'Switch to dark mode',madeBy:'Made by',
+  badFile:'This file isn’t a Packed backup.',fileName:'packed-backup-',appName:'Packed',piecesPacked:'Pieces packed',palLabel:'Colours',palLantern:'Lantern',palOcean:'Ocean',palNigella:'Nigella',mLang:'Language',mTheme:'Appearance',mDark:'Dark',mLight:'Light',mSettings:'Settings',showMore:'Show more',showLess:'Show less',edit:'Edit',saveChanges:'Save changes',saveAnyway:'Save anyway',editNote:'If you change the dates, your plan moves with the day order: day 1 stays day 1.',shortenWarn:n=>`The trip gets shorter: ${n} ${enPl(n,'day','days')} at the end will be removed with their items. Tap “Save anyway” to continue.`,moveTo:'Move to category',newCat:'New category',newCatOpt:'+ New category…',newCatPh:'New category name',ok:'OK',collapseAll:'Collapse all',expandAll:'Expand all',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Switch to light mode',toDark:'Switch to dark mode',madeBy:'Made by',
   pdfBtn:'Download PDF',share:'Share list',shareTitle:'Share packing list',shareSys:'Share…',shareSysSub:'AirDrop, Messages and other apps',email:'Email',copyText:'Copy text',copied:'Copied ✓',shareMade:'Made with Packed',pdfLabel:'PACKING LIST',pdfPacked:(d,t)=>`${d} of ${t} packed`,pdfList:'What to pack',pdfByDay:'Day by day',pdfDone:'PDF downloaded.',pdfFail:'Couldn’t create the PDF.',coffee:'Buy me a coffee',
   info:'Help',helpTitle:'How to use Packed',close:'Got it',helpLinks:'Tap any step to go straight there.',
   help:[['Inventory','Add to inventory things you usually take.'],
@@ -1505,9 +1585,10 @@ function starter(lg){
 }
 /* collecting is for the whole trip only: per-day lists are merged into it, quantities added up */
 function mergeDays(p){const all={};Object.values(p&&typeof p==='object'?p:{}).forEach(o=>{if(o&&typeof o==='object')Object.entries(o).forEach(([id,q])=>{if(q)all[id]=Math.min(99,(all[id]||0)+(+q||1))})});return {all}}
+function palName(v){return v==='ocean'?T.palOcean:v==='nigella'?T.palNigella:T.palLantern}
 function sanitize(d){
   if(!d||typeof d!=='object')return starter();
-  return {v:1,funMine:Array.isArray(d.funMine)?d.funMine.filter(x=>typeof x==='string'&&x.trim()).map(x=>x.trim().slice(0,80)).slice(0,200):[],funOnly:!!d.funOnly,tutorialDone:!!d.tutorialDone,hidePacked:!!d.hidePacked,palette:d.palette==='ocean'?'ocean':'lantern',wholeOpen:!!d.wholeOpen,dayOpen:!!d.dayOpen,open:(d.open&&typeof d.open==='object')?JSON.parse(JSON.stringify(d.open)):{},theme:d.theme==='light'?'light':'dark',lang:d.lang==='en'?'en':'cs',catColors:(d.catColors&&typeof d.catColors==='object')?{...d.catColors}:{},cats:Array.isArray(d.cats)?d.cats.slice():[],items:Array.isArray(d.items)?d.items.map(x=>({...x})):[],
+  return {v:1,funMine:Array.isArray(d.funMine)?d.funMine.filter(x=>typeof x==='string'&&x.trim()).map(x=>x.trim().slice(0,80)).slice(0,200):[],funOnly:!!d.funOnly,tutorialDone:!!d.tutorialDone,hidePacked:!!d.hidePacked,palette:['ocean','nigella'].includes(d.palette)?d.palette:'lantern',wholeOpen:!!d.wholeOpen,dayOpen:!!d.dayOpen,open:(d.open&&typeof d.open==='object')?JSON.parse(JSON.stringify(d.open)):{},theme:d.theme==='light'?'light':'dark',lang:d.lang==='en'?'en':'cs',catColors:(d.catColors&&typeof d.catColors==='object')?{...d.catColors}:{},cats:Array.isArray(d.cats)?d.cats.slice():[],items:Array.isArray(d.items)?d.items.map(x=>({...x})):[],
     trips:Array.isArray(d.trips)?d.trips.map(t=>({...t,picks:mergeDays(t.picks),packed:{...(t.packed||{})}})):[]};
 }
 function loadLocal(){try{const s=localStorage.getItem(KEY);return s?sanitize(JSON.parse(s)):null}catch(e){return null}}
@@ -1621,11 +1702,11 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ui.poster){ui.poste
 const credit=()=>`<span class="by">${esc(T.madeBy)} <button class="ig" type="button" aria-haspopup="dialog" title="@i.vertalyot">Vert Alyot</button><button class="poster-i" type="button" data-act="poster-open" aria-haspopup="dialog" aria-label="Info" title="Info">i</button></span>${INSTALLED?'':`<span class="sep" aria-hidden="true">·</span><a class="coffee" href="${BMC}" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">☕</span> ${esc(T.coffee)}</a>`}`;
 function applyTheme(){const t=state.theme==='light'?'light':'dark';document.documentElement.setAttribute('data-app-theme',t);
   try{localStorage.setItem('sbaleno-theme',t)}catch(e){}
-  const pl=state.palette==='ocean'?'ocean':'lantern';document.documentElement.setAttribute('data-palette',pl);try{localStorage.setItem('sbaleno-palette',pl)}catch(e){}
+  const pl=['ocean','nigella'].includes(state.palette)?state.palette:'lantern';document.documentElement.setAttribute('data-palette',pl);try{localStorage.setItem('sbaleno-palette',pl)}catch(e){}
   const m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content','#000000');
-  const ps=document.getElementById('palSw');if(ps){ps.setAttribute('aria-label',T.palLabel);ps.querySelectorAll('[role=radio]').forEach(x=>{const on=x.dataset.v===pl;x.setAttribute('aria-checked',on);x.tabIndex=on?0:-1;const l=x.dataset.v==='ocean'?T.palOcean:T.palLantern;x.setAttribute('aria-label',l);x.title=l})}
+  const ps=document.getElementById('palSw');if(ps){ps.setAttribute('aria-label',T.palLabel);ps.querySelectorAll('[role=radio]').forEach(x=>{const on=x.dataset.v===pl;x.setAttribute('aria-checked',on);x.tabIndex=on?0:-1;const l=palName(x.dataset.v);x.setAttribute('aria-label',l);x.title=l})}
   [['thDark','dark',T.mDark],['thLight','light',T.mLight]].forEach(([id,v,l])=>{const x=document.getElementById(id);if(x){x.setAttribute('aria-checked',t===v);x.tabIndex=t===v?0:-1;x.querySelector('span').textContent=l}});
-  document.querySelectorAll('#palSw .ps-n').forEach(n=>{n.textContent=n.parentElement.dataset.v==='ocean'?T.palOcean:T.palLantern})}
+  document.querySelectorAll('#palSw .ps-n').forEach(n=>{n.textContent=palName(n.parentElement.dataset.v)})}
 const CHEV='<svg class="chev" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>';
 /* most views start folded and remember what you opened; Packing starts open and remembers what you closed */
 const foldInv=v=>v==='pack'||v==='whole',foldKey=v=>v==='pack'?'packClosed':v==='whole'?'wholeClosed':v;
@@ -1967,7 +2048,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.12-2149';
+const APP_BUILD='2026.11.13-1911';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
@@ -2189,7 +2270,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')endCeleb()});
 
 /* edit-trip popup: tap outside or press Escape to close */
 document.addEventListener('click',e=>{if(e.target.id==='invClearModal'){ui.invClear=false;render();return}if(e.target.id==='delModal'){ui.delTrip=false;render();return}if(e.target.id==='clearModal'){ui.clearAsk=false;render();return}if(e.target.id==='shareModal'){ui.share=false;render();return}if(e.target.id==='editModal'){ui.delTrip=false;ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;render()}});
-document.addEventListener('keydown',e=>{const rg=e.target.closest&&e.target.closest('#palSw');if(rg&&/^Arrow(Left|Right|Up|Down)$/.test(e.key)){e.preventDefault();state.palette=state.palette==='ocean'?'lantern':'ocean';save();render();const n=document.querySelector('#palSw [aria-checked="true"]');if(n)n.focus();return}if(e.key==='Escape'&&ui.invClear){ui.invClear=false;render();return}if(e.key==='Escape'&&ui.delTrip){ui.delTrip=false;render();return}if(e.key==='Escape'&&ui.clearAsk){ui.clearAsk=false;render();return}if(e.key==='Escape'&&ui.share){ui.share=false;render();return}if(e.key==='Escape'&&ui.editId){ui.delTrip=false;ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;render()}});
+document.addEventListener('keydown',e=>{const rg=e.target.closest&&e.target.closest('#palSw');if(rg&&/^Arrow(Left|Right|Up|Down)$/.test(e.key)){e.preventDefault();{const P=['lantern','ocean','nigella'],i=P.indexOf(state.palette),d=/Left|Up/.test(e.key)?-1:1;state.palette=P[(i+d+P.length)%P.length]}save();render();const n=document.querySelector('#palSw [aria-checked="true"]');if(n)n.focus();return}if(e.key==='Escape'&&ui.invClear){ui.invClear=false;render();return}if(e.key==='Escape'&&ui.delTrip){ui.delTrip=false;render();return}if(e.key==='Escape'&&ui.clearAsk){ui.clearAsk=false;render();return}if(e.key==='Escape'&&ui.share){ui.share=false;render();return}if(e.key==='Escape'&&ui.editId){ui.delTrip=false;ui.editId=null;ui.editVals=null;ui.editErr='';ui.editWarn=0;render()}});
 
 /* category popups close on an outside tap or Escape */
 function closeCatPops(){document.querySelectorAll('.cp-pop').forEach(p=>{if(!p.hidden){p.hidden=true;const bt=p.parentElement.querySelector('.cp-btn');if(bt)bt.setAttribute('aria-expanded','false')}})}
@@ -2319,7 +2400,7 @@ document.addEventListener('click',e=>{
     case 'theme':state.theme=state.theme==='light'?'dark':'light';save();break;
     case 'set-theme':state.theme=b.dataset.v==='light'?'light':'dark';save();break;
     case 'app-menu':toggleAppMenu();return;
-    case 'palette':state.palette=b.dataset.v==='ocean'?'ocean':'lantern';save();break;
+    case 'palette':state.palette=['ocean','nigella'].includes(b.dataset.v)?b.dataset.v:'lantern';save();break;
     case 'lang':{const to=b.dataset.v;if(to===lang())return;translateStarter(to);state.lang=to;save();break}
     case 'tab':ui.tab=b.dataset.v;ui.delItem=null;break;
     case 'new-trip':ui.newTrip=!ui.newTrip;ui.tripErr='';break;
