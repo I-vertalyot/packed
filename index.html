@@ -1287,6 +1287,8 @@ html.poster-open,html.poster-open body{overflow:hidden}
 :root[data-palette="nigella"]:not([data-app-theme="dark"]) .credit .credit-box{background:rgba(255,248,240,.75) !important}
 :root[data-palette="nigella"]:not([data-app-theme="dark"]) .pk input{accent-color:#2E8BA8}
 :root[data-palette="nigella"]:not([data-app-theme="dark"]) .invhero .invsub,:root[data-palette="nigella"]:not([data-app-theme="dark"]) .invhero small{color:#1E6F8C}
+@media (max-width:420px){.credit .credit-box{gap:10px!important}.credit .credit-box a.coffee{padding:8px 11px!important;font-size:13px!important;letter-spacing:-.01em}.credit .credit-box .by{font-size:13px}}
+@media (max-width:370px){.credit .credit-box a.coffee>span{display:none}}
 
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
@@ -1462,7 +1464,7 @@ const L={
   importQ:(i,t)=>`Nahrát zálohu (${i} věcí, ${t} cest)? Současná data se přepíšou.`,upload:'Nahrát',
   imported:'Záloha nahrána.',noDl:'Stahování souborů tady není dostupné.',dlDone:'Záloha stažena.',dlFail:'Zálohu se nepodařilo stáhnout.',
   badFile:'Tenhle soubor není záloha z aplikace Packed.',fileName:'packed-zaloha-',appName:'Packed',piecesPacked:'Sbalené kusy',palLabel:'Barvy',palLantern:'Lucerna',palOcean:'Oceán',palNigella:'Nigella',mLang:'Jazyk',mTheme:'Vzhled',mDark:'Tmavý',mLight:'Světlý',mSettings:'Nastavení',showMore:'Zobrazit více',showLess:'Zobrazit méně',edit:'Upravit',saveChanges:'Uložit změny',saveAnyway:'Přesto uložit',editNote:'Věci se při změně termínu přesunou podle pořadí dnů: 1. den zůstane 1. dnem.',shortenWarn:n=>`Cesta se zkrátí a ${n} ${csPl(n,'den','dny','dní')} na konci se smaže i s vybranými věcmi. Klikni na „Přesto uložit“.`,moveTo:'Přesunout do kategorie',newCat:'Nová kategorie',newCatOpt:'+ Nová kategorie…',newCatPh:'Název nové kategorie',ok:'OK',collapseAll:'Sbalit vše',expandAll:'Rozbalit vše',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Přepnout na světlý vzhled',toDark:'Přepnout na tmavý vzhled',madeBy:'Made by',
-  pdfBtn:'Stáhnout PDF',share:'Sdílet seznam',shareTitle:'Sdílet balicí seznam',shareSys:'Sdílet…',shareSysSub:'AirDrop, Zprávy a další aplikace',email:'E-mail',copyText:'Kopírovat text',copied:'Zkopírováno ✓',shareMade:'Vytvořeno v aplikaci Packed',pdfLabel:'BALICÍ SEZNAM',pdfPacked:(d,t)=>`sbaleno ${d} z ${t}`,pdfList:'Co zabalit',pdfByDay:'Po dnech',pdfDone:'PDF staženo.',pdfFail:'PDF se nepodařilo vytvořit.',coffee:'Buy me a coffee',
+  pdfBtn:'Stáhnout PDF',share:'Sdílet seznam',shareTitle:'Sdílet balicí seznam',shareSys:'Sdílet…',shareSysSub:'AirDrop, Zprávy a další aplikace',email:'E-mail',copyText:'Kopírovat text',copied:'Zkopírováno ✓',shareMade:'Vytvořeno v aplikaci Packed',pdfLabel:'BALICÍ SEZNAM',pdfPacked:(d,t)=>`sbaleno ${d} z ${t}`,pdfList:'Co zabalit',pdfByDay:'Po dnech',pdfDone:'PDF staženo.',pdfFail:'PDF se nepodařilo vytvořit.',coffee:'Buy me a Lamborghini',
   info:'Nápověda',helpTitle:'Jak používat Packed',close:'Rozumím',helpLinks:'Ťukni na krok a jsi rovnou tam.',
   help:[['Inventář','Přidej do inventáře věci, které běžně bereš.'],
     ['Nová cesta','Cesty → „+ Nová cesta“: kam a kdy.'],
@@ -1514,7 +1516,7 @@ const L={
   importQ:(i,t)=>`Upload backup (${i} items, ${t} trips)? Your current data will be replaced.`,upload:'Upload',
   imported:'Backup uploaded.',noDl:'File downloads aren’t available here.',dlDone:'Backup downloaded.',dlFail:'Couldn’t download the backup.',
   badFile:'This file isn’t a Packed backup.',fileName:'packed-backup-',appName:'Packed',piecesPacked:'Pieces packed',palLabel:'Colours',palLantern:'Lantern',palOcean:'Ocean',palNigella:'Nigella',mLang:'Language',mTheme:'Appearance',mDark:'Dark',mLight:'Light',mSettings:'Settings',showMore:'Show more',showLess:'Show less',edit:'Edit',saveChanges:'Save changes',saveAnyway:'Save anyway',editNote:'If you change the dates, your plan moves with the day order: day 1 stays day 1.',shortenWarn:n=>`The trip gets shorter: ${n} ${enPl(n,'day','days')} at the end will be removed with their items. Tap “Save anyway” to continue.`,moveTo:'Move to category',newCat:'New category',newCatOpt:'+ New category…',newCatPh:'New category name',ok:'OK',collapseAll:'Collapse all',expandAll:'Expand all',nPicked:(a,b)=>`${a}/${b}`,nPacked:(a,b)=>`${a}/${b}`,nItems:n=>String(n),toLight:'Switch to light mode',toDark:'Switch to dark mode',madeBy:'Made by',
-  pdfBtn:'Download PDF',share:'Share list',shareTitle:'Share packing list',shareSys:'Share…',shareSysSub:'AirDrop, Messages and other apps',email:'Email',copyText:'Copy text',copied:'Copied ✓',shareMade:'Made with Packed',pdfLabel:'PACKING LIST',pdfPacked:(d,t)=>`${d} of ${t} packed`,pdfList:'What to pack',pdfByDay:'Day by day',pdfDone:'PDF downloaded.',pdfFail:'Couldn’t create the PDF.',coffee:'Buy me a coffee',
+  pdfBtn:'Download PDF',share:'Share list',shareTitle:'Share packing list',shareSys:'Share…',shareSysSub:'AirDrop, Messages and other apps',email:'Email',copyText:'Copy text',copied:'Copied ✓',shareMade:'Made with Packed',pdfLabel:'PACKING LIST',pdfPacked:(d,t)=>`${d} of ${t} packed`,pdfList:'What to pack',pdfByDay:'Day by day',pdfDone:'PDF downloaded.',pdfFail:'Couldn’t create the PDF.',coffee:'Buy me a Lamborghini',
   info:'Help',helpTitle:'How to use Packed',close:'Got it',helpLinks:'Tap any step to go straight there.',
   help:[['Inventory','Add to inventory things you usually take.'],
     ['New trip','Trips → “+ New trip”: where and when.'],
@@ -1700,7 +1702,7 @@ document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest
   if(t.matches('[data-act="poster-open"]')){ui.poster=true;showPoster(true);syncHistory();return}
   ui.poster=false;showPoster(false);syncHistory()},true);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ui.poster){ui.poster=false;showPoster(false);syncHistory()}});
-const credit=()=>`<span class="by">${esc(T.madeBy)} <button class="ig" type="button" aria-haspopup="dialog" title="@i.vertalyot">Vert Alyot</button><button class="poster-i" type="button" data-act="poster-open" aria-haspopup="dialog" aria-label="Info" title="Info">i</button></span>${INSTALLED?'':`<span class="sep" aria-hidden="true">·</span><a class="coffee" href="${BMC}" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">☕</span> ${esc(T.coffee)}</a>`}`;
+const credit=()=>`<span class="by">${esc(T.madeBy)} <button class="ig" type="button" aria-haspopup="dialog" title="@i.vertalyot">Vert Alyot</button><button class="poster-i" type="button" data-act="poster-open" aria-haspopup="dialog" aria-label="Info" title="Info">i</button></span>${INSTALLED?'':`<span class="sep" aria-hidden="true">·</span><a class="coffee" href="${BMC}" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">🏎️</span> ${esc(T.coffee)}</a>`}`;
 function applyTheme(){const t=state.theme==='light'?'light':'dark';document.documentElement.setAttribute('data-app-theme',t);
   try{localStorage.setItem('sbaleno-theme',t)}catch(e){}
   const pl=['ocean','nigella'].includes(state.palette)?state.palette:'lantern';document.documentElement.setAttribute('data-palette',pl);try{localStorage.setItem('sbaleno-palette',pl)}catch(e){}
@@ -2049,7 +2051,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.14-0010';
+const APP_BUILD='2026.11.14-0035';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
