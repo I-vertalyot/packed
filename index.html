@@ -1246,7 +1246,7 @@ html.poster-open,html.poster-open body{overflow:hidden}
 :root[data-palette="nigella"] .inp,:root[data-palette="nigella"] #search,:root[data-palette="nigella"] #invsearch,:root[data-palette="nigella"] #ad-name,:root[data-palette="nigella"] #ai-name,:root[data-palette="nigella"] .catpick .cp-btn{background-color:rgba(24,9,3,.35) !important;color:#FBEFE2 !important;border-color:rgba(244,214,180,.25) !important}
 :root[data-palette="nigella"] .inp::placeholder{color:#C9A98A !important;opacity:1}
 :root[data-palette="nigella"] .catpick .cp-btn{color:#BFE6F6 !important;border-color:rgba(169,221,242,.4) !important}
-:root[data-palette="nigella"] .btn:not(.primary):not(.back):not(.pdfbtn){background:rgba(255,238,220,.07) !important;border-color:rgba(244,214,180,.28) !important;color:#FBEFE2 !important}
+:root[data-palette="nigella"] .btn:not(.primary):not(.back):not(.pdfbtn):not(.ghost),:root[data-palette="nigella"] .btn.ghost.foldall{background:rgba(255,238,220,.07) !important;border-color:rgba(244,214,180,.28) !important;color:#FBEFE2 !important}
 :root[data-palette="nigella"] .trip-edit{background:rgba(255,238,220,.07) !important;border-color:rgba(244,214,180,.25) !important;color:#F3D2AC !important}
 :root[data-palette="nigella"] .trip .t-name{color:#FBEFE2 !important}
 :root[data-palette="nigella"] .trip .t-meta,:root[data-palette="nigella"] .trip .pct{color:#E2C3A3 !important}
@@ -1261,6 +1261,32 @@ html.poster-open,html.poster-open body{overflow:hidden}
 :root[data-palette="nigella"][data-mode="days"],:root[data-palette="nigella"][data-mode="days"][data-app-theme]{--page:#45130E !important;--au1:#D9392B !important;--au2:#E07A5F !important;--au3:#8A2418 !important;--au-op:.5 !important}
 :root[data-palette="nigella"][data-mode="pack"],:root[data-palette="nigella"][data-mode="pack"][data-app-theme]{--page:#0F2A33 !important;--au1:#3FA3B8 !important;--au2:#8FD0EC !important;--au3:#1E5F74 !important;--au-op:.45 !important}
 :root[data-palette="nigella"][data-tab="inv"]:not([data-mode]){--au1:#3FA3B8;--au2:#C06C3C;--au3:#1E5F74}
+
+/* ===== Nigella light: peach paper, the same flower colours ===== */
+:root[data-palette="nigella"]:not([data-app-theme="dark"]){--bg:#F5E6D8 !important;--surface:rgba(255,251,247,.78) !important;--ink:#3A1A0C !important;--muted:#85573A !important;--line:rgba(122,72,40,.22) !important;--chip:rgba(122,72,40,.10) !important;
+ --sign-text:#1E6F8C !important;--gold:#1E6F8C !important;--ok:#2E8BA8 !important;--danger:#C62D21 !important;--inv:#1E7C96 !important;
+ --c-blue:#2E86AD;--c-teal:#1E8A9C;--c-green:#4E8F6E;--c-yellow:#A97A2E;--c-orange:#C46A2C;--c-red:#C62D21;--c-pink:#B9566A;--c-purple:#2B6E85;--c-gray:#8A7563;
+ --page:#F3DCC8;--au1:#E9A574;--au2:#F0C29A;--au3:#D88A55;--au-op:.45}
+:root[data-palette="nigella"]:not([data-app-theme="dark"])[data-mode="days"]{--page:#F6DAD3 !important;--au1:#E8705F !important;--au2:#F2A090 !important;--au3:#D9392B !important;--au-op:.32 !important;--on-wine:#3A1A0C !important}
+:root[data-palette="nigella"]:not([data-app-theme="dark"])[data-mode="pack"]{--page:#DDEEF4 !important;--au1:#8FD0EC !important;--au2:#BFE6F6 !important;--au3:#3FA3B8 !important;--au-op:.42 !important}
+:root[data-palette="nigella"]:not([data-app-theme="dark"])[data-tab="inv"]:not([data-mode]){--page:#EEE3DA !important;--au1:#8FD0EC;--au2:#E9A574;--au3:#3FA3B8}
+:root[data-palette="nigella"]:not([data-app-theme="dark"]) h2,:root[data-palette="nigella"]:not([data-app-theme="dark"]) .wholehead,:root[data-palette="nigella"]:not([data-app-theme="dark"]) .pick-title{color:#9A5A34 !important}
+:root[data-palette="nigella"]:not([data-app-theme="dark"]) .panel,:root[data-palette="nigella"]:not([data-app-theme="dark"]) .trip,:root[data-palette="nigella"]:not([data-app-theme="dark"]) .modebox,:root[data-palette="nigella"]:not([data-app-theme="dark"]) .modebox2,:root[data-palette="nigella"]:not([data-app-theme="dark"]) .pgroup,:root[data-palette="nigella"]:not([data-app-theme="dark"]) .progpanel,:root[data-palette="nigella"]:not([data-app-theme="dark"]) .quickadd{background:rgba(255,250,244,.62) !important;border-color:rgba(122,72,40,.2) !important;box-shadow:0 8px 24px rgba(122,62,30,.12),inset 0 1px 0 rgba(255,255,255,.6) !important}
+:root[data-palette="nigella"]:not([data-app-theme="dark"]) .appmenu-pop,:root[data-palette="nigella"]:not([data-app-theme="dark"]) .menu-pop,:root[data-palette="nigella"]:not([data-app-theme="dark"]) .modal-card,:root[data-palette="nigella"]:not([data-app-theme="dark"]) .sheet-card{background:rgba(255,249,243,.97) !important}
+:root[data-palette="nigella"]:not([data-app-theme="dark"]) .cat.cardcat,:root[data-palette="nigella"]:not([data-app-theme="dark"]) .modebox .cat:not(.cardcat)>h3{background:rgba(255,252,248,.78) !important}
+:root[data-palette="nigella"]:not([data-app-theme="dark"]) .cardcat>h3 .fold-n,:root[data-palette="nigella"]:not([data-app-theme="dark"]) .modebox .cat:not(.cardcat)>h3 .fold-n{background:rgba(122,72,40,.10) !important;color:#85573A !important}
+:root[data-palette="nigella"]:not([data-app-theme="dark"]) .pk{border-color:rgba(122,72,40,.14) !important}
+:root[data-palette="nigella"]:not([data-app-theme="dark"]) .inp,:root[data-palette="nigella"]:not([data-app-theme="dark"]) #search,:root[data-palette="nigella"]:not([data-app-theme="dark"]) #invsearch,:root[data-palette="nigella"]:not([data-app-theme="dark"]) #ad-name,:root[data-palette="nigella"]:not([data-app-theme="dark"]) #ai-name,:root[data-palette="nigella"]:not([data-app-theme="dark"]) .catpick .cp-btn{background-color:rgba(255,255,255,.75) !important;color:#3A1A0C !important;border-color:rgba(122,72,40,.25) !important}
+:root[data-palette="nigella"]:not([data-app-theme="dark"]) .inp::placeholder{color:#A07A5E !important}
+:root[data-palette="nigella"]:not([data-app-theme="dark"]) .catpick .cp-btn{color:#1E6F8C !important;border-color:rgba(30,111,140,.4) !important}
+:root[data-palette="nigella"]:not([data-app-theme="dark"]) .btn:not(.primary):not(.back):not(.pdfbtn):not(.ghost),:root[data-palette="nigella"]:not([data-app-theme="dark"]) .btn.ghost.foldall{background:rgba(255,255,255,.6) !important;border-color:rgba(122,72,40,.25) !important;color:#3A1A0C !important}
+:root[data-palette="nigella"]:not([data-app-theme="dark"]) .trip-edit{background:rgba(255,255,255,.6) !important;border-color:rgba(122,72,40,.22) !important;color:#85573A !important}
+:root[data-palette="nigella"]:not([data-app-theme="dark"]) .trip .t-name{color:#3A1A0C !important}
+:root[data-palette="nigella"]:not([data-app-theme="dark"]) .trip .t-meta,:root[data-palette="nigella"]:not([data-app-theme="dark"]) .trip .pct{color:#85573A !important}
+:root[data-palette="nigella"]:not([data-app-theme="dark"])[data-app-theme] .modebar .seg button[aria-pressed="false"],:root[data-palette="nigella"]:not([data-app-theme="dark"]) .modebar .seg button[aria-pressed="false"]{background:rgba(255,255,255,.55) !important;color:#85573A !important;border-color:rgba(122,72,40,.28) !important}
+:root[data-palette="nigella"]:not([data-app-theme="dark"]) .credit .credit-box{background:rgba(255,248,240,.75) !important}
+:root[data-palette="nigella"]:not([data-app-theme="dark"]) .pk input{accent-color:#2E8BA8}
+:root[data-palette="nigella"]:not([data-app-theme="dark"]) .invhero .invsub,:root[data-palette="nigella"]:not([data-app-theme="dark"]) .invhero small{color:#1E6F8C}
 
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
@@ -2023,7 +2049,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.13-1919';
+const APP_BUILD='2026.11.13-1924';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
