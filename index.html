@@ -1209,15 +1209,14 @@ html.poster-open,html.poster-open body{overflow:hidden}
 .poster img.swap{animation:posterZoom .3s cubic-bezier(.2,.8,.2,1)}
 
 /* ===== Nigella theme: colours only ===== */
-:root[data-palette="nigella"]{--bg:#3B1D10 !important;--surface:rgba(255,236,214,.09) !important;--ink:#FBEFE2 !important;--muted:#E2C3A3 !important;--line:rgba(244,214,180,.22) !important;--chip:rgba(255,236,214,.12) !important;--bar:transparent !important;--bar-fg:#FBEFE2 !important;--bar-muted:#E2C3A3 !important;--bar-line:rgba(244,214,180,.3) !important;--sign:#A9DDF2 !important;--sign-ink:#0D3644 !important;--gold:#A9DDF2 !important;--sign-text:#BFE6F6 !important;--ok:#7CC7E6 !important;--danger:#E2463A !important;--mode-days:#D9392B !important;--on-days:#FFF6EE !important;--mode-pack:#8FD0EC !important;--on-pack:#0D3644 !important;--wine-page:#3B1D10 !important;--inv:#2E8BA8 !important;--c-blue:#8FD0EC;--c-teal:#3FA3B8;--c-green:#9CC9B0;--c-yellow:#E9C48F;--c-orange:#E59A5C;--c-red:#E2463A;--c-pink:#E8A7A0;--c-purple:#2B6E85;--c-gray:#CDB59B;--au1:#E0915A !important;--au2:#F2B98A !important;--au3:#7A3A1E !important;--au-op:.55 !important;--hl:4% !important}
-:root[data-palette="nigella"] body{background-color:#3B1D10 !important}
+:root[data-palette="nigella"]{--bg:#3B1D10 !important;--surface:rgba(255,236,214,.09) !important;--ink:#FBEFE2 !important;--muted:#E2C3A3 !important;--line:rgba(244,214,180,.22) !important;--chip:rgba(255,236,214,.12) !important;--bar:transparent !important;--bar-fg:#FBEFE2 !important;--bar-muted:#E2C3A3 !important;--bar-line:rgba(244,214,180,.3) !important;--sign:#A9DDF2 !important;--sign-ink:#0D3644 !important;--gold:#A9DDF2 !important;--sign-text:#BFE6F6 !important;--ok:#7CC7E6 !important;--danger:#E2463A !important;--mode-days:#D9392B !important;--on-days:#FFF6EE !important;--mode-pack:#8FD0EC !important;--on-pack:#0D3644 !important;--inv:#2E8BA8 !important;--c-blue:#8FD0EC;--c-teal:#3FA3B8;--c-green:#9CC9B0;--c-yellow:#E9C48F;--c-orange:#E59A5C;--c-red:#E2463A;--c-pink:#E8A7A0;--c-purple:#2B6E85;--c-gray:#CDB59B;--hl:4% !important}
 :root[data-palette="nigella"] .aurora{-webkit-mask-image:none !important;mask-image:none !important}
 :root[data-palette="nigella"] .aurora i{background:
-  radial-gradient(30% 22% at 20% 18%,#D88A55,transparent 70%),
-  radial-gradient(34% 26% at 82% 34%,#C06C3C,transparent 70%),
-  radial-gradient(40% 30% at 40% 70%,#B4693E,transparent 70%),
-  radial-gradient(26% 20% at 85% 86%,#E7A877,transparent 70%),
-  radial-gradient(20% 14% at 12% 92%,#9C4E2A,transparent 70%) !important;filter:blur(18px);opacity:.8 !important}
+  radial-gradient(30% 22% at 20% 18%,var(--au1),transparent 70%),
+  radial-gradient(34% 26% at 82% 34%,var(--au2),transparent 70%),
+  radial-gradient(40% 30% at 40% 70%,var(--au3),transparent 70%),
+  radial-gradient(26% 20% at 85% 86%,var(--au1),transparent 70%),
+  radial-gradient(20% 14% at 12% 92%,var(--au2),transparent 70%) !important;filter:blur(18px);opacity:.8 !important}
 :root[data-palette="nigella"] .bar{background:linear-gradient(180deg,rgba(32,14,6,.78),rgba(32,14,6,.35)) !important;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
 :root[data-palette="nigella"] .brand{color:#FBEFE2}
 :root[data-palette="nigella"] h2,:root[data-palette="nigella"] .wholehead,:root[data-palette="nigella"] .pick-title{color:#F3D2AC !important}
@@ -1257,6 +1256,11 @@ html.poster-open,html.poster-open body{overflow:hidden}
 :root[data-palette="nigella"] .appmenu-pop,:root[data-palette="nigella"] .menu-pop,:root[data-palette="nigella"] .modal-card,:root[data-palette="nigella"] .sheet-card{background:rgba(48,22,10,.94) !important;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
 :root[data-palette="nigella"] .pk input{accent-color:#6FBFE0}
 
+/* Nigella backgrounds per page: copper home, ladybug-red Collecting, deep teal Packing */
+:root[data-palette="nigella"],:root[data-palette="nigella"][data-app-theme]{--page:#3B1D10;--au1:#D88A55;--au2:#C06C3C;--au3:#E7A877;--au-op:.55;--wine-page:#45130E}
+:root[data-palette="nigella"][data-mode="days"],:root[data-palette="nigella"][data-mode="days"][data-app-theme]{--page:#45130E !important;--au1:#D9392B !important;--au2:#E07A5F !important;--au3:#8A2418 !important;--au-op:.5 !important}
+:root[data-palette="nigella"][data-mode="pack"],:root[data-palette="nigella"][data-mode="pack"][data-app-theme]{--page:#0F2A33 !important;--au1:#3FA3B8 !important;--au2:#8FD0EC !important;--au3:#1E5F74 !important;--au-op:.45 !important}
+:root[data-palette="nigella"][data-tab="inv"]:not([data-mode]){--au1:#3FA3B8;--au2:#C06C3C;--au3:#1E5F74}
 
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
@@ -2019,7 +2023,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.13-1917';
+const APP_BUILD='2026.11.13-1919';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
