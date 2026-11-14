@@ -1305,6 +1305,12 @@ html.poster-open,html.poster-open body{overflow:hidden}
 :root:not(.tj-off)[data-mode="pack"] main>.modebox>.pp-sent+.progpanel{border:2px solid var(--tjc)!important;border-top-right-radius:0!important}
 :root:not(.tj-off) main .modebar .seg button[aria-pressed="true"]{box-shadow:none!important}
 
+/* Packing: progress box and the list below are one block inside one border */
+:root[data-mode="pack"]{--pkc:var(--tjc,var(--mode-pack,var(--ok)))}
+:root:root:root[data-mode="pack"] main>.modebox>.pp-sent+.progpanel:not(.stuck){border:2px solid var(--pkc)!important;border-bottom:0!important;border-bottom-left-radius:0!important;border-bottom-right-radius:0!important}
+:root:root:root[data-mode="pack"] main>.modebox>.pp-sent+.progpanel.stuck{border:2px solid var(--pkc)!important;border-bottom:0!important;border-radius:0 0 12px 12px!important;box-shadow:inset 0 -2px 0 var(--pkc),0 8px 18px rgba(0,0,0,.25)!important}
+:root:root:root[data-mode="pack"] main>.modebox>.pp-sent+.progpanel+.panel{margin-top:-15px;border:2px solid var(--pkc)!important;border-top:1px solid color-mix(in srgb,var(--pkc) 35%,transparent)!important;border-top-left-radius:0!important;border-top-right-radius:0!important}
+
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
 :root[data-mode="days"]{--page:var(--bg)}
@@ -1369,6 +1375,7 @@ body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,rgba(
 .fun-b{background:transparent}
 :root[data-tab="inv"]{--page:var(--bg)}
 :root[data-tab="inv"]:not([data-app-theme="dark"]){--page:var(--bg)}
+:root:root:root[data-mode="pack"] main>.modebox>.pp-sent+.progpanel+.panel{border-top:1px solid var(--pkc)!important}
 }
 </style>
 </head>
@@ -2071,7 +2078,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.14-0652';
+const APP_BUILD='2026.11.14-0703';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
