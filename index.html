@@ -1357,6 +1357,7 @@ svg.ship .sh-t3{stroke-width:2.5;stroke-dasharray:140 860;opacity:.28}
 @media (prefers-reduced-motion:reduce){svg.ship{display:none!important}}
 canvas.ship-cv{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:4}
 .tj-off canvas.ship-cv{display:none!important}
+svg.ship .sh-b2 path{animation-delay:calc(var(--ship-dur) * -.5)}
 
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
@@ -1819,7 +1820,7 @@ function updateJoin(){const b=document.querySelector('.modebar .seg button[aria-
 let shipSvg=null,shipLen=0;
 function shipPath(b,f){
   if(!shipSvg){shipSvg=document.createElementNS('http://www.w3.org/2000/svg','svg');shipSvg.setAttribute('class','ship');shipSvg.setAttribute('aria-hidden','true');
-    shipSvg.innerHTML='<path class="sh-t3" pathLength="1000"/><path class="sh-t2" pathLength="1000"/><path class="sh-t1" pathLength="1000"/><path class="sh-h" pathLength="1000"/>';document.body.appendChild(shipSvg)}
+    const one='<path class="sh-t3" pathLength="1000"/><path class="sh-t2" pathLength="1000"/><path class="sh-t1" pathLength="1000"/><path class="sh-h" pathLength="1000"/>';shipSvg.innerHTML='<g>'+one+'</g><g class="sh-b2">'+one+'</g>';document.body.appendChild(shipSvg)}
   const vis=!!(b&&f&&!document.hidden);shipSvg.style.display=vis?'':'none';if(!vis){shipStars(false);return}
   const T=b.getBoundingClientRect(),P=f.getBoundingClientRect();
   let last=f;if(f.classList.contains('progpanel')&&f.nextElementSibling&&f.nextElementSibling.classList.contains('panel'))last=f.nextElementSibling;
@@ -1850,12 +1851,12 @@ function shipStars(on){
 function shipTick(now){
   shipRaf=0;if(!shipCv||shipCv.style.display==='none'||!shipSvg||shipSvg.style.display==='none'||document.hidden)return;
   const dt=Math.min(.05,(now-shipLastT)/1000);shipLastT=now;
-  const h=shipSvg.querySelector('.sh-h'),an=h.getAnimations()[0];
-  if(an){const dur=an.effect.getComputedTiming().duration,len=h.getTotalLength(),pr=((an.currentTime||0)%dur)/dur,pt=h.getPointAtLength(pr*len),pb=h.getPointAtLength(Math.max(0,pr*len-4));
+  for(const h of shipSvg.querySelectorAll('.sh-h')){const an=h.getAnimations()[0];
+  if(an){const dur=an.effect.getComputedTiming().duration,len=h.getTotalLength(),pr=an.effect.getComputedTiming().progress||0,pt=h.getPointAtLength(pr*len),pb=h.getPointAtLength(Math.max(0,pr*len-4));
     const tx=pt.x-pb.x,ty=pt.y-pb.y,tl=Math.hypot(tx,ty)||1,nx=-ty/tl,ny=tx/tl;
     if(Math.random()<.55)shipParts.push({f:1,x:pt.x+(Math.random()-.5)*4,y:pt.y+(Math.random()-.5)*4,vx:-tx/tl*6+(Math.random()-.5)*8,vy:-ty/tl*6+(Math.random()-.5)*8,r:11+Math.random()*11,life:1.6+Math.random()*.8,age:0});
     const n=Math.random()<.7?1:2;for(let i=0;i<n;i++){const side=(Math.random()-.5)*10;shipParts.push({f:0,x:pt.x+nx*side,y:pt.y+ny*side,vx:-tx/tl*(4+Math.random()*10)+nx*(Math.random()-.5)*14,vy:-ty/tl*(4+Math.random()*10)+ny*(Math.random()-.5)*14,r:.6+Math.random()*1.5,life:.8+Math.random()*1.1,age:0,tw:Math.random()*6.28,sp:6+Math.random()*8})}
-    if(shipParts.length>220)shipParts.splice(0,shipParts.length-220)}
+    if(shipParts.length>400)shipParts.splice(0,shipParts.length-400)}}
   const c=shipCx;c.clearRect(0,0,innerWidth,innerHeight);
   const [fr,fg,fb]=shipFog,[sr,sg,sb]=shipCol;
   for(let i=shipParts.length-1;i>=0;i--){const q=shipParts[i];q.age+=dt;if(q.age>=q.life){shipParts.splice(i,1);continue}
@@ -2177,7 +2178,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.14-0922';
+const APP_BUILD='2026.11.14-0925';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
