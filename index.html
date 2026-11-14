@@ -1312,7 +1312,12 @@ html.poster-open,html.poster-open body{overflow:hidden}
 :root:root:root[data-mode="pack"] main>.modebox>.pp-sent+.progpanel+.panel{margin-top:-15px;border:2px solid var(--pkc)!important;border-top:0!important;border-top-left-radius:0!important;border-top-right-radius:0!important}
 
 /* Collecting & Packing: blocks keep only their top border */
-:root:root:root:root:root:root:root[data-mode] main>.modebox>.panel{border-left:0!important;border-right:0!important;border-bottom:0!important}
+:root:root:root:root:root:root:root[data-mode] main>.modebox>.panel{}
+:root[data-mode="days"]{--dkc:var(--tjc,var(--mode-days,var(--c-blue)))}
+:root:root:root:root:root:root:root[data-mode="days"] main>.modebox>.panel:first-child{border:2px solid var(--dkc)!important;border-radius:0 0 12px 12px!important}
+:root:root:root:root:root:root:root[data-mode="pack"] main>.modebox>.pp-sent+.progpanel{border:2px solid var(--pkc)!important;border-bottom:0!important;border-radius:0!important}
+:root:root:root:root:root:root:root[data-mode="pack"] main>.modebox>.pp-sent+.progpanel.stuck{border-radius:0 0 12px 12px!important}
+:root:root:root:root:root:root:root[data-mode="pack"] main>.modebox>.pp-sent+.progpanel+.panel{border:2px solid var(--pkc)!important;border-top:0!important;border-radius:0 0 12px 12px!important}
 :root:root:root:root:root:root:root[data-mode="pack"] main>.modebox>.pp-sent+.progpanel.stuck{box-shadow:0 8px 18px rgba(0,0,0,.25)!important}
 
 /* square top corners on the block under the tabs */
@@ -1324,7 +1329,7 @@ html.poster-open,html.poster-open body{overflow:hidden}
 /* Collecting & Packing: the big block has no fill of its own */
 :root:root:root:root:root:root:root[data-mode] main>.modebox>.panel{background:transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important}
 /* while the progress part sticks it needs a fill so the list does not show through */
-:root:root:root:root:root:root:root[data-mode="pack"] main>.modebox>.pp-sent+.progpanel.stuck{background:color-mix(in srgb,var(--page,var(--bg)) 88%,transparent)!important;-webkit-backdrop-filter:blur(14px)!important;backdrop-filter:blur(14px)!important;box-shadow:0 8px 18px rgba(0,0,0,.25)!important}
+:root:root:root:root:root:root:root[data-mode="pack"] main>.modebox>.pp-sent+.progpanel.stuck{background:color-mix(in srgb,var(--page,var(--bg)) 88%,transparent)!important;-webkit-backdrop-filter:blur(14px)!important;backdrop-filter:blur(14px)!important;box-shadow:inset 0 -2px 0 var(--pkc),0 8px 18px rgba(0,0,0,.25)!important}
 :root:root:root:root:root:root:root[data-mode="days"]:not([data-app-theme="dark"]) main>.modebox>.panel h2,:root:root:root:root:root:root:root[data-mode="days"]:not([data-app-theme="dark"]) main>.modebox>.panel .or-sep{color:var(--on-wine,#fff)!important}
 :root:root:root:root:root:root:root[data-mode="days"]:not([data-app-theme="dark"]) main>.modebox>.panel .or-sep::before,:root:root:root:root:root:root:root[data-mode="days"]:not([data-app-theme="dark"]) main>.modebox>.panel .or-sep::after{background:color-mix(in srgb,var(--on-wine,#fff) 35%,transparent)!important}
 :root:root:root:root:root:root:root[data-mode] main>.modebox{background:transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important}
@@ -2099,7 +2104,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.14-0732';
+const APP_BUILD='2026.11.14-0733';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
