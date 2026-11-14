@@ -1347,11 +1347,11 @@ html.poster-open,html.poster-open body{overflow:hidden}
 :root:root:root:root:root:root:root:root[data-palette="nigella"]:not([data-app-theme="dark"])[data-mode="pack"] main>.modebox>.pp-sent+.progpanel+.panel{box-shadow:0 8px 24px rgba(122,62,30,.12)!important}
 /* the ship: a bright spark with a fading wake, sailing round the border */
 svg.ship{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:4;overflow:visible;--ship-dur:12s;--sc:color-mix(in srgb,var(--tjc,#fff) 22%,#fff)}
-svg.ship path{fill:none;stroke:var(--sc);stroke-linecap:round}svg.ship .sh-t3{display:none}
-svg.ship .sh-h{stroke-width:4.5;filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 8px var(--sc)) drop-shadow(0 0 16px var(--tjc,#fff))}
+svg.ship path{fill:none;stroke:var(--sc);stroke-linecap:round}svg.ship .sh-t3{stroke-width:22;opacity:.7;stroke:var(--sc);filter:blur(8px)}
+svg.ship .sh-h{stroke-width:4.5;filter:drop-shadow(0 0 4px #fff) drop-shadow(0 0 10px var(--sc)) drop-shadow(0 0 20px var(--tjc,#fff))}
 svg.ship .sh-t1{stroke-width:3.5;opacity:.9;filter:drop-shadow(0 0 6px var(--tjc,#fff))}
 svg.ship .sh-t2{stroke-width:3;opacity:.55}
-svg.ship .sh-t3{stroke-width:2.5;stroke-dasharray:140 860;opacity:.28}
+
 @keyframes sailh{from{stroke-dashoffset:6}to{stroke-dashoffset:-994}}@keyframes sail1{from{stroke-dashoffset:28}to{stroke-dashoffset:-972}}@keyframes sail2{from{stroke-dashoffset:70}to{stroke-dashoffset:-930}}@keyframes sail3{from{stroke-dashoffset:140}to{stroke-dashoffset:-860}}
 
 @media (prefers-reduced-motion:reduce){svg.ship{display:none!important}}
@@ -1838,7 +1838,7 @@ function shipPath(b,f,joined){
     let prog=0;if(shipAnims[0]){const t=shipAnims[0].effect.getComputedTiming();prog=t.progress||0}
     shipAnims.forEach(a=>a.cancel());shipAnims=[];
     /* lengths in screen pixels: a 4px spark with a short fade behind it */
-    [['.sh-h',4],['.sh-t1',9],['.sh-t2',16]].forEach(([c,px])=>{const el=shipSvg.querySelector(c),u=Math.max(.5,px*1000/len);
+    [['.sh-h',4],['.sh-t1',9],['.sh-t2',16],['.sh-t3',10]].forEach(([c,px])=>{const el=shipSvg.querySelector(c),u=Math.max(.5,px*1000/len);
       el.style.strokeDasharray=u+' '+(1000-u);
       const a=el.animate([{strokeDashoffset:u},{strokeDashoffset:u-1000}],{duration:dur,iterations:Infinity});a.currentTime=prog*dur;shipAnims.push(a)})}}
 document.addEventListener('visibilitychange',updateJoin);
@@ -2153,7 +2153,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.14-1949';
+const APP_BUILD='2026.11.14-2016';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
