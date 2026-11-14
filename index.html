@@ -1358,6 +1358,26 @@ svg.ship .sh-t3{stroke-width:1.5;stroke-dasharray:110 890;opacity:.12}
 canvas.ship-cv{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:4}
 
 svg.ship .sh-b2 path{animation-delay:calc(var(--ship-dur) * -.5)}
+/* electric pulse: the running light flickers and surges like a current */
+svg.ship>g{animation:zap 1.35s linear infinite}
+svg.ship>g.sh-b2{animation-duration:1.75s;animation-delay:-.6s}
+@keyframes zap{
+ 0%{opacity:1;filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 7px #DCE8FF)}
+ 6%{opacity:.35;filter:none}
+ 8%{opacity:1;filter:drop-shadow(0 0 4px #fff) drop-shadow(0 0 9px #DCE8FF)}
+ 20%{opacity:.75;filter:drop-shadow(0 0 2px #fff)}
+ 22%{opacity:.25;filter:none}
+ 24%{opacity:.95;filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 8px #DCE8FF)}
+ 41%{opacity:.6;filter:drop-shadow(0 0 1px #fff)}
+ 43%{opacity:1;filter:drop-shadow(0 0 5px #fff) drop-shadow(0 0 11px #DCE8FF)}
+ 46%{opacity:.4;filter:none}
+ 49%{opacity:.9;filter:drop-shadow(0 0 3px #fff)}
+ 68%{opacity:.7;filter:drop-shadow(0 0 2px #fff)}
+ 70%{opacity:.2;filter:none}
+ 72%{opacity:1;filter:drop-shadow(0 0 4px #fff) drop-shadow(0 0 9px #DCE8FF)}
+ 88%{opacity:.8;filter:drop-shadow(0 0 2px #fff)}
+ 100%{opacity:1;filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 7px #DCE8FF)}}
+@media (prefers-reduced-motion:reduce){svg.ship>g{animation:none}}
 
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
@@ -1836,7 +1856,7 @@ function shipPath(b,f,joined){
     d=`M${TL} ${Tt+rt}A${rt} ${rt} 0 0 1 ${TL+rt} ${Tt}H${R-rt}A${rt} ${rt} 0 0 1 ${R} ${Tt+rt}V${Bb-rb}A${rb} ${rb} 0 0 1 ${R-rb} ${Bb}H${L+rb}A${rb} ${rb} 0 0 1 ${L} ${Bb-rb}V${Bt}H${TL-fr}A${fr} ${fr} 0 0 0 ${TL} ${Bt-fr}Z`}
   shipSvg.querySelectorAll('path').forEach(p=>p.setAttribute('d',d));
   const len=shipSvg.querySelector('path').getTotalLength();
-  if(Math.abs(len-shipLen)>40){shipLen=len;shipSvg.style.setProperty('--ship-dur',Math.max(25,Math.min(80,len/45)).toFixed(1)+'s')}shipStars(true)}
+  if(Math.abs(len-shipLen)>40){shipLen=len;shipSvg.style.setProperty('--ship-dur',Math.max(25,Math.min(80,len/45)).toFixed(1)+'s')}shipStars(false)}
 document.addEventListener('visibilitychange',updateJoin);
 /* star trail: tiny twinkling stars in a light fog behind the ship (canvas) */
 let shipCv=null,shipCx=null,shipParts=[],shipRaf=0,shipCol=[255,255,255],shipFog=[255,255,255],shipLastT=0;
@@ -2180,7 +2200,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.14-1945';
+const APP_BUILD='2026.11.14-1946';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
