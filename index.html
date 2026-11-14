@@ -1346,9 +1346,9 @@ html.poster-open,html.poster-open body{overflow:hidden}
 :root:root:root:root:root:root:root:root[data-palette="nigella"]:not([data-app-theme="dark"])[data-mode="pack"] main>.modebox>.pp-sent+.progpanel:not(.stuck){box-shadow:inset 0 1px 0 rgba(255,255,255,.6)!important}
 :root:root:root:root:root:root:root:root[data-palette="nigella"]:not([data-app-theme="dark"])[data-mode="pack"] main>.modebox>.pp-sent+.progpanel+.panel{box-shadow:0 8px 24px rgba(122,62,30,.12)!important}
 /* the ship: a bright spark with a fading wake, sailing round the border */
-svg.ship{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:4;overflow:visible;--ship-dur:12s;--sc:#FFE680;--sg:#FFC83D}
+svg.ship{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:4;overflow:visible;--ship-dur:12s;--sc:#FFFFFF;--sg:#E9EEF7}
 svg.ship path{fill:none;stroke:var(--sc);stroke-linecap:round;animation:sailh var(--ship-dur) linear infinite}svg.ship .sh-t1{animation-name:sail1}svg.ship .sh-t2{animation-name:sail2}svg.ship .sh-t3{animation-name:sail3}
-svg.ship .sh-h{stroke-width:4.5;stroke-dasharray:6 994;filter:drop-shadow(0 0 3px #FFF6D0) drop-shadow(0 0 8px var(--sc)) drop-shadow(0 0 16px var(--sg))}
+svg.ship .sh-h{stroke-width:4.5;stroke-dasharray:6 994;filter:drop-shadow(0 0 3px #FFFFFF) drop-shadow(0 0 8px var(--sc)) drop-shadow(0 0 16px var(--sg))}
 svg.ship .sh-t1{stroke-width:3.5;stroke-dasharray:28 972;opacity:.9;filter:drop-shadow(0 0 6px var(--sg))}
 svg.ship .sh-t2{stroke-width:3;stroke-dasharray:70 930;opacity:.55}
 svg.ship .sh-t3{stroke-width:2.5;stroke-dasharray:140 860;opacity:.28}
@@ -1848,7 +1848,7 @@ function shipStars(on){
   shipCv.style.display='';const dpr=Math.min(2,devicePixelRatio||1),W=innerWidth,H=innerHeight;
   if(shipCv.width!==Math.round(W*dpr)||shipCv.height!==Math.round(H*dpr)){shipCv.width=Math.round(W*dpr);shipCv.height=Math.round(H*dpr)}
   shipCx.setTransform(dpr,0,0,dpr,0,0);
-  const h=shipSvg&&shipSvg.querySelector('.sh-h');shipCol=[255,230,128];shipFog=[255,200,61];
+  const h=shipSvg&&shipSvg.querySelector('.sh-h');shipCol=[255,255,255];shipFog=[236,240,247];
   if(!shipRaf){shipLastT=performance.now();shipRaf=requestAnimationFrame(shipTick)}}
 function shipTick(now){
   shipRaf=0;if(!shipCv||shipCv.style.display==='none'||!shipSvg||shipSvg.style.display==='none'||document.hidden)return;
@@ -1866,7 +1866,7 @@ function shipTick(now){
     if(q.f){const r=q.r*(1+q.age*.9),g=c.createRadialGradient(q.x,q.y,0,q.x,q.y,r);g.addColorStop(0,`rgba(${fr},${fg},${fb},${.26*k})`);g.addColorStop(1,`rgba(${fr},${fg},${fb},0)`);c.fillStyle=g;c.beginPath();c.arc(q.x,q.y,r,0,6.283);c.fill()}
     else{const tw=.55+.45*Math.sin(q.tw+q.age*q.sp),a=k*tw,r=q.r*(.6+.6*k),L=r*3.2;
       c.fillStyle=`rgba(${sr},${sg},${sb},${a})`;c.beginPath();c.moveTo(q.x,q.y-L);c.lineTo(q.x+r*.45,q.y);c.lineTo(q.x,q.y+L);c.lineTo(q.x-r*.45,q.y);c.closePath();c.moveTo(q.x-L,q.y);c.lineTo(q.x,q.y+r*.45);c.lineTo(q.x+L,q.y);c.lineTo(q.x,q.y-r*.45);c.closePath();c.fill();
-      c.fillStyle=`rgba(255,248,214,${a})`;c.beginPath();c.arc(q.x,q.y,r*.55,0,6.283);c.fill()}}
+      c.fillStyle=`rgba(255,255,255,${a})`;c.beginPath();c.arc(q.x,q.y,r*.55,0,6.283);c.fill()}}
   shipRaf=requestAnimationFrame(shipTick)}
 
 addEventListener('scroll',updateJoin,{passive:true});document.addEventListener('animationend',updateJoin);document.addEventListener('transitionend',updateJoin);addEventListener('resize',updateJoin);
@@ -2180,7 +2180,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.14-0927';
+const APP_BUILD='2026.11.14-0929';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
