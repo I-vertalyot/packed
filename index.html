@@ -1327,13 +1327,12 @@ html.poster-open,html.poster-open body{overflow:hidden}
 :root:root main .panel>.cat+.cat{margin-top:-6px!important}
 
 /* Collecting & Packing: the big block has no fill of its own */
-:root:root:root:root:root:root:root[data-mode] main>.modebox>.panel{background:transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important}
+:root:root:root:root:root:root:root[data-mode] main>.modebox>.panel:not(.stuck){background:color-mix(in srgb,var(--surface) 55%,transparent)!important;-webkit-backdrop-filter:blur(16px) saturate(1.2)!important;backdrop-filter:blur(16px) saturate(1.2)!important;box-shadow:0 10px 30px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.08)!important}
+:root:root:root:root:root:root:root[data-palette="nigella"][data-mode] main>.modebox>.panel:not(.stuck){background:rgba(255,238,220,.08)!important;box-shadow:0 10px 30px rgba(30,10,2,.28),inset 0 1px 0 rgba(255,255,255,.08)!important}
+:root:root:root:root:root:root:root[data-palette="nigella"]:not([data-app-theme="dark"])[data-mode] main>.modebox>.panel:not(.stuck){background:rgba(255,250,244,.62)!important;box-shadow:0 8px 24px rgba(122,62,30,.12),inset 0 1px 0 rgba(255,255,255,.6)!important}
 /* while the progress part sticks it needs a fill so the list does not show through */
 :root:root:root:root:root:root:root[data-mode="pack"] main>.modebox>.pp-sent+.progpanel.stuck{background:color-mix(in srgb,var(--page,var(--bg)) 88%,transparent)!important;-webkit-backdrop-filter:blur(14px)!important;backdrop-filter:blur(14px)!important;box-shadow:inset 0 -2px 0 var(--pkc),0 8px 18px rgba(0,0,0,.25)!important}
-:root:root:root:root:root:root:root[data-mode="days"]:not([data-app-theme="dark"]) main>.modebox>.panel h2,:root:root:root:root:root:root:root[data-mode="days"]:not([data-app-theme="dark"]) main>.modebox>.panel .or-sep{color:var(--on-wine,#fff)!important}
-:root:root:root:root:root:root:root[data-mode="days"]:not([data-app-theme="dark"]) main>.modebox>.panel .or-sep::before,:root:root:root:root:root:root:root[data-mode="days"]:not([data-app-theme="dark"]) main>.modebox>.panel .or-sep::after{background:color-mix(in srgb,var(--on-wine,#fff) 35%,transparent)!important}
 :root:root:root:root:root:root:root[data-mode] main>.modebox{background:transparent!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important}
-:root:root:root:root:root:root:root[data-mode="days"]:not([data-app-theme="dark"]) main>.modebox>.panel .btn.ghost.foldall{color:var(--on-wine,#fff)!important;border-color:color-mix(in srgb,var(--on-wine,#fff) 45%,transparent)!important}
 
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
@@ -1399,9 +1398,8 @@ body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,rgba(
 .fun-b{background:transparent}
 :root[data-tab="inv"]{--page:var(--bg)}
 :root[data-tab="inv"]:not([data-app-theme="dark"]){--page:var(--bg)}
+:root:root:root:root:root:root:root[data-mode] main>.modebox>.panel:not(.stuck){background:var(--surface)!important}
 :root:root:root:root:root:root:root[data-mode="pack"] main>.modebox>.pp-sent+.progpanel.stuck{background:color-mix(in srgb,var(--page,var(--bg)) 88%,transparent)!important}
-:root:root:root:root:root:root:root[data-mode="days"]:not([data-app-theme="dark"]) main>.modebox>.panel .or-sep::before,:root:root:root:root:root:root:root[data-mode="days"]:not([data-app-theme="dark"]) main>.modebox>.panel .or-sep::after{background:var(--on-wine,#fff)!important}
-:root:root:root:root:root:root:root[data-mode="days"]:not([data-app-theme="dark"]) main>.modebox>.panel .btn.ghost.foldall{border-color:var(--on-wine,#fff)!important}
 }
 </style>
 </head>
@@ -2104,7 +2102,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.14-0737';
+const APP_BUILD='2026.11.14-0740';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
