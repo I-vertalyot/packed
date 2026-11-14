@@ -1295,7 +1295,7 @@ html.poster-open,html.poster-open body{overflow:hidden}
 :root{--tjh:10px}
 :root[data-palette="nigella"][data-mode="days"]{--tjc:#D33427!important}
 :root[data-palette="nigella"][data-mode="pack"]{--tjc:#A3D8EE!important}
-:root:root:not(.tj-off) main .modebar .seg button[data-v][aria-pressed="true"]{background:var(--tjc)!important;border-color:var(--tjc)!important;animation:none!important;border-bottom-left-radius:0!important;border-bottom-right-radius:0!important}
+:root:root:not(.tj-off) main .modebar .seg button[data-v][aria-pressed="true"]{background:var(--tjc)!important;border-color:var(--tjc)!important;animation:none!important;box-shadow:none!important;border-bottom-left-radius:0!important;border-bottom-right-radius:0!important}
 :root:not(.tj-off) main .modebar .seg button[aria-pressed="true"]::before{content:"";position:absolute;top:100%;height:var(--tjh);left:-2px;right:-2px;pointer-events:none;z-index:1;background:var(--tjc)}
 :root:not(.tj-off) main .modebar .seg button[data-v="days"][aria-pressed="true"]::before{right:calc(-2px - var(--tjh));
   background:radial-gradient(circle at 100% 0,transparent calc(var(--tjh) - .6px),var(--tjc) var(--tjh)) right bottom/var(--tjh) var(--tjh) no-repeat,linear-gradient(var(--tjc),var(--tjc)) left/calc(100% - var(--tjh)) 100% no-repeat}
@@ -1304,28 +1304,6 @@ html.poster-open,html.poster-open body{overflow:hidden}
 :root:not(.tj-off)[data-mode="days"] main>.modebox>.panel:first-child{border:2px solid var(--tjc)!important;border-top-left-radius:0!important}
 :root:not(.tj-off)[data-mode="pack"] main>.modebox>.pp-sent+.progpanel{border:2px solid var(--tjc)!important;border-top-right-radius:0!important}
 :root:not(.tj-off) main .modebar .seg button[aria-pressed="true"]{box-shadow:none!important}
-
-/* ===== glow on every button: soft inner + outer light in the button's own colour ===== */
-:root:root:root .btn,:root:root:root .seg button,:root:root:root .bar .tabs button[aria-selected="true"],:root:root:root .trip-edit,:root:root:root .fun-b,:root:root:root .showmore,:root:root:root .savebtn,:root:root:root .qa-c,:root:root:root .qa-btn,:root:root:root .share-opt,:root:root:root .credit a.coffee,:root:root:root .undo-toast button,:root:root:root .totop,:root:root:root .gate,:root:root:root .am-seg button[aria-pressed="true"],:root:root:root .am-seg button[aria-checked="true"],:root:root:root .infobtn,:root:root:root .themebtn,:root:root:root .poster-i,:root:root:root .linkbtn.pill{
-  --gc:color-mix(in srgb,currentColor 40%,transparent);--gi:color-mix(in srgb,currentColor 22%,transparent);
-  box-shadow:inset 0 0 9px var(--gi),0 0 14px var(--gc)!important}
-/* filled buttons glow in their fill colour, with a light rim inside */
-:root:root:root .btn.primary,:root:root:root .btn.back,:root:root:root .savebtn,:root:root:root .showmore,:root:root:root .share-opt.wide,:root:root:root .credit a.coffee,:root:root:root .undo-toast button,:root:root:root .totop,:root:root:root .gate[aria-pressed="true"]{--gc:color-mix(in srgb,var(--sign) 60%,transparent);--gi:rgba(255,255,255,.4)}
-:root:root:root .btn.pdfbtn{--gc:color-mix(in srgb,var(--ink) 35%,transparent);--gi:rgba(255,255,255,.25)}
-:root:root:root .modebar .seg button[aria-pressed="true"]{--gc:color-mix(in srgb,var(--mc) 65%,transparent);--gi:rgba(255,255,255,.4)}
-:root:root:root .modebar .seg button[aria-pressed="false"]{--gc:color-mix(in srgb,var(--mc) 45%,transparent);--gi:color-mix(in srgb,var(--mc) 30%,transparent)}
-:root:root:root[data-tab="trips"] .bar .tabs button[aria-selected="true"]{--gc:rgba(226,128,46,.6);--gi:rgba(255,255,255,.35)}
-:root:root:root[data-tab="inv"] .bar .tabs button[aria-selected="true"]{--gc:rgba(91,95,214,.7);--gi:rgba(255,255,255,.35)}
-:root:root:root[data-palette="nigella"][data-tab="trips"] .bar .tabs button[aria-selected="true"]{--gc:rgba(143,208,236,.6)}
-:root:root:root[data-palette="nigella"][data-tab="inv"] .bar .tabs button[aria-selected="true"]{--gc:rgba(63,163,184,.65)}
-:root:root:root .qa-c.on{--gc:color-mix(in srgb,var(--cc) 60%,transparent);--gi:rgba(255,255,255,.35)}
-:root:root:root .qa-c:not(.on){--gc:color-mix(in srgb,var(--cc) 40%,transparent);--gi:color-mix(in srgb,var(--cc) 22%,transparent)}
-/* the joined block glows with its tab, so they stay one piece */
-:root:root:root:not(.tj-off) main .modebar .seg button[data-v][aria-pressed="true"]{--gc:color-mix(in srgb,var(--tjc) 65%,transparent)}
-:root:root:root:not(.tj-off)[data-mode="days"] main>.modebox>.panel:first-child,:root:root:root:not(.tj-off)[data-mode="pack"] main>.modebox>.pp-sent+.progpanel{box-shadow:inset 0 0 9px color-mix(in srgb,var(--tjc) 30%,transparent),0 0 14px color-mix(in srgb,var(--tjc) 55%,transparent)!important}
-:root:root .seg button,:root:root .btn{transition-property:background-color,border-color,color,box-shadow,filter,transform,opacity}
-:root:root:root:not([data-app-theme="dark"]) .btn:not(.primary):not(.back):not(.pdfbtn),:root:root:root:not([data-app-theme="dark"]) .trip-edit,:root:root:root:not([data-app-theme="dark"]) .fun-b,:root:root:root:not([data-app-theme="dark"]) .share-opt:not(.wide),:root:root:root:not([data-app-theme="dark"]) .infobtn,:root:root:root:not([data-app-theme="dark"]) .themebtn,:root:root:root:not([data-app-theme="dark"]) .poster-i{--gc:color-mix(in srgb,var(--sign) 50%,transparent);--gi:color-mix(in srgb,var(--sign) 25%,transparent)}
-:root:root:root .modebox .cat:not(.cardcat)>h3{box-shadow:inset 0 0 9px color-mix(in srgb,var(--cc) 22%,transparent),0 0 12px color-mix(in srgb,var(--cc) 40%,transparent)!important}
 
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
@@ -1391,17 +1369,6 @@ body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,rgba(
 .fun-b{background:transparent}
 :root[data-tab="inv"]{--page:var(--bg)}
 :root[data-tab="inv"]:not([data-app-theme="dark"]){--page:var(--bg)}
-:root:root:root .btn,:root:root:root .seg button,:root:root:root .bar .tabs button[aria-selected="true"],:root:root:root .trip-edit,:root:root:root .fun-b,:root:root:root .showmore,:root:root:root .savebtn,:root:root:root .qa-c,:root:root:root .qa-btn,:root:root:root .share-opt,:root:root:root .credit a.coffee,:root:root:root .undo-toast button,:root:root:root .totop,:root:root:root .gate,:root:root:root .am-seg button[aria-pressed="true"],:root:root:root .am-seg button[aria-checked="true"],:root:root:root .infobtn,:root:root:root .themebtn,:root:root:root .poster-i,:root:root:root .linkbtn.pill{--gc:transparent;--gi:transparent}
-:root:root:root .btn.primary,:root:root:root .btn.back,:root:root:root .savebtn,:root:root:root .showmore,:root:root:root .share-opt.wide,:root:root:root .credit a.coffee,:root:root:root .undo-toast button,:root:root:root .totop,:root:root:root .gate[aria-pressed="true"]{--gc:var(--sign)}
-:root:root:root .btn.pdfbtn{--gc:var(--ink)}
-:root:root:root .modebar .seg button[aria-pressed="true"]{--gc:var(--mc)}
-:root:root:root .modebar .seg button[aria-pressed="false"]{--gc:var(--mc);--gi:var(--mc)}
-:root:root:root .qa-c.on{--gc:var(--cc)}
-:root:root:root .qa-c:not(.on){--gc:var(--cc);--gi:transparent}
-:root:root:root:not(.tj-off) main .modebar .seg button[data-v][aria-pressed="true"]{--gc:var(--tjc)}
-:root:root:root:not(.tj-off)[data-mode="days"] main>.modebox>.panel:first-child,:root:root:root:not(.tj-off)[data-mode="pack"] main>.modebox>.pp-sent+.progpanel{box-shadow:inset 0 0 9px var(--tjc),0 0 14px var(--tjc)!important}
-:root:root:root:not([data-app-theme="dark"]) .btn:not(.primary):not(.back):not(.pdfbtn),:root:root:root:not([data-app-theme="dark"]) .trip-edit,:root:root:root:not([data-app-theme="dark"]) .fun-b,:root:root:root:not([data-app-theme="dark"]) .share-opt:not(.wide),:root:root:root:not([data-app-theme="dark"]) .infobtn,:root:root:root:not([data-app-theme="dark"]) .themebtn,:root:root:root:not([data-app-theme="dark"]) .poster-i{--gc:var(--sign);--gi:transparent}
-:root:root:root .modebox .cat:not(.cardcat)>h3{box-shadow:inset 0 0 9px transparent,0 0 12px var(--cc)!important}
 }
 </style>
 </head>
@@ -2104,7 +2071,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.14-0647';
+const APP_BUILD='2026.11.14-0648';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
