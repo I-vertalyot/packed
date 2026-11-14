@@ -1290,21 +1290,19 @@ html.poster-open,html.poster-open body{overflow:hidden}
 @media (max-width:420px){.credit .credit-box{gap:10px!important}.credit .credit-box a.coffee{padding:8px 11px!important;font-size:13px!important;letter-spacing:-.01em}.credit .credit-box .by{font-size:13px}}
 @media (max-width:370px){.credit .credit-box a.coffee>span{display:none}}
 
-/* tab join: the chosen mode button flows into the block below, like a browser tab */
-:root{--tj-days:var(--mode-days,var(--c-blue));--tj-pack:var(--mode-pack,var(--ok))}
-:root:not(.tj-off) main .modebar .seg button[aria-pressed="true"]{border-bottom-left-radius:0!important;border-bottom-right-radius:0!important}
-main .modebar .seg button[data-v="days"]{--tj:var(--tj-days)}main .modebar .seg button[data-v="pack"]{--tj:var(--tj-pack)}
-.tj-off main .modebar .seg button::before{display:none}
-main .modebar .seg button[aria-pressed="true"]::before{content:"";position:absolute;top:100%;height:10px;left:-14px;right:-14px;pointer-events:none;z-index:1;
-  background:radial-gradient(circle at 0 0,transparent 11.5px,var(--tj) 12px) left bottom/12px 12px no-repeat,
-             radial-gradient(circle at 100% 0,transparent 11.5px,var(--tj) 12px) right bottom/12px 12px no-repeat,
-             linear-gradient(var(--tj),var(--tj)) center/calc(100% - 24px) 100% no-repeat}
-main .modebar .seg button[data-v="days"][aria-pressed="true"]::before{left:-2px;background:radial-gradient(circle at 100% 0,transparent 11.5px,var(--tj) 12px) right bottom/12px 12px no-repeat,linear-gradient(var(--tj),var(--tj)) left/calc(100% - 12px) 100% no-repeat}
-main .modebar .seg button[data-v="pack"][aria-pressed="true"]::before{right:-2px;background:radial-gradient(circle at 0 0,transparent 11.5px,var(--tj) 12px) left bottom/12px 12px no-repeat,linear-gradient(var(--tj),var(--tj)) right/calc(100% - 12px) 100% no-repeat}
-:root[data-mode="days"] main>.modebox>.panel:first-child{border:2px solid var(--tj-days)!important}:root[data-mode="pack"] main>.modebox>.pp-sent+.progpanel{border:2px solid var(--tj-pack)!important}
-:root[data-mode="days"]:not(.tj-off) main>.modebox>.panel:first-child{border-top-left-radius:0!important}
-:root[data-mode="pack"]:not(.tj-off) main>.modebox>.pp-sent+.progpanel{border-top-right-radius:0!important}
-:root[data-palette="nigella"]{--tj-days:#D33427;--tj-pack:#A3D8EE}
+/* tab join: the chosen mode button flows into the block below, like a browser tab.
+   --tjc (one solid colour for tab, curve and border) and --tjh (gap + border) are set by updateJoin() */
+:root{--tjh:10px}
+:root[data-palette="nigella"][data-mode="days"]{--tjc:#D33427!important}
+:root[data-palette="nigella"][data-mode="pack"]{--tjc:#A3D8EE!important}
+:root:root:not(.tj-off) main .modebar .seg button[data-v][aria-pressed="true"]{background:var(--tjc)!important;border-color:var(--tjc)!important;animation:none!important;box-shadow:none!important;border-bottom-left-radius:0!important;border-bottom-right-radius:0!important}
+:root:not(.tj-off) main .modebar .seg button[aria-pressed="true"]::before{content:"";position:absolute;top:100%;height:var(--tjh);left:-2px;right:-2px;pointer-events:none;z-index:1;background:var(--tjc)}
+:root:not(.tj-off) main .modebar .seg button[data-v="days"][aria-pressed="true"]::before{right:calc(-2px - var(--tjh));
+  background:radial-gradient(circle at 100% 0,transparent calc(var(--tjh) - .6px),var(--tjc) var(--tjh)) right bottom/var(--tjh) var(--tjh) no-repeat,linear-gradient(var(--tjc),var(--tjc)) left/calc(100% - var(--tjh)) 100% no-repeat}
+:root:not(.tj-off) main .modebar .seg button[data-v="pack"][aria-pressed="true"]::before{left:calc(-2px - var(--tjh));
+  background:radial-gradient(circle at 0 0,transparent calc(var(--tjh) - .6px),var(--tjc) var(--tjh)) left bottom/var(--tjh) var(--tjh) no-repeat,linear-gradient(var(--tjc),var(--tjc)) right/calc(100% - var(--tjh)) 100% no-repeat}
+:root:not(.tj-off)[data-mode="days"] main>.modebox>.panel:first-child{border:2px solid var(--tjc)!important;border-top-left-radius:0!important}
+:root:not(.tj-off)[data-mode="pack"] main>.modebox>.pp-sent+.progpanel{border:2px solid var(--tjc)!important;border-top-right-radius:0!important}
 :root:not(.tj-off) main .modebar .seg button[aria-pressed="true"]{box-shadow:none!important}
 
 /* plain colours for browsers without color-mix() */
@@ -1759,7 +1757,8 @@ function updateStuck(){const pp=document.querySelector('.progpanel'),s=document.
   if(want){const full=pp.offsetHeight;const tr=pp.style.transition;pp.style.transition='none';pp.classList.add('stuck');const small=pp.offsetHeight;pp.style.marginBottom=Math.max(0,full-small)+'px';void pp.offsetHeight;pp.style.transition=tr}else{pp.classList.remove('stuck');pp.style.marginBottom=''}}
 addEventListener('scroll',updateStuck,{passive:true});
 function updateJoin(){const b=document.querySelector('.modebar .seg button[aria-pressed="true"]'),f=document.querySelector('main>.modebox>.panel:first-child,main>.modebox>.pp-sent+.progpanel');
-  let on=false;if(b&&f){const g=f.getBoundingClientRect().top-b.getBoundingClientRect().bottom;on=g>=2&&g<=14}
+  let on=false;if(b&&f){const g=f.getBoundingClientRect().top-b.getBoundingClientRect().bottom;on=g>=2&&g<=14;
+    if(on){const R=document.documentElement.style,c=getComputedStyle(b).getPropertyValue('--mc').trim();if(c)R.setProperty('--tjc',c);R.setProperty('--tjh',(Math.round(g)+2)+'px')}}
   document.documentElement.classList.toggle('tj-off',!on)}
 addEventListener('scroll',updateJoin,{passive:true});document.addEventListener('animationend',updateJoin);document.addEventListener('transitionend',updateJoin);addEventListener('resize',updateJoin);
 /* the rounded strip under the switch only shows while a frame is passing beneath it */
@@ -2072,7 +2071,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.14-0637';
+const APP_BUILD='2026.11.14-0643';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
