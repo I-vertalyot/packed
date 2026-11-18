@@ -1360,6 +1360,14 @@ html.poster-open,html.poster-open body{overflow:hidden}
 .datef .dtxt.ph{color:var(--muted);opacity:.85}
 .trip .when.nodate{display:grid;place-items:center;color:var(--muted)}
 
+/* the category picker wears its category colour, like the chosen option in its list */
+:root:root:root:root:root:root:root .catpick:has(.cp-btn){--cpb:var(--surface);background:linear-gradient(color-mix(in srgb,var(--cc) 24%,transparent),color-mix(in srgb,var(--cc) 24%,transparent)),var(--cpb)!important;border:1.5px solid var(--cc)!important}
+:root:root:root:root:root:root:root .catpick .cp-btn{background:none!important;border:0!important;color:var(--cct,var(--cc))!important;font-weight:700}
+:root:root:root:root:root:root:root[data-app-theme="dark"] .catpick:has(.cp-btn){--cpb:#1E2328}
+:root:root:root:root:root:root:root:not([data-app-theme="dark"]) .catpick:has(.cp-btn){--cpb:#FFFFFF}
+:root:root:root:root:root:root:root[data-palette="nigella"] .catpick:has(.cp-btn){--cpb:#34180B}
+:root:root:root:root:root:root:root[data-palette="nigella"]:not([data-app-theme="dark"]) .catpick:has(.cp-btn){--cpb:#FFF9F3}
+
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
 :root[data-mode="days"]{--page:var(--bg)}
@@ -1428,6 +1436,7 @@ body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,rgba(
 :root:root:root:root:root:root:root[data-mode="pack"] main>.modebox>.pp-sent+.progpanel.stuck{background:color-mix(in srgb,var(--page,var(--bg)) 88%,transparent)!important}
 :root:root:root:root:root:root[data-palette="nigella"] .cp-pop .cp-opt:not(.cp-new){background:rgba(52,24,11,1)!important}
 :root:root:root:root:root:root[data-palette="nigella"]:not([data-app-theme="dark"]) .cp-pop .cp-opt:not(.cp-new){background:#FFF9F3!important}
+:root:root:root:root:root:root:root .catpick:has(.cp-btn){background:linear-gradient(transparent,transparent),var(--cpb)!important}
 }
 </style>
 </head>
@@ -2132,7 +2141,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.18-1800';
+const APP_BUILD='2026.11.18-1806';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
@@ -2621,7 +2630,7 @@ document.addEventListener('change',e=>{
     it.cat=el.value;openCat('inv',el.value);save();const y=window.scrollY;render();window.scrollTo(0,y);return}
   if(el.id==='ai-cat'||el.id==='ad-cat'){const pre=el.id.slice(0,2);const n=document.getElementById(pre+'-newcat');
     if(n){n.hidden=el.value!=='__new';n.required=el.value==='__new';if(el.value==='__new')n.focus()}
-    {const cp=el.closest('.catpick');cp.querySelector('.cp-label').textContent=el.value==='__new'?T.newCatOpt:el.value;cp.querySelectorAll('.cp-opt').forEach(o=>o.setAttribute('aria-selected',o.dataset.v===el.value))}
+    {const cp=el.closest('.catpick');cp.querySelector('.cp-label').textContent=el.value==='__new'?T.newCatOpt:el.value;if(el.value!=='__new')cp.style.setProperty('--cc','var(--c-'+catColor(el.value)+')');cp.querySelectorAll('.cp-opt').forEach(o=>o.setAttribute('aria-selected',o.dataset.v===el.value))}
     if(el.value!=='__new'){ui.lastCat=el.value;el.closest('.catpick').style.setProperty('--cc',`var(--c-${catColor(el.value)})`)}return}
   if(el.id==='importFile'){if(el.files&&el.files[0])readImport(el.files[0]);el.value='';return}
   if(el.dataset&&'hidepacked' in el.dataset){state.hidePacked=el.checked;save();render();return}
