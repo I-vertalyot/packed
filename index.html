@@ -1110,7 +1110,7 @@ main>.modebox,main>.modebox2{margin-top:-25px!important}
 .progpanel{top:calc(env(safe-area-inset-top,0px) + var(--barh,108px) + var(--modeh,58px) - 5px)}
 
 /* date fields: the phone's own date text is hidden, "11 Nov 2026" is shown on top; the calendar picker still opens on tap */
-#nt-name::placeholder{transition:opacity .4s ease}
+#nt-name::placeholder{transition:opacity .22s ease}
 #nt-name.ph-out::placeholder{opacity:0}
 .lblrow{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .fun-edit{background:none;border:0;padding:2px 0;font:inherit;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;gap:5px;position:relative}
@@ -2129,7 +2129,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.18-1752';
+const APP_BUILD='2026.11.18-1755';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
@@ -2463,7 +2463,7 @@ let funPhTxt='',funPhLang='';
 function funPh(){if(!funPhTxt||funPhLang!==lang()){funPhLang=lang();const k=funLast;funPhTxt=funName(1);funLast=k}return funPhTxt}
 setInterval(()=>{const el=document.getElementById('nt-name');if(!el||el.value||document.hidden)return;
   const k=funLast;const next=funName(1);funLast=k;
-  el.classList.add('ph-out');setTimeout(()=>{funPhTxt=next;el.placeholder=next;el.classList.remove('ph-out')},400)},7000);
+  el.classList.add('ph-out');setTimeout(()=>{funPhTxt=next;el.placeholder=next;el.classList.remove('ph-out')},220)},1500);
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-fun]');if(!b)return;
   e.preventDefault();e.stopPropagation();const inp=document.getElementById(b.dataset.fun);if(!inp)return;
   inp.value=funName();inp.dispatchEvent(new Event('input',{bubbles:true}));
