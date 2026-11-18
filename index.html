@@ -1348,6 +1348,16 @@ html.poster-open,html.poster-open body{overflow:hidden}
 
 
 
+/* dates: always hide the phone's own date text under our "18 Nov 2026" label (any theme) */
+:root:root:root:root:root:root .datef input.dfmt,:root:root:root:root:root:root .datef input.dfmt.inp{color:transparent!important;-webkit-text-fill-color:transparent!important;text-shadow:none!important}
+:root:root:root:root:root:root .datef input.dfmt::-webkit-datetime-edit,:root:root:root:root:root:root .datef input.dfmt::-webkit-datetime-edit-fields-wrapper{opacity:0!important;color:transparent!important}
+/* Nigella: the category list must be solid so it reads over the page */
+:root:root:root:root:root:root[data-palette="nigella"] .cp-pop{background:rgba(52,24,11,.97)!important;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border-color:rgba(244,214,180,.25)!important;box-shadow:0 14px 34px rgba(0,0,0,.45)!important}
+:root:root:root:root:root:root[data-palette="nigella"]:not([data-app-theme="dark"]) .cp-pop{background:rgba(255,249,243,.98)!important;border-color:rgba(122,72,40,.22)!important;box-shadow:0 14px 34px rgba(122,62,30,.22)!important}
+:root:root:root:root:root:root[data-palette="nigella"] .cp-pop .cp-opt:not(.cp-new){background:color-mix(in srgb,var(--cc) 14%,rgba(52,24,11,1))!important}
+:root:root:root:root:root:root[data-palette="nigella"]:not([data-app-theme="dark"]) .cp-pop .cp-opt:not(.cp-new){background:color-mix(in srgb,var(--cc) 10%,#FFF9F3)!important}
+:root:root .panel:has(.cp-pop:not([hidden])),:root:root .modebox:has(.cp-pop:not([hidden])){position:relative;z-index:30!important}
+
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
 :root[data-mode="days"]{--page:var(--bg)}
@@ -1414,6 +1424,8 @@ body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,rgba(
 :root[data-tab="inv"]:not([data-app-theme="dark"]){--page:var(--bg)}
 :root:root:root:root:root:root:root[data-mode] main>.modebox>.panel:not(.stuck){background:var(--surface)!important}
 :root:root:root:root:root:root:root[data-mode="pack"] main>.modebox>.pp-sent+.progpanel.stuck{background:color-mix(in srgb,var(--page,var(--bg)) 88%,transparent)!important}
+:root:root:root:root:root:root[data-palette="nigella"] .cp-pop .cp-opt:not(.cp-new){background:rgba(52,24,11,1)!important}
+:root:root:root:root:root:root[data-palette="nigella"]:not([data-app-theme="dark"]) .cp-pop .cp-opt:not(.cp-new){background:#FFF9F3!important}
 }
 </style>
 </head>
@@ -2117,7 +2129,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.14-2024';
+const APP_BUILD='2026.11.18-1752';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
