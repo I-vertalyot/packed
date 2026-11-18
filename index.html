@@ -1357,6 +1357,8 @@ html.poster-open,html.poster-open body{overflow:hidden}
 :root:root:root:root:root:root[data-palette="nigella"] .cp-pop .cp-opt:not(.cp-new){background:color-mix(in srgb,var(--cc) 14%,rgba(52,24,11,1))!important}
 :root:root:root:root:root:root[data-palette="nigella"]:not([data-app-theme="dark"]) .cp-pop .cp-opt:not(.cp-new){background:color-mix(in srgb,var(--cc) 10%,#FFF9F3)!important}
 :root:root .panel:has(.cp-pop:not([hidden])),:root:root .modebox:has(.cp-pop:not([hidden])){position:relative;z-index:30!important}
+.datef .dtxt.ph{color:var(--muted);opacity:.85}
+.trip .when.nodate{display:grid;place-items:center;color:var(--muted)}
 
 /* plain colours for browsers without color-mix() */
 @supports not (color:color-mix(in srgb,red 50%,blue)){
@@ -1495,6 +1497,7 @@ body{background-image:linear-gradient(180deg,transparent 0,transparent 26%,rgba(
 const KEY='sbaleno-v1';
 const uid=()=>Math.random().toString(36).slice(2,9);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const hasDates=t=>!!(t&&t.start&&t.end);
 const parseD=s=>{const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
 const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 
@@ -1519,7 +1522,7 @@ const L={
   emptyWhole:'Zatím nic. Vyber věci níže.',pastTrips:'Proběhlé cesty',noItemsYet:'Zatím prázdné',yourList:'Tvůj seznam',yourCats:'Tvoje kategorie',hidePacked:'Skrýt sbalené',allHidden:'Všechno je sbalené. Vypni „Skrýt sbalené“, ať je vidíš.',dupTrip:'Duplikovat cestu',copySuffix:' (kopie)',cdToday:'dnes',cdTomorrow:'zítra',cdIn:n=>`za ${n} ${n<5?'dny':'dní'}`,cdNow:'probíhá',emptyDay:'Vyber věci z inventáře níže. Klikni na kategorii a vyber věci.',
   less:'Méně',more:'Více',remove:'Odebrat',
   copyPrev:'Zkopírovat z předchozího dne',toAll:'Tento den do všech dnů',clear:'Vyčistit',clearAll:'Vymazat vše',clearQ:'Vymazat všechny sesbírané věci?',clearSub:n=>`Ze seznamu zmizí ${n}. Hned potom to můžeš vrátit zpět.`,
-  addFromInv:'Vyber věci',search:'Hledat…',qaPre:'Přidat',qaPick:'Kategorie:',funMine:'Moje názvy',funTitle:'Moje názvy',funHelp:'Jeden název na řádek. Napiš {země} a doplní se náhodná země (např. „do Itálie“).',funOnlyL:'Používat jen moje názvy',funPh2:'Pivní výprava {země}\nOperace Ztracený pas',funSave:'Uložit',funCancel:'Zrušit',funTry:'Zkusit',qaTo:'do kategorie',noFound:'Nic nenalezeno.',invEmptyPick:'Inventář je prázdný. Přidej věci níže nebo na kartě Inventář.',
+  addFromInv:'Vyber věci',search:'Hledat…',qaPre:'Přidat',qaPick:'Kategorie:',funMine:'Moje názvy',anyDate:'Volitelné',noDates:'Bez data',funTitle:'Moje názvy',funHelp:'Jeden název na řádek. Napiš {země} a doplní se náhodná země (např. „do Itálie“).',funOnlyL:'Používat jen moje názvy',funPh2:'Pivní výprava {země}\nOperace Ztracený pas',funSave:'Uložit',funCancel:'Zrušit',funTry:'Zkusit',qaTo:'do kategorie',noFound:'Nic nenalezeno.',invEmptyPick:'Inventář je prázdný. Přidej věci níže nebo na kartě Inventář.',
   newThing:'Nová věc',newThingPh:'Přidej novou věc…',or:'nebo',addOrSearch:'Hledej nebo přidej',toTop:'Nahoru',category:'Kategorie',addBoth:'Přidat do inventáře i dne',
   wholeTrip:'celá cesta',everyDay:'každý den',
   noPicks:'Zatím nemáš vybrané žádné věci. Přepni na „Sbírání“ a poskládej si, co bereš.',
@@ -1571,7 +1574,7 @@ const L={
   emptyWhole:'Nothing yet. Pick items below.',pastTrips:'Past trips',noItemsYet:'No items yet',yourList:'Your list',yourCats:'Your categories',hidePacked:'Hide packed',allHidden:'Everything is packed. Turn off “Hide packed” to see it.',dupTrip:'Duplicate trip',copySuffix:' (copy)',cdToday:'today',cdTomorrow:'tomorrow',cdIn:n=>`in ${n} days`,cdNow:'happening now',emptyDay:'Pick items from the inventory below. Click a category and choose the items.',
   less:'Less',more:'More',remove:'Remove',
   copyPrev:'Copy from previous day',toAll:'Use this day for all days',clear:'Clear',clearAll:'Clear all',clearQ:'Clear all collected items?',clearSub:n=>`This removes ${n} from your list. You can undo it right after.`,
-  addFromInv:'Select items',search:'Search…',qaPre:'Add',qaPick:'Category:',funMine:'My names',funTitle:'My names',funHelp:'One name per line. Write {country} to drop in a random country.',funOnlyL:'Use only my names',funPh2:'Beer Tour in {country}\nOperation Lost Passport',funSave:'Save',funCancel:'Cancel',funTry:'Try',qaTo:'to',noFound:'Nothing found.',invEmptyPick:'Your inventory is empty. Add items below or on the Inventory tab.',
+  addFromInv:'Select items',search:'Search…',qaPre:'Add',qaPick:'Category:',funMine:'My names',anyDate:'Optional',noDates:'No dates yet',funTitle:'My names',funHelp:'One name per line. Write {country} to drop in a random country.',funOnlyL:'Use only my names',funPh2:'Beer Tour in {country}\nOperation Lost Passport',funSave:'Save',funCancel:'Cancel',funTry:'Try',qaTo:'to',noFound:'Nothing found.',invEmptyPick:'Your inventory is empty. Add items below or on the Inventory tab.',
   newThing:'New item',newThingPh:'Add new item…',or:'or',addOrSearch:'Search or add',toTop:'Back to top',category:'Category',addBoth:'Add to inventory and this day',
   wholeTrip:'whole trip',everyDay:'every day',
   noPicks:'You haven’t picked anything yet. Switch to “Collecting” and choose what you’re taking.',
@@ -1721,7 +1724,7 @@ async function connect(){
 const item=id=>state.items.find(i=>i.id===id);
 const trip=()=>state.trips.find(t=>t.id===ui.tripId);
 const cmp=(a,b)=>a.localeCompare(b,T.locale);
-function tripDays(t){const out=[];let d=parseD(t.start);const e=parseD(t.end);while(d<=e&&out.length<60){out.push(iso(d));d=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1)}return out}
+function tripDays(t){const out=[];if(!hasDates(t))return out;let d=parseD(t.start);const e=parseD(t.end);while(d<=e&&out.length<60){out.push(iso(d));d=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1)}return out}
 function catOrder(){const used=[...new Set(state.items.map(i=>i.cat||OTHER()))];const ord=state.cats.filter(c=>used.includes(c));used.forEach(c=>{if(!ord.includes(c))ord.push(c)});return ord}
 function byCat(list){const g={};list.forEach(x=>{const c=(x.it?x.it.cat:x.cat)||OTHER();(g[c]=g[c]||[]).push(x)});return catOrder().filter(c=>g[c]).map(c=>[c,g[c]])}
 function aggregate(t){
@@ -1898,8 +1901,8 @@ function viewTrips(){
   const form=ui.newTrip?`<form class="panel" id="newTrip">
       <div class="formgrid">
         <div class="field wide"><div class="lblrow"><label for="nt-name">${T.where}</label><button type="button" class="fun-edit" data-act="fun-edit">✎ ${esc(T.funMine)}${(state.funMine||[]).length?` <span class="fun-n">${state.funMine.length}</span>`:''}</button></div><div class="namef"><input class="inp" id="nt-name" name="name" placeholder="${esc(funPh())}" autocomplete="off"><button type="button" class="fun-b" data-fun="nt-name" aria-label="${esc(T.funName)}" title="${esc(T.funName)}">🎲</button></div></div>
-        <div class="field"><label for="nt-start">${T.depart}</label><input class="inp" type="date" id="nt-start" name="start" value="${iso(t0)}" required></div>
-        <div class="field"><label for="nt-end">${T.ret}</label><input class="inp" type="date" id="nt-end" name="end" value="${iso(t1)}" required></div>
+        <div class="field"><label for="nt-start">${T.depart}</label><input class="inp" type="date" id="nt-start" name="start" value=""></div>
+        <div class="field"><label for="nt-end">${T.ret}</label><input class="inp" type="date" id="nt-end" name="end" value=""></div>
         <button class="btn primary" type="submit">${T.create}</button>
       </div>
       ${ui.tripErr?`<p class="err">${esc(T[ui.tripErr])}</p>`:''}
@@ -1910,14 +1913,14 @@ function viewTrips(){
   const cards=trips.map(t=>{
     const fresh=t.id===newestId;
     const n=tripDays(t).length;const p=progress(t);const pct=p.total?Math.round(p.done/p.total*100):0;
-    const d=parseD(t.start);const past=t.end<today;
+    const nd=!hasDates(t);const d=nd?null:parseD(t.start);const past=!nd&&t.end<today;
     const pastHead='';
     return `${pastHead}<div class="trip-w${past?' past':''}${fresh?' is-new':''}">${fresh?`<span class="t-flag" aria-label="${esc(T.newBadge)}">${esc(T.newBadge)}</span>`:''}<button class="trip" data-act="open-trip" data-id="${t.id}">
-      <span class="when"><b>${T.dayNum(d)}</b><span>${d.toLocaleDateString(T.locale,{month:'short'}).replace('.','')}</span></span>
+      ${nd?`<span class="when nodate" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span>`:`<span class="when"><b>${T.dayNum(d)}</b><span>${d.toLocaleDateString(T.locale,{month:'short'}).replace('.','')}</span></span>`}
       <span style="min-width:0">
         <span class="t-name">${esc(t.name)}</span>
-        <span class="t-meta" style="display:block">${drange(t.start,t.end)} · ${T.days(n).replace(' ','\u00a0')}</span>
-        ${(()=>{if(past)return '';if(t.start<=today)return `<span class="t-count now">${esc(t.start===today?T.cdToday:T.cdNow)}</span>`;const dd=Math.round((parseD(t.start)-parseD(today))/864e5);return `<span class="t-count">${esc(dd===1?T.cdTomorrow:T.cdIn(dd))}</span>`})()}
+        <span class="t-meta" style="display:block">${nd?esc(T.noDates):`${drange(t.start,t.end)} · ${T.days(n).replace(' ','\u00a0')}`}</span>
+        ${(()=>{if(past||nd)return '';if(t.start<=today)return `<span class="t-count now">${esc(t.start===today?T.cdToday:T.cdNow)}</span>`;const dd=Math.round((parseD(t.start)-parseD(today))/864e5);return `<span class="t-count">${esc(dd===1?T.cdTomorrow:T.cdIn(dd))}</span>`})()}
         ${p.total?'':`<span class="t-empty">${esc(T.noItemsYet)}</span>`}
       </span>
       ${p.total?`<span class="pct">${p.done}/${p.total}</span>`:'<span class="pct" aria-hidden="true"></span>'}
@@ -1940,8 +1943,8 @@ function editForm(t){const v=ui.editVals||{name:t.name,start:t.start,end:t.end};
   return `<form class="panel" id="editTrip">
       <div class="formgrid">
         <div class="field wide"><label for="et-name">${T.where}</label><div class="namef"><input class="inp" id="et-name" name="name" required value="${esc(v.name)}" autocomplete="off"><button type="button" class="fun-b" data-fun="et-name" aria-label="${esc(T.funName)}" title="${esc(T.funName)}">🎲</button></div></div>
-        <div class="field"><label for="et-start">${T.depart}</label><input class="inp" type="date" id="et-start" name="start" value="${v.start}" required></div>
-        <div class="field"><label for="et-end">${T.ret}</label><input class="inp" type="date" id="et-end" name="end" value="${v.end}" required></div>
+        <div class="field"><label for="et-start">${T.depart}</label><input class="inp" type="date" id="et-start" name="start" value="${v.start||''}"></div>
+        <div class="field"><label for="et-end">${T.ret}</label><input class="inp" type="date" id="et-end" name="end" value="${v.end||''}"></div>
       </div>
       ${ui.editErr?`<p class="err">${esc(T[ui.editErr])}</p>`:''}
       ${ui.editWarn?`<p class="err">${esc(T.shortenWarn(ui.editWarn))}</p>`:''}
@@ -2129,7 +2132,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.18-1757';
+const APP_BUILD='2026.11.18-1800';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
@@ -2208,7 +2211,7 @@ function tripPDF(t){
     if(!first){d.text(fit(t.name,'B',8,CW/2),M+CW-d.width(fit(t.name,'B',8,CW/2),'B',8),M,{font:'B',size:8,color:MUT});y=M+30;return}
     const tl=wrap(t.name,'B',24,CW);tl.forEach((l,i)=>d.text(l,M,M+38+i*28,{font:'B',size:24}));
     y=M+38+(tl.length-1)*28+20;
-    d.text(`${cap1(WDL(t.start))} ${dm(t.start)} – ${WDL(t.end)} ${dmy(t.end)}   ·   ${T.days(n)}   ·   ${T.pdfPacked(done,pc.total)}`,M,y,{size:10,color:MUT});
+    d.text(hasDates(t)?`${cap1(WDL(t.start))} ${dm(t.start)} – ${WDL(t.end)} ${dmy(t.end)}   ·   ${T.days(n)}   ·   ${T.pdfPacked(done,pc.total)}`:`${T.noDates}   ·   ${T.pdfPacked(done,pc.total)}`,M,y,{size:10,color:MUT});
     y+=16;d.line(M,y,M+CW,y,{color:INK,lw:1.2});y+=28};
   header(true);
   // 1) packing checklist, two columns
@@ -2250,7 +2253,7 @@ const APP_URL='https://i-vertalyot.github.io/packed/';
 function shareText(t){const a=aggregate(t),p=pieces(t,a),groups={};
   a.forEach(x=>{const c=x.it.cat||OTHER();(groups[c]=groups[c]||[]).push(x)});
   const cats=[...state.cats.filter(c=>groups[c]),...Object.keys(groups).filter(c=>!state.cats.includes(c))];
-  const lines=[`🧳 ${t.name}`,`${drange(t.start,t.end,' – ')} · ${T.pdfPacked(p.done,p.total)}`,''];
+  const lines=[`🧳 ${t.name}`,`${hasDates(t)?drange(t.start,t.end,' – ')+' · ':''}${T.pdfPacked(p.done,p.total)}`,''];
   cats.forEach(c=>{lines.push(c.toUpperCase());groups[c].forEach(x=>lines.push(`${isDone(t,x)?'✅':'⬜'} ${x.it.name}${x.qty>1?' ×'+x.qty:''}`));lines.push('')});
   lines.push(`${T.shareMade}: ${APP_URL}`);return lines.join('\n')}
 function invClearModal(){
@@ -2573,20 +2576,21 @@ document.addEventListener('click',e=>{
 document.addEventListener('submit',e=>{
   e.preventDefault();const f=e.target;const fd=new FormData(f);
   if(f.id==='editTrip'){const t=ui.editId?state.trips.find(x=>x.id===ui.editId):trip();if(!t)return;
-    const name=String(fd.get('name')).trim(),st=String(fd.get('start')),en=String(fd.get('end'));
+    const name=String(fd.get('name')).trim();let st=String(fd.get('start')||''),en=String(fd.get('end')||'');if(st&&!en)en=st;if(en&&!st)st=en;
     ui.editVals={name,start:st,end:en};ui.editErr='';
-    if(!name||!st||!en)return;
-    if(en<st){ui.editErr='errOrder';ui.editWarn=0;render();return}
-    if(Math.round((parseD(en)-parseD(st))/864e5)>59){ui.editErr='errLong';ui.editWarn=0;render();return}
+    if(!name)return;
+    if(st&&en<st){ui.editErr='errOrder';ui.editWarn=0;render();return}
+    if(st&&Math.round((parseD(en)-parseD(st))/864e5)>59){ui.editErr='errLong';ui.editWarn=0;render();return}
     const drop=droppedDays(t,st,en);
     if(drop&&ui.editWarn!==drop){ui.editWarn=drop;render();return}
     t.name=name;if(st!==t.start||en!==t.end)retime(t,st,en);
     ui.editTrip=false;ui.editId=null;ui.editVals=null;ui.editWarn=0;ui.day='all';save();render();return}
   if(f.id==='newTrip'){
-    const ni=f.querySelector('#nt-name'),name=String(fd.get('name')).trim()||(ni&&ni.placeholder||'').trim(),s=fd.get('start'),en=fd.get('end');
-    if(!name||!s||!en)return;
-    if(en<s){ui.tripErr='errOrder';render();return}
-    if(Math.round((parseD(en)-parseD(s))/864e5)>59){ui.tripErr='errLong';render();return}
+    const ni=f.querySelector('#nt-name'),name=String(fd.get('name')).trim()||(ni&&ni.placeholder||'').trim();let s=String(fd.get('start')||''),en=String(fd.get('end')||'');
+    if(s&&!en)en=s;if(en&&!s)s=en;
+    if(!name)return;
+    if(s&&en<s){ui.tripErr='errOrder';render();return}
+    if(s&&Math.round((parseD(en)-parseD(s))/864e5)>59){ui.tripErr='errLong';render();return}
     const t={id:uid(),name,start:s,end:en,picks:{all:{}},packed:{}};
     t.created=Date.now();
     state.trips.push(t);ui.newTrip=false;ui.tripErr='';save();render();
@@ -2723,7 +2727,7 @@ document.querySelectorAll('canvas.space').forEach(cv=>window.startSpace(cv));
 /* date fields show "11 Nov 2026" (day month year) whatever the phone's own date format; picking a start date sets the end to the next day */
 function fmtDateInputs(root){(root||document).querySelectorAll('input[type=date]').forEach(inp=>{
   let w=inp.parentElement;if(!w.classList.contains('datef')){w=document.createElement('span');w.className='datef';inp.parentNode.insertBefore(w,inp);w.appendChild(inp);const t=document.createElement('span');t.className='dtxt';t.setAttribute('aria-hidden','true');w.appendChild(t);inp.classList.add('dfmt')}
-  const t=w.querySelector('.dtxt'),v=inp.value?dmy(inp.value):'';if(t.textContent!==v)t.textContent=v})}
+  const t=w.querySelector('.dtxt'),v=inp.value?dmy(inp.value):T.anyDate;t.classList.toggle('ph',!inp.value);if(t.textContent!==v)t.textContent=v})}
 new MutationObserver(ms=>{if(ms.some(m=>[...m.addedNodes].some(n=>n.nodeType===1&&(n.matches('input[type=date]')||n.querySelector&&n.querySelector('input[type=date]:not(.dfmt)')))))fmtDateInputs()}).observe(document.body,{childList:true,subtree:true});
 document.addEventListener('input',e=>{const el=e.target;if(!(el instanceof HTMLInputElement)||el.type!=='date')return;
   if(/-start$/.test(el.id)&&el.value){const end=document.getElementById(el.id.replace(/start$/,'end'));if(end){const d=parseD(el.value);d.setDate(d.getDate()+1);const v=iso(d);if(end.value!==v){end.value=v;end.dispatchEvent(new Event('input',{bubbles:true}));end.dispatchEvent(new Event('change',{bubbles:true}))}}}
