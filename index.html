@@ -1897,7 +1897,7 @@ function viewTrips(){
   const t0=new Date();const t1=new Date(t0.getFullYear(),t0.getMonth(),t0.getDate()+2);
   const form=ui.newTrip?`<form class="panel" id="newTrip">
       <div class="formgrid">
-        <div class="field wide"><div class="lblrow"><label for="nt-name">${T.where}</label><button type="button" class="fun-edit" data-act="fun-edit">✎ ${esc(T.funMine)}${(state.funMine||[]).length?` <span class="fun-n">${state.funMine.length}</span>`:''}</button></div><div class="namef"><input class="inp" id="nt-name" name="name" required placeholder="${esc(funPh())}" autocomplete="off"><button type="button" class="fun-b" data-fun="nt-name" aria-label="${esc(T.funName)}" title="${esc(T.funName)}">🎲</button></div></div>
+        <div class="field wide"><div class="lblrow"><label for="nt-name">${T.where}</label><button type="button" class="fun-edit" data-act="fun-edit">✎ ${esc(T.funMine)}${(state.funMine||[]).length?` <span class="fun-n">${state.funMine.length}</span>`:''}</button></div><div class="namef"><input class="inp" id="nt-name" name="name" placeholder="${esc(funPh())}" autocomplete="off"><button type="button" class="fun-b" data-fun="nt-name" aria-label="${esc(T.funName)}" title="${esc(T.funName)}">🎲</button></div></div>
         <div class="field"><label for="nt-start">${T.depart}</label><input class="inp" type="date" id="nt-start" name="start" value="${iso(t0)}" required></div>
         <div class="field"><label for="nt-end">${T.ret}</label><input class="inp" type="date" id="nt-end" name="end" value="${iso(t1)}" required></div>
         <button class="btn primary" type="submit">${T.create}</button>
@@ -2129,7 +2129,7 @@ function readImport(file){
 
 let PDF_FONTS=null;
 let __pfP=null;function loadPdfFonts(){if(PDF_FONTS)return Promise.resolve();if(!__pfP)__pfP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='pdf-fonts.js';sc.onload=()=>{PDF_FONTS=window.PDF_FONTS;PDF_FONTS?ok():no()};sc.onerror=()=>{__pfP=null;no(new Error('pdf fonts'))};document.head.appendChild(sc)});return __pfP}
-const APP_BUILD='2026.11.18-1755';
+const APP_BUILD='2026.11.18-1757';
 /* ---------- PDF export (self-contained writer, embedded Inter font) ---------- */
 const PDFC={blue:'#2F6FD6',green:'#2E9550',orange:'#E07B1F',purple:'#8356D1',red:'#D4483A',teal:'#179C9C',pink:'#D2508E',yellow:'#D9A400',gray:'#7D8896'};
 const PF={};
@@ -2583,7 +2583,7 @@ document.addEventListener('submit',e=>{
     t.name=name;if(st!==t.start||en!==t.end)retime(t,st,en);
     ui.editTrip=false;ui.editId=null;ui.editVals=null;ui.editWarn=0;ui.day='all';save();render();return}
   if(f.id==='newTrip'){
-    const name=String(fd.get('name')).trim(),s=fd.get('start'),en=fd.get('end');
+    const ni=f.querySelector('#nt-name'),name=String(fd.get('name')).trim()||(ni&&ni.placeholder||'').trim(),s=fd.get('start'),en=fd.get('end');
     if(!name||!s||!en)return;
     if(en<s){ui.tripErr='errOrder';render();return}
     if(Math.round((parseD(en)-parseD(s))/864e5)>59){ui.tripErr='errLong';render();return}
